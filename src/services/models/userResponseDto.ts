@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface UserResponseDto {
+export type UserResponseDto = {
   /** User ID */
   id: string;
   /** User email */
@@ -15,4 +15,4 @@ export interface UserResponseDto {
   fullName: string;
   /** User role */
   role: string;
-}
+};

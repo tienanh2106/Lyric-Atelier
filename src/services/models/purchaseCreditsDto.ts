@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface PurchaseCreditsDto {
+export type PurchaseCreditsDto = {
   /** Credit package ID to purchase */
   packageId: string;
   /** Payment method used */
   paymentMethod?: string;
   /** External payment transaction ID */
   paymentTransactionId?: string;
-}
+};

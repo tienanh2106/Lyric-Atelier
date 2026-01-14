@@ -14,6 +14,7 @@ export default defineConfig({
       client: 'react-query',
       mode: 'tags',
       override: {
+        useTypeOverInterfaces: true,
         mutator: {
           path: './src/services/custom-instance.ts',
           name: 'axiosInstance',

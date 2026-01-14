@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CreditBalanceResponseDto {
+export type CreditBalanceResponseDto = {
   /** Total credits ever purchased */
   totalCredits: number;
   /** Total credits used */
@@ -17,4 +17,4 @@ export interface CreditBalanceResponseDto {
   expiredCredits: number;
   /** Credits expiring in the next 7 days */
   creditsExpiringSoon: number;
-}
+};

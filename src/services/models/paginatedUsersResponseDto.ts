@@ -6,9 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import type { User } from './user';
-import type { GetUsers200Meta } from './getUsers200Meta';
+import type { PaginationMeta } from './paginationMeta';
 
-export type GetUsers200 = {
-  data?: User[];
-  meta?: GetUsers200Meta;
+export type PaginatedUsersResponseDto = {
+  /** List of users */
+  data: User[];
+  /** Pagination metadata */
+  meta: PaginationMeta;
 };

@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CreateCreditPackageDto {
+export type CreateCreditPackageDto = {
   /** Package name */
   name: string;
   /**
@@ -28,4 +28,4 @@ export interface CreateCreditPackageDto {
   description?: string;
   /** Whether the package is active */
   isActive?: boolean;
-}
+};

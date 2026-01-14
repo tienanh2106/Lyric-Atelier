@@ -5,13 +5,13 @@
  * API for Lyric Atelier - AI-powered lyric generation
  * OpenAPI spec version: 1.0
  */
-import type { UpdateUserDtoRole } from './updateUserDtoRole';
+import type { Role } from './role';
 
-export interface UpdateUserDto {
+export type UpdateUserDto = {
   /** User full name */
   fullName?: string;
   /** Whether the user account is active */
   isActive?: boolean;
   /** User role */
-  role?: UpdateUserDtoRole;
-}
+  role?: Role;
+};

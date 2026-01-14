@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface RefreshTokenDto {
+export type RefreshTokenDto = {
   /** Refresh token to exchange for new access token */
   refreshToken: string;
-}
+};

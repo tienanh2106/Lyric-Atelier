@@ -5,9 +5,9 @@
  * API for Lyric Atelier - AI-powered lyric generation
  * OpenAPI spec version: 1.0
  */
-import type { UserRole } from './userRole';
+import type { Role } from './role';
 
-export interface User {
+export type User = {
   /** User unique identifier */
   id: string;
   /** User email address */
@@ -15,12 +15,11 @@ export interface User {
   /** User full name */
   fullName?: string;
   /** User role */
-  role: UserRole;
+  role: Role;
   /** User account status */
   isActive: boolean;
   /** Account creation timestamp */
   createdAt: string;
   /** Last update timestamp */
   updatedAt: string;
-  password: string;
-}
+};

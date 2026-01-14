@@ -15,6 +15,8 @@ export default [
       '*.config.ts',
       'build/**',
       'src/services/endpoints/**',
+      'src/services/models/**',
+      'scripts/**',
     ],
   },
   js.configs.recommended,

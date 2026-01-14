@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GenerationDataDto {
+export type GenerationDataDto = {
   /** Generated text content */
   generatedText: string;
   /** Credits used for generation */
@@ -15,4 +15,4 @@ export interface GenerationDataDto {
   tokensUsed: number;
   /** Remaining credits after generation */
   remainingCredits: number;
-}
+};

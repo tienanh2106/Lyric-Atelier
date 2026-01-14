@@ -9,7 +9,7 @@ import type { User } from './user';
 import type { CreditPackage } from './creditPackage';
 import type { CreditTransactionMetadata } from './creditTransactionMetadata';
 
-export interface CreditTransaction {
+export type CreditTransaction = {
   /** Transaction unique identifier */
   id: string;
   /** User who made the purchase */
@@ -35,4 +35,4 @@ export interface CreditTransaction {
    * @nullable
    */
   metadata?: CreditTransactionMetadata;
-}
+};

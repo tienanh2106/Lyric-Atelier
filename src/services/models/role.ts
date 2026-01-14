@@ -6,9 +6,12 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GetCreditTransactions200Meta = {
-  page?: number;
-  limit?: number;
-  total?: number;
-  totalPages?: number;
-};
+/**
+ * User role
+ */
+export type Role = (typeof RoleEnum)[keyof typeof RoleEnum];
+
+export const RoleEnum = {
+  user: 'user',
+  admin: 'admin',
+} as const;

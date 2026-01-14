@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GenerateContentDto {
+export type GenerateContentDto = {
   /** The prompt for AI content generation */
   prompt: string;
   /**
@@ -17,4 +17,4 @@ export interface GenerateContentDto {
   maxTokens?: number;
   /** AI model to use */
   model?: string;
-}
+};

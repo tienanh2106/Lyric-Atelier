@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "type-check": "tsc --noEmit",
-    "generate:api": "orval --clean && orval --config orval.config.ts && npm run format && npm run lint:fix",
+    "generate:api": "orval --clean && orval --config orval.config.ts && npm run format && npm run fix:orval",
     "generate:api:watch": "orval --clean && orval --config orval.config.ts --watch",
     "fix:orval": "node scripts/fix-orval-output.cjs"
   },

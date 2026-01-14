@@ -7,7 +7,7 @@
  */
 import type { CreditTransaction } from './creditTransaction';
 
-export interface CreditPackage {
+export type CreditPackage = {
   /** Package unique identifier */
   id: string;
   /** Package name */
@@ -27,4 +27,4 @@ export interface CreditPackage {
   /** Last update timestamp */
   updatedAt: string;
   transactions: CreditTransaction[];
-}
+};

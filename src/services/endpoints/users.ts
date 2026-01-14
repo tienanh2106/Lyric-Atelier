@@ -21,7 +21,13 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { CreateUserDto, GetUsers200, GetUsersParams, UpdateUserDto, User } from '../models';
+import type {
+  CreateUserDto,
+  GetUsersParams,
+  PaginatedUsersResponseDto,
+  UpdateUserDto,
+  User,
+} from '../models';
 
 import { axiosInstance } from '../custom-instance';
 import type { ErrorType, BodyType } from '../custom-instance';
@@ -122,7 +128,10 @@ export const getUsers = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<GetUsers200>({ url: `/api/users`, method: 'GET', params, signal }, options);
+  return axiosInstance<PaginatedUsersResponseDto>(
+    { url: `/api/users`, method: 'GET', params, signal },
+    options
+  );
 };
 
 export const getGetUsersQueryKey = (params?: GetUsersParams) => {
@@ -213,8 +222,6 @@ export function useGetUsers<TData = Awaited<ReturnType<typeof getUsers>>, TError
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
-
-  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
@@ -319,8 +326,6 @@ export function useGetUser<TData = Awaited<ReturnType<typeof getUser>>, TError =
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
-
-  query.queryKey = queryOptions.queryKey;
 
   return query;
 }

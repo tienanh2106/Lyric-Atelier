@@ -7,7 +7,7 @@
  */
 import type { AdjustCreditsDtoMetadata } from './adjustCreditsDtoMetadata';
 
-export interface AdjustCreditsDto {
+export type AdjustCreditsDto = {
   /** User ID to adjust credits for */
   userId: string;
   /** Amount to adjust (positive to add, negative to subtract) */
@@ -16,4 +16,4 @@ export interface AdjustCreditsDto {
   description: string;
   /** Additional metadata */
   metadata?: AdjustCreditsDtoMetadata;
-}
+};

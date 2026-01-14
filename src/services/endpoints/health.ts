@@ -128,7 +128,5 @@ export function useHealthCheck<
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 
-  query.queryKey = queryOptions.queryKey;
-
   return query;
 }

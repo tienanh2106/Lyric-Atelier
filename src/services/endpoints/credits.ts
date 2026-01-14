@@ -26,10 +26,10 @@ import type {
   CreateCreditPackageDto,
   CreditBalanceResponseDto,
   CreditPackage,
-  GetCreditLedger200,
   GetCreditLedgerParams,
-  GetCreditTransactions200,
   GetCreditTransactionsParams,
+  PaginatedLedgerResponseDto,
+  PaginatedTransactionResponseDto,
   PurchaseCreditsDto,
 } from '../models';
 
@@ -235,8 +235,6 @@ export function useGetCreditPackages<
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 
-  query.queryKey = queryOptions.queryKey;
-
   return query;
 }
 
@@ -355,8 +353,6 @@ export function useGetCreditPackage<
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
-
-  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
@@ -707,8 +703,6 @@ export function useGetCreditBalance<
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 
-  query.queryKey = queryOptions.queryKey;
-
   return query;
 }
 
@@ -721,7 +715,7 @@ export const getCreditLedger = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<GetCreditLedger200>(
+  return axiosInstance<PaginatedLedgerResponseDto>(
     { url: `/api/credits/ledger`, method: 'GET', params, signal },
     options
   );
@@ -828,8 +822,6 @@ export function useGetCreditLedger<
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 
-  query.queryKey = queryOptions.queryKey;
-
   return query;
 }
 
@@ -842,7 +834,7 @@ export const getCreditTransactions = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<GetCreditTransactions200>(
+  return axiosInstance<PaginatedTransactionResponseDto>(
     { url: `/api/credits/transactions`, method: 'GET', params, signal },
     options
   );
@@ -960,8 +952,6 @@ export function useGetCreditTransactions<
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
   };
-
-  query.queryKey = queryOptions.queryKey;
 
   return query;
 }

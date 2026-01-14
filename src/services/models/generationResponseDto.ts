@@ -7,9 +7,9 @@
  */
 import type { GenerationDataDto } from './generationDataDto';
 
-export interface GenerationResponseDto {
+export type GenerationResponseDto = {
   /** Success message */
   message: string;
   /** Generation data */
   data: GenerationDataDto;
-}
+};

@@ -282,8 +282,6 @@ export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = Err
     queryKey: DataTag<QueryKey, TData, TError>;
   };
 
-  query.queryKey = queryOptions.queryKey;
-
   return query;
 }
 

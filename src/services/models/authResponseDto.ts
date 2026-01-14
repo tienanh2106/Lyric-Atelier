@@ -7,11 +7,11 @@
  */
 import type { UserResponseDto } from './userResponseDto';
 
-export interface AuthResponseDto {
+export type AuthResponseDto = {
   /** JWT access token (expires in 10 minutes) */
   accessToken: string;
   /** JWT refresh token (expires in 1 day) */
   refreshToken: string;
   /** User information */
   user: UserResponseDto;
-}
+};

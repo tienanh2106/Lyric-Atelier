@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CostEstimationDto {
+export type CostEstimationDto = {
   /** Estimated tokens for generation */
   estimatedTokens: number;
   /** Estimated credit cost */
   estimatedCost: number;
   /** Cost per token */
   costPerToken: number;
-}
+};

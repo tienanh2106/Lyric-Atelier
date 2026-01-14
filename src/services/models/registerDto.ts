@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface RegisterDto {
+export type RegisterDto = {
   /** User email address */
   email: string;
   /**
@@ -16,4 +16,4 @@ export interface RegisterDto {
   password: string;
   /** User full name */
   fullName?: string;
-}
+};
