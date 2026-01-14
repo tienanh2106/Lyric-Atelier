@@ -9,14 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #050505;
+            --bg-deep: #faf9f7;
             --accent-amber: #f59e0b;
-            --glass: rgba(15, 15, 15, 0.7);
+            --glass: rgba(255, 255, 255, 0.85);
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-deep);
-            color: #f1f5f9;
+            color: #1e293b;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
@@ -27,21 +27,21 @@
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #050505 100%);
+            background: radial-gradient(circle at 50% 0%, #fff5eb 0%, #faf9f7 100%);
         }
         .glass-panel {
             background: var(--glass);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.2); border-radius: 10px; }
-        
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 10px; }
+
         input, textarea, select {
             font-size: 14px !important;
         }
-        
+
         .action-button {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
