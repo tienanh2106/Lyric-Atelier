@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 import { RewriteResponse } from '../types';
 
-interface LyricResultProps { data: RewriteResponse | null; }
+interface LyricResultProps {
+  data: RewriteResponse | null;
+}
 
 const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) => {
   const [copied, setCopied] = useState(false);
@@ -14,7 +15,7 @@ const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) 
   return (
     <button
       onClick={handleCopy}
-      className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all text-[9px] font-black uppercase tracking-widest ${copied ? 'bg-emerald-500 border-emerald-500 text-white' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+      className={`flex items-center gap-2 rounded-full border px-4 py-2 text-[9px] font-black uppercase tracking-widest transition-all ${copied ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
     >
       {copied ? 'Success' : `Copy ${label}`}
     </button>
@@ -24,53 +25,79 @@ const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) 
 const LyricResult: React.FC<LyricResultProps> = ({ data }) => {
   if (!data) return null;
 
-  const fullNewLyrics = data.sections.map(s => `[${s.title}]\n${s.lines.map(l => l.rewritten).join('\n')}`).join('\n\n');
-  const fullTransliteration = data.sections.map(s => `[${s.title}]\n${s.lines.map(l => l.transliteration || '').join('\n')}`).join('\n\n');
+  const fullNewLyrics = data.sections
+    .map((s) => `[${s.title}]\n${s.lines.map((l) => l.rewritten).join('\n')}`)
+    .join('\n\n');
+  const fullTransliteration = data.sections
+    .map((s) => `[${s.title}]\n${s.lines.map((l) => l.transliteration || '').join('\n')}`)
+    .join('\n\n');
 
   return (
-    <div className="w-full max-w-5xl mt-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 pb-40 px-4 flex flex-col gap-12">
-      
+    <div className="animate-in fade-in slide-in-from-bottom-12 mt-12 flex w-full max-w-5xl flex-col gap-12 px-4 pb-40 duration-1000">
       {/* --- PHẦN 1: THÔNG TIN TỔNG QUAN --- */}
-      <div className="glass-panel rounded-[2.5rem] p-8 md:p-10 border border-slate-200 bg-white shadow-3xl">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+      <div className="glass-panel shadow-3xl rounded-[2.5rem] border border-slate-200 bg-white p-8 md:p-10">
+        <div className="mb-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[8px] font-black text-amber-600 uppercase tracking-[0.3em]">Official Score</span>
-              {data.isForeignLanguage && <span className="px-2 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-[8px] font-black text-blue-600 uppercase tracking-[0.3em]">International Mode</span>}
+              <span className="rounded border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-[8px] font-black uppercase tracking-[0.3em] text-amber-600">
+                Official Score
+              </span>
+              {data.isForeignLanguage && (
+                <span className="rounded border border-blue-500/20 bg-blue-500/10 px-2 py-1 text-[8px] font-black uppercase tracking-[0.3em] text-blue-600">
+                  International Mode
+                </span>
+              )}
             </div>
-            <h2 className="text-4xl md:text-6xl font-classic italic text-slate-900 leading-none">{data.songTitle}</h2>
+            <h2 className="font-classic text-4xl italic leading-none text-slate-900 md:text-6xl">
+              {data.songTitle}
+            </h2>
           </div>
         </div>
-        <div className="pt-8 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-10">
-           <div className="space-y-2">
-             <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Narrative Arc</span>
-             <p className="text-sm font-classic italic text-slate-700 leading-relaxed">"{data.narrativeArc}"</p>
-           </div>
-           <div className="space-y-2 border-l border-slate-200 pl-10">
-             <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">Atelier Appreciation</span>
-             <p className="text-[11px] text-slate-600 font-medium leading-relaxed italic">{data.musicalAppreciation}</p>
-           </div>
+        <div className="grid grid-cols-1 gap-10 border-t border-slate-200 pt-8 md:grid-cols-2">
+          <div className="space-y-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
+              Narrative Arc
+            </span>
+            <p className="font-classic text-sm italic leading-relaxed text-slate-700">
+              "{data.narrativeArc}"
+            </p>
+          </div>
+          <div className="space-y-2 border-l border-slate-200 pl-10">
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">
+              Atelier Appreciation
+            </span>
+            <p className="text-[11px] font-medium italic leading-relaxed text-slate-600">
+              {data.musicalAppreciation}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         {/* --- PHẦN 2: KHUNG LỜI MỚI (CHÍNH) --- */}
-        <div className="lg:col-span-8 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:col-span-8">
           <div className="flex items-center justify-between px-6">
-            <span className="text-[10px] font-black text-amber-600 uppercase tracking-[0.4em]">New Lyrics Score</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-600">
+              New Lyrics Score
+            </span>
             <CopyButton text={fullNewLyrics} label="Lyrics" />
           </div>
-          <div className="glass-panel rounded-[3rem] p-10 md:p-16 border border-slate-200 bg-gradient-to-br from-white to-slate-50 shadow-2xl min-h-[500px]">
+          <div className="glass-panel min-h-[500px] rounded-[3rem] border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-10 shadow-2xl md:p-16">
             <div className="flex flex-col gap-12">
               {data.sections.map((section, sIdx) => (
                 <div key={sIdx} className="space-y-8">
                   <div className="flex items-center gap-4">
-                    <span className="text-[9px] font-black text-amber-600/70 uppercase tracking-[0.5em]">{section.title}</span>
+                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-amber-600/70">
+                      {section.title}
+                    </span>
                     <div className="h-[1px] flex-1 bg-slate-200"></div>
                   </div>
-                  <div className="space-y-5 pl-4 md:pl-8 border-l border-slate-200">
+                  <div className="space-y-5 border-l border-slate-200 pl-4 md:pl-8">
                     {section.lines.map((line, lIdx) => (
-                      <p key={lIdx} className="text-xl md:text-2xl font-classic italic text-slate-700 leading-tight hover:text-slate-900 transition-all">
+                      <p
+                        key={lIdx}
+                        className="font-classic text-xl italic leading-tight text-slate-700 transition-all hover:text-slate-900 md:text-2xl"
+                      >
                         {line.rewritten}
                       </p>
                     ))}
@@ -82,25 +109,32 @@ const LyricResult: React.FC<LyricResultProps> = ({ data }) => {
         </div>
 
         {/* --- PHẦN 3: SIDEBAR (PHIÊN ÂM & STYLE PROMPT) --- */}
-        <div className="lg:col-span-4 flex flex-col gap-8">
-          
+        <div className="flex flex-col gap-8 lg:col-span-4">
           {/* Box Phiên Âm */}
           {data.isForeignLanguage && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between px-2">
-                <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em]">Phonetic Map</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-600">
+                  Phonetic Map
+                </span>
                 <CopyButton text={fullTransliteration} label="Phonetics" />
               </div>
-              <div className="glass-panel rounded-[2rem] p-8 border border-slate-200 bg-white max-h-[400px] overflow-y-auto custom-scrollbar">
+              <div className="glass-panel custom-scrollbar max-h-[400px] overflow-y-auto rounded-[2rem] border border-slate-200 bg-white p-8">
                 <div className="space-y-6">
                   {data.sections.map((section, sIdx) => (
                     <div key={sIdx} className="space-y-3">
-                      <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">{section.title}</span>
+                      <span className="text-[8px] font-bold uppercase tracking-widest text-slate-500">
+                        {section.title}
+                      </span>
                       <div className="space-y-2">
                         {section.lines.map((line, lIdx) => (
                           <div key={lIdx} className="space-y-1">
-                            <p className="text-[10px] text-slate-500 italic opacity-60">{line.original}</p>
-                            <p className="text-[11px] text-amber-600 font-medium italic">{line.transliteration}</p>
+                            <p className="text-[10px] italic text-slate-500 opacity-60">
+                              {line.original}
+                            </p>
+                            <p className="text-[11px] font-medium italic text-amber-600">
+                              {line.transliteration}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -114,22 +148,24 @@ const LyricResult: React.FC<LyricResultProps> = ({ data }) => {
           {/* Box Style Prompt */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between px-2">
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.4em]">Music Style Prompt (AI)</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-600">
+                Music Style Prompt (AI)
+              </span>
               <CopyButton text={data.musicStylePrompt} label="Prompt" />
             </div>
-            <div className="glass-panel rounded-[2rem] p-8 border border-slate-200 bg-emerald-50 shadow-inner">
-              <p className="text-[12px] font-mono text-emerald-700 leading-relaxed select-all">
+            <div className="glass-panel rounded-[2rem] border border-slate-200 bg-emerald-50 p-8 shadow-inner">
+              <p className="select-all font-mono text-[12px] leading-relaxed text-emerald-700">
                 {data.musicStylePrompt}
               </p>
-              <div className="mt-6 pt-6 border-t border-emerald-200">
-                <p className="text-[9px] text-slate-600 font-bold uppercase">Sử dụng prompt này trên Suno/Udio để tạo nhạc đúng phong cách.</p>
+              <div className="mt-6 border-t border-emerald-200 pt-6">
+                <p className="text-[9px] font-bold uppercase text-slate-600">
+                  Sử dụng prompt này trên Suno/Udio để tạo nhạc đúng phong cách.
+                </p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
     </div>
   );
 };

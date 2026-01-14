@@ -1,9 +1,8 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
-import { RewriteResponse } from "../types";
+import { GoogleGenAI, Type } from '@google/genai';
+import { RewriteResponse } from '../types';
 
 const cleanJsonResponse = (text: string) => {
-  return text.replace(/```json|```/g, "").trim();
+  return text.replace(/```json|```/g, '').trim();
 };
 
 export const generateRandomScenario = async (theme: string): Promise<string> => {
@@ -12,10 +11,13 @@ export const generateRandomScenario = async (theme: string): Promise<string> => 
     model: 'gemini-3-flash-preview',
     contents: `Hãy đóng vai một nhà biên kịch. Dựa trên phong cách "${theme}", hãy tạo một kịch bản ca khúc ngắn gọn (1-2 câu). Viết bằng ngôn ngữ tự sự, giàu hình ảnh.`,
   });
-  return response.text?.trim() || "Một câu chuyện chưa kể...";
+  return response.text?.trim() || 'Một câu chuyện chưa kể...';
 };
 
-export const extractLyricsFromMedia = async (base64Data: string, mimeType: string): Promise<string> => {
+export const extractLyricsFromMedia = async (
+  base64Data: string,
+  mimeType: string
+): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
@@ -23,12 +25,14 @@ export const extractLyricsFromMedia = async (base64Data: string, mimeType: strin
       {
         parts: [
           { inlineData: { data: base64Data, mimeType: mimeType } },
-          { text: "Chép lại lời bài hát từ file này một cách chính xác nhất. Chỉ trả về lời bài hát." }
-        ]
-      }
-    ]
+          {
+            text: 'Chép lại lời bài hát từ file này một cách chính xác nhất. Chỉ trả về lời bài hát.',
+          },
+        ],
+      },
+    ],
   });
-  return response.text || "";
+  return response.text || '';
 };
 
 export const detectThemeAndStory = async (lyrics: string) => {
@@ -37,18 +41,18 @@ export const detectThemeAndStory = async (lyrics: string) => {
     model: 'gemini-3-flash-preview',
     contents: `Phân tích cảm xúc và chủ đề của lời bài hát: "${lyrics}". Trả về JSON theme, storyDescription.`,
     config: {
-      responseMimeType: "application/json",
+      responseMimeType: 'application/json',
       responseSchema: {
         type: Type.OBJECT,
         properties: {
           theme: { type: Type.STRING },
-          storyDescription: { type: Type.STRING }
+          storyDescription: { type: Type.STRING },
         },
-        required: ["theme", "storyDescription"]
-      }
-    }
+        required: ['theme', 'storyDescription'],
+      },
+    },
   });
-  return JSON.parse(cleanJsonResponse(response.text || "{}"));
+  return JSON.parse(cleanJsonResponse(response.text || '{}'));
 };
 
 export const rewriteLyrics = async (
@@ -85,7 +89,10 @@ export const rewriteLyrics = async (
       songTitle: { type: Type.STRING },
       narrativeArc: { type: Type.STRING },
       musicalAppreciation: { type: Type.STRING },
-      musicStylePrompt: { type: Type.STRING, description: "Detailed style prompt in ENGLISH for AI Music generators like Suno/Udio" },
+      musicStylePrompt: {
+        type: Type.STRING,
+        description: 'Detailed style prompt in ENGLISH for AI Music generators like Suno/Udio',
+      },
       isForeignLanguage: { type: Type.BOOLEAN },
       sections: {
         type: Type.ARRAY,
@@ -100,16 +107,23 @@ export const rewriteLyrics = async (
                 properties: {
                   original: { type: Type.STRING },
                   transliteration: { type: Type.STRING },
-                  rewritten: { type: Type.STRING }
-                }
-              }
-            }
+                  rewritten: { type: Type.STRING },
+                },
+              },
+            },
           },
-          required: ["title", "lines"]
-        }
-      }
+          required: ['title', 'lines'],
+        },
+      },
     },
-    required: ["songTitle", "narrativeArc", "musicalAppreciation", "musicStylePrompt", "isForeignLanguage", "sections"]
+    required: [
+      'songTitle',
+      'narrativeArc',
+      'musicalAppreciation',
+      'musicStylePrompt',
+      'isForeignLanguage',
+      'sections',
+    ],
   };
 
   const response = await ai.models.generateContent({
@@ -118,18 +132,18 @@ export const rewriteLyrics = async (
     Original:
     ${originalText}`,
     config: {
-      responseMimeType: "application/json",
+      responseMimeType: 'application/json',
       responseSchema,
       systemInstruction,
-      thinkingConfig: { thinkingBudget: 32768 }
-    }
+      thinkingConfig: { thinkingBudget: 32768 },
+    },
   });
 
   try {
-    const text = cleanJsonResponse(response.text || "{}");
+    const text = cleanJsonResponse(response.text || '{}');
     const parsed = JSON.parse(text);
     return parsed;
   } catch (e) {
-    throw new Error("Lỗi định dạng dữ liệu từ AI. Vui lòng thử lại sau giây lát.");
+    throw new Error('Lỗi định dạng dữ liệu từ AI. Vui lòng thử lại sau giây lát.');
   }
 };

@@ -1,4 +1,3 @@
-
 export interface LyricLine {
   original: string;
   transliteration?: string;
