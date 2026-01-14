@@ -6,7 +6,7 @@ const cleanJsonResponse = (text: string) => {
 };
 
 export const generateRandomScenario = async (theme: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: `Hãy đóng vai một nhà biên kịch. Dựa trên phong cách "${theme}", hãy tạo một kịch bản ca khúc ngắn gọn (1-2 câu). Viết bằng ngôn ngữ tự sự, giàu hình ảnh.`,
@@ -18,7 +18,7 @@ export const extractLyricsFromMedia = async (
   base64Data: string,
   mimeType: string
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: [
@@ -36,7 +36,7 @@ export const extractLyricsFromMedia = async (
 };
 
 export const detectThemeAndStory = async (lyrics: string) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: `Phân tích cảm xúc và chủ đề của lời bài hát: "${lyrics}". Trả về JSON theme, storyDescription.`,
@@ -63,7 +63,7 @@ export const rewriteLyrics = async (
   useThinking: boolean,
   strictPhonetics: boolean
 ): Promise<RewriteResponse> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
   const modelName = 'gemini-3-pro-preview';
 
   const systemInstruction = `

@@ -14,12 +14,16 @@ export default defineConfig(({ mode }) => {
       postcss: './postcss.config.js',
     },
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
+      'process.env.VITE_API_BASE_URL': JSON.stringify(env.VITE_API_BASE_URL),
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, './src'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@services': path.resolve(__dirname, './src/services'),
+        '@types': path.resolve(__dirname, './src/types'),
+        '@utils': path.resolve(__dirname, './src/utils'),
       },
     },
   };

@@ -4,10 +4,18 @@ import tsParser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierConfig from 'eslint-config-prettier';
+import globals from 'globals';
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', '*.config.js', '*.config.ts', 'build/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      '*.config.js',
+      '*.config.ts',
+      'build/**',
+      'src/services/endpoints/**',
+    ],
   },
   js.configs.recommended,
   {
@@ -17,28 +25,11 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        ecmaFeatures: {
-          jsx: true,
-        },
+        ecmaFeatures: { jsx: true },
       },
       globals: {
-        // Browser
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
-        console: 'readonly',
-        HTMLElement: 'readonly',
-        HTMLInputElement: 'readonly',
-        FileReader: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        fetch: 'readonly',
-        // Node
-        process: 'readonly',
-        // TypeScript
-        NodeJS: 'readonly',
+        ...globals.browser,
+        ...globals.node,
       },
     },
     plugins: {
@@ -52,12 +43,10 @@ export default [
       ...reactHooksPlugin.configs.recommended.rules,
       ...prettierConfig.rules,
 
-      // React specific
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',
 
-      // TypeScript specific
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -68,14 +57,11 @@ export default [
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
 
-      // General
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'warn',
     },
     settings: {
-      react: {
-        version: 'detect',
-      },
+      react: { version: 'detect' },
     },
   },
 ];
