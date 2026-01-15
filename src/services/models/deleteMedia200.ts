@@ -6,8 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-/**
- * Additional metadata
- * @nullable
- */
-export type CreditLedgerMetadata = { [key: string]: unknown } | null;
+export type DeleteMedia200 = {
+  message?: string;
+};

@@ -37,8 +37,8 @@ const Banner: React.FC = () => {
           </div>
 
           {/* Center: Studio Philosophy */}
-          <div className="hidden max-w-[320px] flex-col items-center px-10 text-center lg:flex">
-            <div className="flex items-center gap-8">
+          <div className="hidden max-w-[320px] flex-col items-center text-center lg:flex">
+            <div className="flex items-center gap-4">
               <div className="h-16 w-[1px] bg-slate-200"></div>
               <p className="font-classic text-[11px] italic leading-relaxed text-slate-600 opacity-70">
                 "Khai mở tiềm năng ca từ thông qua sự giao thoa của nhạc tính và tư duy thi sỹ."

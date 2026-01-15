@@ -26,6 +26,8 @@ import type {
   EstimateCostParams,
   GenerateContentDto,
   GenerationResponseDto,
+  MediaToTextDto,
+  SuggestScenarioDto,
 } from '../models';
 
 import { axiosInstance } from '../custom-instance';
@@ -238,3 +240,176 @@ export function useEstimateCost<
 
   return query;
 }
+
+/**
+ * Propose creative scenarios/ideas based on user prompt. Credits will be deducted based on token usage.
+ * @summary Suggest AI generation scenarios
+ */
+export const suggestScenario = (
+  suggestScenarioDto: BodyType<SuggestScenarioDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/suggest-scenario`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: suggestScenarioDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getSuggestScenarioMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof suggestScenario>>,
+    TError,
+    { data: BodyType<SuggestScenarioDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof suggestScenario>>,
+  TError,
+  { data: BodyType<SuggestScenarioDto> },
+  TContext
+> => {
+  const mutationKey = ['suggestScenario'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof suggestScenario>>,
+    { data: BodyType<SuggestScenarioDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return suggestScenario(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SuggestScenarioMutationResult = NonNullable<
+  Awaited<ReturnType<typeof suggestScenario>>
+>;
+export type SuggestScenarioMutationBody = BodyType<SuggestScenarioDto>;
+export type SuggestScenarioMutationError = ErrorType<void>;
+
+/**
+ * @summary Suggest AI generation scenarios
+ */
+export const useSuggestScenario = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof suggestScenario>>,
+      TError,
+      { data: BodyType<SuggestScenarioDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof suggestScenario>>,
+  TError,
+  { data: BodyType<SuggestScenarioDto> },
+  TContext
+> => {
+  const mutationOptions = getSuggestScenarioMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Convert audio or video file to text using AI. Supports transcription with custom prompts. Credits will be deducted based on token usage.
+ * @summary Convert audio/video to text
+ */
+export const mediaToText = (
+  mediaToTextDto: BodyType<MediaToTextDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/media-to-text`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: mediaToTextDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getMediaToTextMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof mediaToText>>,
+    TError,
+    { data: BodyType<MediaToTextDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof mediaToText>>,
+  TError,
+  { data: BodyType<MediaToTextDto> },
+  TContext
+> => {
+  const mutationKey = ['mediaToText'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof mediaToText>>,
+    { data: BodyType<MediaToTextDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return mediaToText(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MediaToTextMutationResult = NonNullable<Awaited<ReturnType<typeof mediaToText>>>;
+export type MediaToTextMutationBody = BodyType<MediaToTextDto>;
+export type MediaToTextMutationError = ErrorType<void>;
+
+/**
+ * @summary Convert audio/video to text
+ */
+export const useMediaToText = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof mediaToText>>,
+      TError,
+      { data: BodyType<MediaToTextDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof mediaToText>>,
+  TError,
+  { data: BodyType<MediaToTextDto> },
+  TContext
+> => {
+  const mutationOptions = getMediaToTextMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

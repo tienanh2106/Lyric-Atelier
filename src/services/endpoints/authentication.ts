@@ -119,7 +119,7 @@ export const login = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<AuthResponseDto>(
+  return axiosInstance<AuthResponseDto | AuthResponseDto>(
     {
       url: `/api/auth/login`,
       method: 'POST',
@@ -294,7 +294,7 @@ export const refreshToken = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<AuthResponseDto>(
+  return axiosInstance<AuthResponseDto | AuthResponseDto>(
     {
       url: `/api/auth/refresh`,
       method: 'POST',
@@ -379,7 +379,7 @@ export const logout = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<void>(
+  return axiosInstance<void | void>(
     {
       url: `/api/auth/logout`,
       method: 'POST',

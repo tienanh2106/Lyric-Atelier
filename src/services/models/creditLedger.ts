@@ -24,7 +24,10 @@ export type CreditLedger = {
   balance: number;
   /** Transaction description */
   description?: string;
-  /** Additional metadata */
+  /**
+   * Additional metadata
+   * @nullable
+   */
   metadata?: CreditLedgerMetadata;
   /** Reference ID to related transaction */
   referenceId?: string;

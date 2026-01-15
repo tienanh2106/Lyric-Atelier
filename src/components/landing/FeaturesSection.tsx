@@ -33,7 +33,7 @@ export const FeaturesSection = () => {
   ];
 
   return (
-    <section className="animate-in fade-in slide-in-from-bottom-12 flex flex-col gap-12 py-20 delay-225 duration-1000">
+    <section className="animate-in fade-in slide-in-from-bottom-12 delay-225 flex flex-col gap-12 py-20 duration-1000">
       <div className="flex flex-col items-center gap-4 text-center">
         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
           Tính Năng

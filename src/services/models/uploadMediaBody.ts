@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-/**
- * Additional metadata
- * @nullable
- */
-export type CreditLedgerMetadata = { [key: string]: unknown } | null;
+export type UploadMediaBody = {
+  /** Media file (audio or video) */
+  file?: Blob;
+};

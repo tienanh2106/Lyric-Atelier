@@ -1,4 +1,12 @@
 export { axiosInstance } from './custom-instance';
 export { queryClient } from './queryClient';
 
-export { rewriteLyrics } from './geminiService';
+// API-based services
+export { rewriteLyricsWithAPI } from './lyricGenerationService';
+export {
+  generateRandomScenarioWithAPI,
+  uploadMediaFile,
+  extractLyricsFromMediaWithAPI,
+  uploadAndExtractLyrics,
+  detectThemeAndStoryWithAPI,
+} from './lyricHelperService';

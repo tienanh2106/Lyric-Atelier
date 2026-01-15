@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { GenerationConfig } from '../types';
 import {
-  detectThemeAndStory,
-  extractLyricsFromMedia,
-  generateRandomScenario,
-} from '../services/geminiService';
+  detectThemeAndStoryWithAPI,
+  uploadAndExtractLyrics,
+  generateRandomScenarioWithAPI,
+} from '../services/lyricHelperService';
 
 interface LyricInputProps {
   value: string;
@@ -45,7 +45,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
   const handleRandomizeScenario = async () => {
     setIsGeneratingScenario(true);
     try {
-      const scenario = await generateRandomScenario(config.theme);
+      const scenario = await generateRandomScenarioWithAPI(config.theme);
       onConfigChange({ ...config, storyDescription: scenario });
     } catch (err) {
       console.error(err);
@@ -57,23 +57,24 @@ const LyricInput: React.FC<LyricInputProps> = ({
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setIsTranscribing(true);
     try {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const base64Data = (reader.result as string).split(',')[1];
-        const lyrics = await extractLyricsFromMedia(base64Data, file.type);
-        onChange(lyrics);
-        const result = await detectThemeAndStory(lyrics);
-        onConfigChange({
-          ...config,
-          theme: result.theme || themes[0].value,
-          storyDescription: result.storyDescription,
-        });
-        setIsTranscribing(false);
-      };
-      reader.readAsDataURL(file);
+      // Upload file and extract lyrics
+      const lyrics = await uploadAndExtractLyrics(file);
+      onChange(lyrics);
+
+      // Detect theme and story from extracted lyrics
+      const result = await detectThemeAndStoryWithAPI(lyrics);
+      onConfigChange({
+        ...config,
+        theme: result.theme || themes[0].value,
+        storyDescription: result.storyDescription,
+      });
     } catch (error) {
+      console.error('File upload error:', error);
+      // Show error to user if needed
+    } finally {
       setIsTranscribing(false);
     }
   };

@@ -964,7 +964,7 @@ export const adjustCredits = (
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal
 ) => {
-  return axiosInstance<void>(
+  return axiosInstance<void | void>(
     {
       url: `/api/credits/admin/adjust`,
       method: 'POST',

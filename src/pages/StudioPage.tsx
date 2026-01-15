@@ -2,9 +2,11 @@ import React, { useState, useCallback } from 'react';
 import LyricInput from '../components/LyricInput';
 import LyricResult from '../components/LyricResult';
 import { GenerationConfig, RewriteResponse } from '../types';
-import { rewriteLyrics } from '../services/geminiService';
+import { rewriteLyricsWithAPI } from '../services/lyricGenerationService';
+import { useAuthStore } from '../stores/authStore';
 
 export const StudioPage: React.FC = () => {
+  const refreshAuth = useAuthStore((state) => state.refreshAuth);
   const [originalText, setOriginalText] = useState('');
   const [config, setConfig] = useState<GenerationConfig>({
     sourceLanguage: 'vi',
@@ -17,28 +19,39 @@ export const StudioPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RewriteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [creditsInfo, setCreditsInfo] = useState<{
+    creditsUsed: number;
+    remainingCredits: number;
+  } | null>(null);
 
   const handleGenerate = useCallback(async () => {
     if (!originalText.trim()) return;
     setIsLoading(true);
     setError(null);
     setResult(null);
+    setCreditsInfo(null);
+
     try {
-      const data = await rewriteLyrics(
-        originalText,
-        config.sourceLanguage,
-        config.theme,
-        config.storyDescription,
-        config.useThinking,
-        config.strictPhonetics
-      );
-      setResult(data);
+      const response = await rewriteLyricsWithAPI(originalText, config);
+
+      // Extract rewrite data and credits info
+      const { creditsUsed, remainingCredits, ...rewriteData } = response;
+
+      setResult(rewriteData);
+      setCreditsInfo({ creditsUsed, remainingCredits });
+
+      // Refresh auth to update user credits in header
+      await refreshAuth();
     } catch (err: any) {
-      setError(err.message || 'QUÁ TRÌNH SÁNG TÁC BỊ GIÁN ĐOẠN. VUI LÒNG THỬ LẠI.');
+      const errorMessage =
+        err?.response?.data?.message ||
+        err.message ||
+        'QUÁ TRÌNH SÁNG TÁC BỊ GIÁN ĐOẠN. VUI LÒNG THỬ LẠI.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, [originalText, config]);
+  }, [originalText, config, refreshAuth]);
 
   return (
     <div className="flex min-h-screen flex-col items-center selection:bg-amber-500/20">
@@ -54,6 +67,14 @@ export const StudioPage: React.FC = () => {
         {error && (
           <div className="animate-in fade-in slide-in-from-top-4 mt-10 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-red-700">
             {error}
+          </div>
+        )}
+        {creditsInfo && (
+          <div className="animate-in fade-in slide-in-from-top-4 mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-700">
+            <div className="flex items-center justify-between gap-4">
+              <span>Credits đã sử dụng: {creditsInfo.creditsUsed}</span>
+              <span>Credits còn lại: {creditsInfo.remainingCredits}</span>
+            </div>
           </div>
         )}
         <LyricResult data={result} />

@@ -23,9 +23,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           }`}
           {...props}
         />
-        {error && (
-          <span className="text-[10px] font-bold text-red-600">{error.message}</span>
-        )}
+        {error && <span className="text-[10px] font-bold text-red-600">{error.message}</span>}
       </div>
     );
   }

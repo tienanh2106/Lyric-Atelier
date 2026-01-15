@@ -22,4 +22,5 @@ export type User = {
   createdAt: string;
   /** Last update timestamp */
   updatedAt: string;
+  password: string;
 };
