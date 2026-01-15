@@ -18,7 +18,7 @@ const Banner: React.FC = () => {
           <div className="absolute inset-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/15 to-transparent opacity-50"></div>
         </div>
 
-        <div className="relative flex flex-col items-center justify-between gap-10 px-12 py-8 md:flex-row">
+        <div className="relative flex flex-col items-center justify-between gap-4 px-12 py-8 md:flex-row">
           {/* Left: Brand Identity */}
           <div className="z-10 flex flex-col items-center space-y-2 md:items-start">
             <div className="flex items-center gap-4">
@@ -37,14 +37,18 @@ const Banner: React.FC = () => {
           </div>
 
           {/* Center: Studio Philosophy */}
-          <div className="hidden max-w-[320px] flex-col items-center border-x border-slate-200 px-10 text-center lg:flex">
-            <p className="font-classic text-[11px] italic leading-relaxed text-slate-600 opacity-70">
-              "Khai mở tiềm năng ca từ thông qua sự giao thoa của nhạc tính và tư duy thi sỹ."
-            </p>
+          <div className="hidden max-w-[320px] flex-col items-center px-10 text-center lg:flex">
+            <div className="flex items-center gap-8">
+              <div className="h-16 w-[1px] bg-slate-200"></div>
+              <p className="font-classic text-[11px] italic leading-relaxed text-slate-600 opacity-70">
+                "Khai mở tiềm năng ca từ thông qua sự giao thoa của nhạc tính và tư duy thi sỹ."
+              </p>
+              <div className="h-16 w-[1px] bg-slate-200"></div>
+            </div>
           </div>
 
           {/* Right: Real-time Status */}
-          <div className="z-10 flex items-center gap-8">
+          <div className="z-10 flex items-center gap-4">
             <div className="flex flex-col items-end gap-1.5">
               <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">
                 System
@@ -57,7 +61,7 @@ const Banner: React.FC = () => {
               </div>
             </div>
 
-            <div className="h-10 w-[1px] bg-slate-200"></div>
+            <div className="h-16 w-[1px] bg-slate-200"></div>
 
             <div className="flex flex-col items-end gap-1.5">
               <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">

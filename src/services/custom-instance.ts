@@ -1,3 +1,4 @@
+import { ALL_ROUTER } from '@/routes';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
 
@@ -24,7 +25,7 @@ instance.defaults.headers.common.Accept = 'application/json';
 instance.defaults.headers.common['Content-Type'] = 'application/json; charset=UTF-8';
 
 // Variables for token refresh mechanism
-const isRefreshing = false;
+let isRefreshing = false;
 let failedQueue: any[] = [];
 
 /**
@@ -43,31 +44,6 @@ const processQueue = (error: any, token: null | string = null) => {
   failedQueue = [];
 };
 
-// /**
-//  * Helper that waits until token is ready
-//  * @param timeout - timeout of waiting for token, default is 15 seconds
-//  * @returns token or null if timeout
-//  */
-// async function ensureTokenReady(timeout = 15000): Promise<null | string> {
-//   return new Promise((resolve, reject) => {
-//     const { accessToken, isReady } = getStore().getState();
-//     if (isReady) return resolve(accessToken ?? null);
-
-//     const unsub = getStore().subscribe((state) => {
-//       if (state.isReady) {
-//         clearTimeout(timer);
-//         resolve(state.accessToken);
-//         unsub(); // stop listening after success
-//       }
-//     });
-
-//     const timer = setTimeout(() => {
-//       unsub?.(); // stop listening after timeout
-//       reject(new Error('Token not available within timeout'));
-//     }, timeout);
-//   });
-// }
-
 // Request interceptor
 instance.interceptors.request.use(
   async (config) => {
@@ -76,18 +52,107 @@ instance.interceptors.request.use(
       config.headers['Content-Type'] = 'multipart/form-data';
       delete config.fileFlag;
     }
-    // Add authorization token to headers
-    // const accessToken = await ensureTokenReady();
-    // if (accessToken) {
-    //   config.headers['Authorization'] = `Bearer ${accessToken}`;
-    // }
+
+    // Add authorization token to headers (unless explicitly disabled)
+    if (!config.noTokenFlag) {
+      const { getAccessToken } = await import('../utils/storage');
+      const accessToken = getAccessToken();
+      if (accessToken) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
+      }
+    }
 
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// // Response interceptor
+// Response interceptor
+instance.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError<IErrorResponse>) => {
+    const originalRequest = error.config;
+
+    // Check if the error is a 401 and we should attempt token refresh
+    if (
+      originalRequest?.headers.Authorization &&
+      error?.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      if (isRefreshing) {
+        // If a refresh is already in progress, queue the request
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ reject, resolve });
+        })
+          .then((token) => {
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+            return instance(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Dynamic import to avoid circular dependency
+        const { getRefreshToken, setAccessToken, setRefreshToken, clearTokens } =
+          await import('../utils/storage');
+        const { refreshToken: refreshTokenAPI } = await import('./endpoints/authentication');
+
+        const currentRefreshToken = getRefreshToken();
+        if (!currentRefreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        // Attempt to refresh the token
+        const response = await refreshTokenAPI({
+          refreshToken: currentRefreshToken,
+        });
+
+        const { accessToken, refreshToken: newRefreshToken } = response;
+
+        // Update cookies with new tokens
+        setAccessToken(accessToken);
+        setRefreshToken(newRefreshToken);
+
+        // Update default header
+        instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+        // Process queued requests with new token
+        processQueue(null, accessToken);
+
+        // Retry the original request
+        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+        return instance(originalRequest);
+      } catch (refreshError) {
+        // Handle refresh failure
+        processQueue(refreshError, null);
+
+        // Clear tokens
+        const { clearTokens } = await import('../utils/storage');
+        clearTokens();
+
+        // Clear React Query cache to remove stale user data
+        const { queryClient } = await import('./queryClient');
+        queryClient.clear();
+
+        // Redirect to auth page if we're in a browser environment
+        if (typeof window !== 'undefined') {
+          window.location.href = ALL_ROUTER.PUBLIC.AUTH;
+        }
+
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// // OLD Response interceptor (commented out for reference)
 // instance.interceptors.response.use(
 //   (response) => response,
 //   async (error: AxiosError<IErrorResponse>) => {
