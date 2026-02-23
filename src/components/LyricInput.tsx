@@ -29,7 +29,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const themes = [
-    { label: '✨ Tự động', value: 'AUTO_STAY_TRUE', desc: 'Giữ nguyên linh hồn bản gốc' },
+    { label: '✨ Tự động', value: '', desc: 'Giữ nguyên linh hồn bản gốc' },
     { label: '🕊️ Trịnh Công Sơn', value: 'Trịnh Công Sơn', desc: 'Triết lý, hư vô, thiền vị' },
     { label: '🎻 Ngô Thụy Miên', value: 'Ngô Thụy Miên', desc: 'Trữ tình, lãng mạn cổ điển' },
     { label: '🎸 Lam Phương', value: 'Lam Phương', desc: 'Hoài niệm, Bolero, sâu sắc' },

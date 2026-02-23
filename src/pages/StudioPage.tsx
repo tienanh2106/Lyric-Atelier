@@ -10,7 +10,7 @@ export const StudioPage: React.FC = () => {
   const [originalText, setOriginalText] = useState('');
   const [config, setConfig] = useState<GenerationConfig>({
     sourceLanguage: 'vi',
-    theme: 'AUTO_STAY_TRUE',
+    theme: '',
     storyDescription: '',
     useThinking: true,
     intensity: 100,

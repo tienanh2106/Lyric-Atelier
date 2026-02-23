@@ -10,7 +10,7 @@ export const generateRandomScenarioWithAPI = async (theme: string): Promise<stri
     const response = await suggestScenario({
       prompt: `Hãy đóng vai một nhà biên kịch. Dựa trên phong cách "${theme}", hãy tạo một kịch bản ca khúc ngắn gọn (1-2 câu). Viết bằng ngôn ngữ tự sự, giàu hình ảnh.`,
     });
-    return response.data.generatedText.trim() || 'Một câu chuyện chưa kể...';
+    return (response as any).generatedText?.trim() || 'Một câu chuyện chưa kể...';
   } catch (error) {
     console.error('Failed to generate scenario:', error);
     return 'Một câu chuyện chưa kể...';
@@ -38,7 +38,7 @@ export const uploadMediaFile = async (file: File): Promise<string> => {
   try {
     const response = await uploadMedia({ file });
 
-    return (response as unknown as UploadDataDto).uri;
+    return (response as any).uri;
   } catch (error) {
     console.error('Failed to upload media:', error);
     throw new Error('Không thể tải file lên. Vui lòng thử lại.');
@@ -59,7 +59,7 @@ export const extractLyricsFromMediaWithAPI = async (
       mediaUrl,
       prompt: 'Chép lại lời bài hát từ file này một cách chính xác nhất. Chỉ trả về lời bài hát.',
     });
-    return response.data.generatedText || '';
+    return (response as any).generatedText || '';
   } catch (error) {
     console.error('Failed to extract lyrics:', error);
     throw new Error('Không thể trích xuất lời bài hát. Vui lòng thử lại.');
@@ -102,17 +102,17 @@ Trả về JSON với format:
     });
 
     // Parse JSON response
-    const cleaned = response.data.generatedText.replace(/```json|```/g, '').trim();
+    const cleaned = (response as any).generatedText.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(cleaned);
 
     return {
-      theme: parsed.theme || 'AUTO_STAY_TRUE',
+      theme: parsed.theme || '',
       storyDescription: parsed.storyDescription || '',
     };
   } catch (error) {
     console.error('Failed to detect theme:', error);
     return {
-      theme: 'AUTO_STAY_TRUE',
+      theme: '',
       storyDescription: '',
     };
   }

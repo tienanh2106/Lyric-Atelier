@@ -103,11 +103,12 @@ export const rewriteLyricsWithAPI = async (
     maxTokens: 2048,
   });
 
-  const rewriteData = parseResponse(response.data.generatedText);
+  const data = response as any;
+  const rewriteData = parseResponse(data.generatedText);
 
   return {
     ...rewriteData,
-    creditsUsed: response.data.creditsUsed,
-    remainingCredits: response.data.remainingCredits,
+    creditsUsed: data.creditsUsed,
+    remainingCredits: data.remainingCredits,
   };
 };
