@@ -1,6 +1,6 @@
 import { suggestScenario, mediaToText, generateContent } from './endpoints/gen-a-i';
 import { uploadMedia } from './endpoints/upload';
-import { MediaToTextDtoMediaType } from './models';
+import { MediaToTextDtoMediaType, UploadDataDto } from './models';
 
 /**
  * Generate random scenario based on theme using API
@@ -32,12 +32,13 @@ const detectMediaType = (mimeType: string): MediaToTextDtoMediaType => {
 };
 
 /**
- * Upload media file and return the uploaded URL
+ * Upload media file and return the uploaded URI
  */
 export const uploadMediaFile = async (file: File): Promise<string> => {
   try {
     const response = await uploadMedia({ file });
-    return response.data.url;
+
+    return (response as unknown as UploadDataDto).uri;
   } catch (error) {
     console.error('Failed to upload media:', error);
     throw new Error('Không thể tải file lên. Vui lòng thử lại.');
@@ -57,7 +58,6 @@ export const extractLyricsFromMediaWithAPI = async (
       mediaType,
       mediaUrl,
       prompt: 'Chép lại lời bài hát từ file này một cách chính xác nhất. Chỉ trả về lời bài hát.',
-      model: 'gemini-3-flash-preview',
     });
     return response.data.generatedText || '';
   } catch (error) {

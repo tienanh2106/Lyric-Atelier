@@ -21,7 +21,7 @@ import type { ErrorType, BodyType } from '../custom-instance';
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
- * Upload an audio or video file to cloud storage. Returns a public URL that can be used with media-to-text API. Max file size: 100MB.
+ * Upload an audio or video file to Gemini Files API. Returns uri and fileId for use with the media-to-text API. Files are automatically deleted after 48 hours. Max file size: 100MB.
  * @summary Upload media file (audio/video)
  */
 export const uploadMedia = (
@@ -111,8 +111,8 @@ export const useUploadMedia = <TError = ErrorType<void>, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 /**
- * Delete a media file from cloud storage. Provide the full file path (e.g., media/1234567890-song.mp3)
- * @summary Delete media file from storage
+ * Delete a file from Gemini Files API. Provide the fileId received from the upload response (e.g., files/abc123xyz).
+ * @summary Delete media file from Gemini Files API
  */
 export const deleteMedia = (fileName: string, options?: SecondParameter<typeof axiosInstance>) => {
   return axiosInstance<DeleteMedia200>(
@@ -162,7 +162,7 @@ export type DeleteMediaMutationResult = NonNullable<Awaited<ReturnType<typeof de
 export type DeleteMediaMutationError = ErrorType<void>;
 
 /**
- * @summary Delete media file from storage
+ * @summary Delete media file from Gemini Files API
  */
 export const useDeleteMedia = <TError = ErrorType<void>, TContext = unknown>(
   options?: {

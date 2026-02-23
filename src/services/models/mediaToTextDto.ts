@@ -8,14 +8,14 @@
 import type { MediaToTextDtoMediaType } from './mediaToTextDtoMediaType';
 
 export type MediaToTextDto = {
-  /** URL of the audio/video file to convert to text */
+  /** URI of the file from Gemini Files API (from the uri field in upload response) */
   mediaUrl: string;
   /** Media type (audio or video) */
   mediaType: MediaToTextDtoMediaType;
-  /** Additional prompt to guide AI processing (e.g., "Transcribe this song lyrics", "Extract dialogue from this video") */
+  /** MIME type of the file. If omitted, defaults to audio/mpeg for audio and video/mp4 for video. */
+  mimeType?: string;
+  /** Additional prompt to guide AI processing (e.g., "Transcribe this song lyrics") */
   prompt?: string;
-  /** Language of the media */
+  /** Language of the media content */
   language?: string;
-  /** AI model to use */
-  model?: string;
 };

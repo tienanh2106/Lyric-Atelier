@@ -7,8 +7,10 @@
  */
 
 export type UploadDataDto = {
-  /** Public URL of the uploaded file */
-  url: string;
+  /** Gemini Files API URI - use this directly as mediaUrl in media-to-text */
+  uri: string;
+  /** File ID in Gemini Files API (use this to delete the file) */
+  fileId: string;
   /** Original file name */
   fileName: string;
   /** Content type of the file */

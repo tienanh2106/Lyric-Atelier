@@ -25,6 +25,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
 }) => {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isGeneratingScenario, setIsGeneratingScenario] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const themes = [
@@ -59,9 +60,15 @@ const LyricInput: React.FC<LyricInputProps> = ({
     if (!file) return;
 
     setIsTranscribing(true);
+    setUploadError(null);
     try {
       // Upload file and extract lyrics
       const lyrics = await uploadAndExtractLyrics(file);
+
+      if (!lyrics || lyrics.trim() === '') {
+        throw new Error('Không thể trích xuất lời bài hát từ file. Vui lòng thử file khác.');
+      }
+
       onChange(lyrics);
 
       // Detect theme and story from extracted lyrics
@@ -71,11 +78,19 @@ const LyricInput: React.FC<LyricInputProps> = ({
         theme: result.theme || themes[0].value,
         storyDescription: result.storyDescription,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('File upload error:', error);
-      // Show error to user if needed
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Không thể xử lý file. Vui lòng thử lại.';
+      setUploadError(errorMessage);
     } finally {
       setIsTranscribing(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -174,7 +189,8 @@ const LyricInput: React.FC<LyricInputProps> = ({
           <div className="flex gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[9px] font-black uppercase text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100"
+              disabled={isTranscribing}
+              className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[9px] font-black uppercase text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Nhập từ Audio/Video
             </button>
@@ -187,6 +203,13 @@ const LyricInput: React.FC<LyricInputProps> = ({
             />
           </div>
         </div>
+
+        {/* Upload Error Message */}
+        {uploadError && (
+          <div className="animate-in fade-in slide-in-from-top-4 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-red-700">
+            ❌ {uploadError}
+          </div>
+        )}
 
         <div className="glass-panel group relative overflow-hidden rounded-[2.5rem] border border-slate-200 shadow-inner">
           <textarea
