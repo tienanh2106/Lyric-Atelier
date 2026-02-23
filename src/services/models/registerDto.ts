@@ -10,10 +10,15 @@ export type RegisterDto = {
   /** User email address */
   email: string;
   /**
-   * User password (minimum 6 characters)
-   * @minLength 6
+   * Password: 8–64 characters, must contain at least one letter and one number
+   * @minLength 8
+   * @maxLength 64
+   * @pattern /^(?=.*[A-Za-z])(?=.*\d).+$/
    */
   password: string;
-  /** User full name */
+  /**
+   * User full name
+   * @maxLength 100
+   */
   fullName?: string;
 };

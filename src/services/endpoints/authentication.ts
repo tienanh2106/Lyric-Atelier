@@ -391,7 +391,10 @@ export const logout = (
   );
 };
 
-export const getLogoutMutationOptions = <TError = ErrorType<void>, TContext = unknown>(options?: {
+export const getLogoutMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof logout>>,
     TError,
@@ -426,12 +429,12 @@ export const getLogoutMutationOptions = <TError = ErrorType<void>, TContext = un
 
 export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>;
 export type LogoutMutationBody = BodyType<RefreshTokenDto>;
-export type LogoutMutationError = ErrorType<void>;
+export type LogoutMutationError = ErrorType<unknown>;
 
 /**
  * @summary Logout user
  */
-export const useLogout = <TError = ErrorType<void>, TContext = unknown>(
+export const useLogout = <TError = ErrorType<unknown>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof logout>>,
