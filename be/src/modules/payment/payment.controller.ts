@@ -59,7 +59,7 @@ export class PaymentController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   confirmPayment(@CurrentUser() user: User, @Body() dto: ConfirmPaymentDto) {
-    return this.paymentService.confirmPayment(user.id, dto.packageId);
+    return this.paymentService.confirmPayment(user.id, dto);
   }
 
   @Post('webhook')

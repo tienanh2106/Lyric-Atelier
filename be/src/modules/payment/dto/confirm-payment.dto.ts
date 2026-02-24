@@ -1,4 +1,4 @@
-import { IsUUID } from 'class-validator';
+import { IsUUID, IsInt, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ConfirmPaymentDto {
@@ -8,4 +8,12 @@ export class ConfirmPaymentDto {
   })
   @IsUUID()
   packageId: string;
+
+  @ApiProperty({
+    description: 'PayOS order code returned from createPaymentLink',
+    example: 12345678,
+  })
+  @IsInt()
+  @Min(1)
+  orderCode: number;
 }

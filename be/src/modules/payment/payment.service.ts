@@ -4,12 +4,14 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PayOS } from '@payos/node';
-import type { Webhook } from '@payos/node';
+import type { Webhook, PaymentLink } from '@payos/node/lib/resources';
 import { CreditsService } from '../credits/credits.service';
 import { CreatePaymentLinkDto } from './dto/create-payment-link.dto';
+import { ConfirmPaymentDto } from './dto/confirm-payment.dto';
 
 @Injectable()
 export class PaymentService {
@@ -47,7 +49,7 @@ export class PaymentService {
         orderCode,
         amount: Math.round(Number(pkg.price)),
         description: pkg.name.slice(0, 25),
-        returnUrl: `${frontendUrl}/payment/return?packageId=${pkg.id}&userId=${userId}`,
+        returnUrl: `${frontendUrl}/payment/return?packageId=${pkg.id}&orderCode=${orderCode}`,
         cancelUrl: `${frontendUrl}/payment/cancel`,
         items: [
           {
@@ -101,19 +103,58 @@ export class PaymentService {
     return { received: true };
   }
 
-  async confirmPayment(userId: string, packageId: string) {
-    const pkg = await this.creditsService.findPackage(packageId);
-    if (!pkg) {
-      throw new NotFoundException('Credit package not found');
+  async confirmPayment(userId: string, dto: ConfirmPaymentDto) {
+    const orderCodeStr = dto.orderCode.toString();
+
+    // 1. Idempotency — prevent duplicate credit grants
+    const alreadyProcessed =
+      await this.creditsService.isOrderProcessed(orderCodeStr);
+    if (alreadyProcessed) {
+      throw new ConflictException('This order has already been processed');
     }
 
+    // 2. Verify actual payment status with PayOS API
+    let paymentLink: PaymentLink;
+    try {
+      paymentLink = await this.payos.paymentRequests.get(dto.orderCode);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new BadRequestException(
+        `Failed to verify payment with PayOS: ${message}`,
+      );
+    }
+
+    if (paymentLink.status !== 'PAID') {
+      this.logger.warn(
+        `Payment not completed for orderCode ${dto.orderCode}: status=${paymentLink.status}`,
+      );
+      throw new BadRequestException(
+        `Payment not completed. Status: ${paymentLink.status}`,
+      );
+    }
+
+    // 3. Verify the package matches (prevent tampering the packageId param)
+    const pkg = await this.creditsService.findPackage(dto.packageId);
+    const paidAmount = paymentLink.amount;
+    const expectedAmount = Math.round(Number(pkg.price));
+    if (paidAmount !== expectedAmount) {
+      this.logger.error(
+        `Amount mismatch for orderCode ${dto.orderCode}: paid=${paidAmount}, expected=${expectedAmount}`,
+      );
+      throw new BadRequestException(
+        'Payment amount does not match package price',
+      );
+    }
+
+    // 4. Grant credits with orderCode stored for idempotency
     await this.creditsService.purchaseCredits(userId, {
-      packageId,
+      packageId: dto.packageId,
       paymentMethod: 'payos',
+      paymentTransactionId: orderCodeStr,
     });
 
     this.logger.log(
-      `Credits confirmed for user ${userId}, package ${packageId} (${pkg.credits} credits)`,
+      `Credits granted for user ${userId}, package ${dto.packageId}, orderCode ${dto.orderCode} (${pkg.credits} credits)`,
     );
 
     return {

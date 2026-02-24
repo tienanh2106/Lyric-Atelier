@@ -8,7 +8,11 @@ export const PackagesSection = () => {
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
-  const { mutate: createLink, isPending, variables } = useCreatePaymentLink({
+  const {
+    mutate: createLink,
+    isPending,
+    variables,
+  } = useCreatePaymentLink({
     mutation: {
       onSuccess: (result) => {
         if (result?.checkoutUrl) {
@@ -29,8 +33,7 @@ export const PackagesSection = () => {
     createLink({ data: { packageId: pkgId } });
   };
 
-  const isLoadingPkg = (pkgId: string) =>
-    isPending && variables?.data?.packageId === pkgId;
+  const isLoadingPkg = (pkgId: string) => isPending && variables?.data?.packageId === pkgId;
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-12 flex flex-col gap-12 py-20 delay-150 duration-1000">

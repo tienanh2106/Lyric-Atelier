@@ -9,4 +9,9 @@
 export type ConfirmPaymentDto = {
   /** Credit package ID to confirm payment for */
   packageId: string;
+  /**
+   * PayOS order code returned from createPaymentLink
+   * @minimum 1
+   */
+  orderCode: number;
 };

@@ -12,14 +12,20 @@ export const PaymentReturnPage = () => {
 
   useEffect(() => {
     const packageId = searchParams.get('packageId');
-    const userId = searchParams.get('userId');
+    const orderCodeStr = searchParams.get('orderCode');
 
-    if (!packageId || !userId) {
+    if (!packageId || !orderCodeStr) {
       setStatus('error');
       return;
     }
 
-    confirmPayment({ packageId })
+    const orderCode = Number(orderCodeStr);
+    if (!Number.isInteger(orderCode) || orderCode < 1) {
+      setStatus('error');
+      return;
+    }
+
+    confirmPayment({ packageId, orderCode })
       .then((result) => {
         if (result?.success) {
           setCredits(result.credits);

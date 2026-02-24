@@ -503,4 +503,11 @@ export class CreditsService {
       });
     }
   }
+
+  async isOrderProcessed(orderCode: string): Promise<boolean> {
+    const existing = await this.transactionRepository.findOne({
+      where: { paymentTransactionId: orderCode },
+    });
+    return !!existing;
+  }
 }
