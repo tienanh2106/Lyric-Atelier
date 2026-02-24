@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import type { CreditTransaction } from './creditTransaction';
-import type { PaginationMeta } from './paginationMeta';
+import type { PaginationMetaDto } from './paginationMetaDto';
 
 export type PaginatedTransactionResponseDto = {
   /** List of credit transactions */
   data: CreditTransaction[];
   /** Pagination metadata */
-  meta: PaginationMeta;
+  meta: PaginationMetaDto;
 };

@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export type PaginationMeta = {
+export type PaginationMetaDto = {
   /** Current page number */
   page: number;
   /** Items per page */

@@ -23,10 +23,13 @@ import type {
 
 import type {
   CostEstimationDto,
+  DetectThemeDto,
   EstimateCostParams,
   GenerateContentDto,
   GenerationResponseDto,
   MediaToTextDto,
+  RewriteLyricsDto,
+  ScenarioFromThemeDto,
   SuggestScenarioDto,
   TranscribeAudioBody,
 } from '../models';
@@ -242,6 +245,263 @@ export function useEstimateCost<
   return query;
 }
 
+/**
+ * Generate Vietnamese lyrics from original text. Pass structured config; the server builds the prompt internally. Credits will be deducted based on token usage.
+ * @summary Rewrite song lyrics using AI
+ */
+export const rewriteLyrics = (
+  rewriteLyricsDto: BodyType<RewriteLyricsDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/rewrite-lyrics`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: rewriteLyricsDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getRewriteLyricsMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rewriteLyrics>>,
+    TError,
+    { data: BodyType<RewriteLyricsDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rewriteLyrics>>,
+  TError,
+  { data: BodyType<RewriteLyricsDto> },
+  TContext
+> => {
+  const mutationKey = ['rewriteLyrics'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rewriteLyrics>>,
+    { data: BodyType<RewriteLyricsDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return rewriteLyrics(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RewriteLyricsMutationResult = NonNullable<Awaited<ReturnType<typeof rewriteLyrics>>>;
+export type RewriteLyricsMutationBody = BodyType<RewriteLyricsDto>;
+export type RewriteLyricsMutationError = ErrorType<void>;
+
+/**
+ * @summary Rewrite song lyrics using AI
+ */
+export const useRewriteLyrics = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rewriteLyrics>>,
+      TError,
+      { data: BodyType<RewriteLyricsDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof rewriteLyrics>>,
+  TError,
+  { data: BodyType<RewriteLyricsDto> },
+  TContext
+> => {
+  const mutationOptions = getRewriteLyricsMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Analyse lyrics and return a theme/style name and story description. Credits will be deducted based on token usage.
+ * @summary Detect theme and story from lyrics
+ */
+export const detectTheme = (
+  detectThemeDto: BodyType<DetectThemeDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/detect-theme`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: detectThemeDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getDetectThemeMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof detectTheme>>,
+    TError,
+    { data: BodyType<DetectThemeDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof detectTheme>>,
+  TError,
+  { data: BodyType<DetectThemeDto> },
+  TContext
+> => {
+  const mutationKey = ['detectTheme'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof detectTheme>>,
+    { data: BodyType<DetectThemeDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return detectTheme(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DetectThemeMutationResult = NonNullable<Awaited<ReturnType<typeof detectTheme>>>;
+export type DetectThemeMutationBody = BodyType<DetectThemeDto>;
+export type DetectThemeMutationError = ErrorType<void>;
+
+/**
+ * @summary Detect theme and story from lyrics
+ */
+export const useDetectTheme = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof detectTheme>>,
+      TError,
+      { data: BodyType<DetectThemeDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof detectTheme>>,
+  TError,
+  { data: BodyType<DetectThemeDto> },
+  TContext
+> => {
+  const mutationOptions = getDetectThemeMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Given a theme/style name, generate a short scenario description for song lyric writing. Credits will be deducted based on token usage.
+ * @summary Generate a scenario based on music theme
+ */
+export const scenarioFromTheme = (
+  scenarioFromThemeDto: BodyType<ScenarioFromThemeDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/scenario-from-theme`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: scenarioFromThemeDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getScenarioFromThemeMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof scenarioFromTheme>>,
+    TError,
+    { data: BodyType<ScenarioFromThemeDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof scenarioFromTheme>>,
+  TError,
+  { data: BodyType<ScenarioFromThemeDto> },
+  TContext
+> => {
+  const mutationKey = ['scenarioFromTheme'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scenarioFromTheme>>,
+    { data: BodyType<ScenarioFromThemeDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return scenarioFromTheme(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ScenarioFromThemeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scenarioFromTheme>>
+>;
+export type ScenarioFromThemeMutationBody = BodyType<ScenarioFromThemeDto>;
+export type ScenarioFromThemeMutationError = ErrorType<void>;
+
+/**
+ * @summary Generate a scenario based on music theme
+ */
+export const useScenarioFromTheme = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof scenarioFromTheme>>,
+      TError,
+      { data: BodyType<ScenarioFromThemeDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof scenarioFromTheme>>,
+  TError,
+  { data: BodyType<ScenarioFromThemeDto> },
+  TContext
+> => {
+  const mutationOptions = getScenarioFromThemeMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 /**
  * Propose creative scenarios/ideas based on user prompt. Credits will be deducted based on token usage.
  * @summary Suggest AI generation scenarios

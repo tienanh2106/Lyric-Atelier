@@ -23,6 +23,9 @@ export default () => ({
     apiKey: process.env.GOOGLE_GENAI_API_KEY,
     // Default model used for server-side generation (scenario suggestions, media-to-text)
     defaultModel: process.env.GENAI_DEFAULT_MODEL ?? 'gemini-2.5-flash',
+    // Thinking model used for higher-quality lyric rewriting (useThinking: true)
+    thinkingModel:
+      process.env.GENAI_THINKING_MODEL ?? 'gemini-2.5-pro-preview-06-05',
   },
 
   groq: {

@@ -42,6 +42,7 @@ export const validationSchema = Joi.object({
 
   GOOGLE_GENAI_API_KEY: Joi.string().required(),
   GENAI_DEFAULT_MODEL: Joi.string().default('gemini-2.5-flash'),
+  GENAI_THINKING_MODEL: Joi.string().default('gemini-2.5-pro-preview-06-05'),
   GROQ_API_KEY: Joi.string().optional(),
 
   PAYOS_CLIENT_ID: Joi.string().optional(),

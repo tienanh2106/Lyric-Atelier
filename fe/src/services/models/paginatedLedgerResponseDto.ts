@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import type { CreditLedger } from './creditLedger';
-import type { PaginationMeta } from './paginationMeta';
+import type { PaginationMetaDto } from './paginationMetaDto';
 
 export type PaginatedLedgerResponseDto = {
   /** List of credit ledger entries */
   data: CreditLedger[];
   /** Pagination metadata */
-  meta: PaginationMeta;
+  meta: PaginationMetaDto;
 };

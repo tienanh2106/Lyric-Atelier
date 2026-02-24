@@ -26,9 +26,9 @@ export const StudioPage: React.FC = () => {
     if (progressIntervalRef.current) window.clearInterval(progressIntervalRef.current);
     progressIntervalRef.current = window.setInterval(() => {
       setProgress((prev) => {
-        if (prev < 40) return prev + 1.5;  // 0–40%: fast ramp (~8s)
-        if (prev < 90) return prev + 0.3;  // 40–90%: slow crawl (~33s)
-        return prev;                        // 90%+: hold until API returns
+        if (prev < 40) return prev + 1.5; // 0–40%: fast ramp (~8s)
+        if (prev < 90) return prev + 0.3; // 40–90%: slow crawl (~33s)
+        return prev; // 90%+: hold until API returns
       });
     }, 200);
   }, []);

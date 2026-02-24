@@ -21,6 +21,9 @@ import { GenAIService } from './genai.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
 import { SuggestScenarioDto } from './dto/suggest-scenario.dto';
 import { MediaToTextDto } from './dto/media-to-text.dto';
+import { RewriteLyricsDto } from './dto/rewrite-lyrics.dto';
+import { DetectThemeDto } from './dto/detect-theme.dto';
+import { ScenarioFromThemeDto } from './dto/scenario-from-theme.dto';
 import {
   GenerationResponseDto,
   CostEstimationDto,
@@ -77,6 +80,78 @@ export class GenAIController {
     @Query('maxTokens') maxTokens?: number,
   ) {
     return this.genAIService.estimateCost(prompt, maxTokens);
+  }
+
+  @Post('rewrite-lyrics')
+  @ApiOperation({
+    operationId: 'rewriteLyrics',
+    summary: 'Rewrite song lyrics using AI',
+    description:
+      'Generate Vietnamese lyrics from original text. Pass structured config; the server builds the prompt internally. Credits will be deducted based on token usage.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Lyrics rewritten successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid input',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  rewriteLyrics(
+    @CurrentUser() user: User,
+    @Body() rewriteDto: RewriteLyricsDto,
+  ) {
+    return this.genAIService.rewriteLyrics(user.id, rewriteDto);
+  }
+
+  @Post('detect-theme')
+  @ApiOperation({
+    operationId: 'detectTheme',
+    summary: 'Detect theme and story from lyrics',
+    description:
+      'Analyse lyrics and return a theme/style name and story description. Credits will be deducted based on token usage.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Theme detected successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid input',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  detectTheme(
+    @CurrentUser() user: User,
+    @Body() detectThemeDto: DetectThemeDto,
+  ) {
+    return this.genAIService.detectTheme(user.id, detectThemeDto);
+  }
+
+  @Post('scenario-from-theme')
+  @ApiOperation({
+    operationId: 'scenarioFromTheme',
+    summary: 'Generate a scenario based on music theme',
+    description:
+      'Given a theme/style name, generate a short scenario description for song lyric writing. Credits will be deducted based on token usage.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Scenario generated successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid input',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  scenarioFromTheme(
+    @CurrentUser() user: User,
+    @Body() scenarioFromThemeDto: ScenarioFromThemeDto,
+  ) {
+    return this.genAIService.scenarioFromTheme(user.id, scenarioFromThemeDto);
   }
 
   @Post('suggest-scenario')
