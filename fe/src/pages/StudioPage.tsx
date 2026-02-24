@@ -1,21 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import LyricInput from '../components/LyricInput';
 import LyricResult from '../components/LyricResult';
-import { GenerationConfig, RewriteResponse } from '../types';
+import { RewriteResponse } from '../types';
 import { rewriteLyricsWithAPI } from '../services/lyricGenerationService';
 import { useAuthStore } from '../stores/authStore';
+import { DEFAULT_GENERATION_CONFIG } from '../constants';
 
 export const StudioPage: React.FC = () => {
   const refreshAuth = useAuthStore((state) => state.refreshAuth);
   const [originalText, setOriginalText] = useState('');
-  const [config, setConfig] = useState<GenerationConfig>({
-    sourceLanguage: 'vi',
-    theme: '',
-    storyDescription: '',
-    useThinking: true,
-    intensity: 100,
-    strictPhonetics: true,
-  });
+  const [config, setConfig] = useState(DEFAULT_GENERATION_CONFIG);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RewriteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);

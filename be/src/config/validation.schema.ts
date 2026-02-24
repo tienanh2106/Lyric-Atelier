@@ -41,6 +41,7 @@ export const validationSchema = Joi.object({
   JWT_REFRESH_EXPIRATION: Joi.string().required(),
 
   GOOGLE_GENAI_API_KEY: Joi.string().required(),
+  GENAI_DEFAULT_MODEL: Joi.string().default('gemini-2.5-flash'),
   GROQ_API_KEY: Joi.string().optional(),
 
   PAYOS_CLIENT_ID: Joi.string().optional(),
@@ -51,6 +52,11 @@ export const validationSchema = Joi.object({
 
   DEFAULT_CREDIT_VALIDITY_DAYS: Joi.number().default(90),
   CREDIT_COST_PER_TOKEN: Joi.number().default(0.01),
+  TRANSCRIBE_CREDIT_COST: Joi.number().default(10),
+  CREDITS_EXPIRING_SOON_DAYS: Joi.number().default(7),
+  CREDIT_CHARS_PER_TOKEN: Joi.number().integer().min(1).default(4),
+  CREDIT_SCENARIO_BUFFER_TOKENS: Joi.number().integer().min(0).default(1000),
+  CREDIT_MEDIA_ESTIMATED_TOKENS: Joi.number().integer().min(1).default(2000),
 
   CRON_SECRET: Joi.string().optional(),
 

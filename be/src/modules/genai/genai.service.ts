@@ -40,7 +40,12 @@ interface CreditBalance {
 export class GenAIService {
   private readonly genAI: GoogleGenerativeAI;
   private readonly groq: Groq | null = null;
+  private readonly defaultModel: string;
   private readonly creditCostPerToken: number;
+  private readonly transcribeCostFixed: number;
+  private readonly charsPerToken: number;
+  private readonly scenarioBufferTokens: number;
+  private readonly mediaEstimatedTokens: number;
 
   constructor(
     private readonly configService: ConfigService,
@@ -57,8 +62,19 @@ export class GenAIService {
       this.groq = new Groq({ apiKey: groqApiKey });
     }
 
+    this.defaultModel =
+      this.configService.get<string>('genai.defaultModel') ??
+      'gemini-2.5-flash';
     this.creditCostPerToken =
       this.configService.get<number>('credits.costPerToken') ?? 0.01;
+    this.transcribeCostFixed =
+      this.configService.get<number>('credits.transcribeCostFixed') ?? 10;
+    this.charsPerToken =
+      this.configService.get<number>('credits.charsPerToken') ?? 4;
+    this.scenarioBufferTokens =
+      this.configService.get<number>('credits.scenarioBufferTokens') ?? 1000;
+    this.mediaEstimatedTokens =
+      this.configService.get<number>('credits.mediaEstimatedTokens') ?? 2000;
   }
 
   async generateContent(
@@ -75,7 +91,8 @@ export class GenAIService {
     }
 
     // Estimate credit cost (rough estimation based on prompt length)
-    const estimatedTokens = Math.ceil(prompt.length / 4) + maxTokens;
+    const estimatedTokens =
+      Math.ceil(prompt.length / this.charsPerToken) + maxTokens;
     const estimatedCost = Math.ceil(estimatedTokens * this.creditCostPerToken);
 
     // Check if user has enough credits
@@ -101,7 +118,7 @@ export class GenAIService {
 
       // Calculate actual cost based on response
       const actualTokens = Math.ceil(
-        (prompt.length + generatedText.length) / 4,
+        (prompt.length + generatedText.length) / this.charsPerToken,
       );
       actualCost = Math.ceil(actualTokens * this.creditCostPerToken);
 
@@ -143,7 +160,8 @@ export class GenAIService {
   }
 
   estimateCost(prompt: string, maxTokens = 500): CostEstimation {
-    const estimatedTokens = Math.ceil(prompt.length / 4) + maxTokens;
+    const estimatedTokens =
+      Math.ceil(prompt.length / this.charsPerToken) + maxTokens;
     const estimatedCost = Math.ceil(estimatedTokens * this.creditCostPerToken);
 
     return {
@@ -211,8 +229,10 @@ Each suggestion should be specific, easy to implement, and highly creative.`;
 
     const fullPrompt = `${systemPrompt}\n\nPlease respond in Vietnamese, clearly formatted with suggestions numbered from 1 to ${numberOfSuggestions}.`;
 
-    // Estimate credit cost
-    const estimatedTokens = Math.ceil(fullPrompt.length / 4) + 1000; // Estimate longer response
+    // Estimate credit cost (add buffer for longer scenario responses)
+    const estimatedTokens =
+      Math.ceil(fullPrompt.length / this.charsPerToken) +
+      this.scenarioBufferTokens;
     const estimatedCost = Math.ceil(estimatedTokens * this.creditCostPerToken);
 
     // Check if user has enough credits
@@ -228,7 +248,7 @@ Each suggestion should be specific, easy to implement, and highly creative.`;
 
     try {
       const genModel = this.genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash',
+        model: this.defaultModel,
       });
       const result = await genModel.generateContent(fullPrompt);
       const response = result.response;
@@ -236,7 +256,7 @@ Each suggestion should be specific, easy to implement, and highly creative.`;
 
       // Calculate actual cost
       const actualTokens = Math.ceil(
-        (fullPrompt.length + generatedText.length) / 4,
+        (fullPrompt.length + generatedText.length) / this.charsPerToken,
       );
       const actualCost = Math.ceil(actualTokens * this.creditCostPerToken);
 
@@ -304,7 +324,7 @@ Please transcribe the ${mediaType} content accurately.
 - Provide the transcription in ${languageLabel}.`;
 
     // Media processing uses more tokens than plain text
-    const estimatedTokens = 2000;
+    const estimatedTokens = this.mediaEstimatedTokens;
     const estimatedCost = Math.ceil(estimatedTokens * this.creditCostPerToken);
 
     const balance = (await this.creditsService.getCreditBalance(
@@ -320,7 +340,7 @@ Please transcribe the ${mediaType} content accurately.
     try {
       // Use gemini-2.5-flash which supports multimodal input (audio/video)
       const genModel = this.genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash',
+        model: this.defaultModel,
       });
 
       // Pass the file directly via fileData instead of a plain URL string
@@ -337,7 +357,7 @@ Please transcribe the ${mediaType} content accurately.
       const generatedText = result.response.text();
 
       const actualTokens = Math.ceil(
-        (fullPrompt.length + generatedText.length) / 4,
+        (fullPrompt.length + generatedText.length) / this.charsPerToken,
       );
       const actualCost = Math.ceil(actualTokens * this.creditCostPerToken);
 
@@ -396,7 +416,7 @@ Please transcribe the ${mediaType} content accurately.
       });
     }
 
-    const fixedCost = 10;
+    const fixedCost = this.transcribeCostFixed;
     const balance = (await this.creditsService.getCreditBalance(
       userId,
     )) as CreditBalance;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RewriteResponse } from '../types';
+import { UI_TIMING } from '../constants';
 
 interface LyricResultProps {
   data: RewriteResponse | null;
@@ -10,7 +11,7 @@ const CopyButton: React.FC<{ text: string; label: string }> = ({ text, label }) 
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), UI_TIMING.COPY_SUCCESS_MS);
   };
   return (
     <button

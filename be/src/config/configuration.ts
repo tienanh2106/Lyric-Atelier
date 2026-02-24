@@ -21,6 +21,8 @@ export default () => ({
 
   genai: {
     apiKey: process.env.GOOGLE_GENAI_API_KEY,
+    // Default model used for server-side generation (scenario suggestions, media-to-text)
+    defaultModel: process.env.GENAI_DEFAULT_MODEL ?? 'gemini-2.5-flash',
   },
 
   groq: {
@@ -43,6 +45,26 @@ export default () => ({
       10,
     ),
     costPerToken: parseFloat(process.env.CREDIT_COST_PER_TOKEN ?? '0.01'),
+    transcribeCostFixed: parseInt(
+      process.env.TRANSCRIBE_CREDIT_COST ?? '10',
+      10,
+    ),
+    expiringSoonDays: parseInt(
+      process.env.CREDITS_EXPIRING_SOON_DAYS ?? '7',
+      10,
+    ),
+    // Token estimation: ~4 characters = 1 token (rough estimation)
+    charsPerToken: parseInt(process.env.CREDIT_CHARS_PER_TOKEN ?? '4', 10),
+    // Extra token buffer reserved for scenario suggestion responses (longer output)
+    scenarioBufferTokens: parseInt(
+      process.env.CREDIT_SCENARIO_BUFFER_TOKENS ?? '1000',
+      10,
+    ),
+    // Fixed token estimate for media-to-text (audio/video processing)
+    mediaEstimatedTokens: parseInt(
+      process.env.CREDIT_MEDIA_ESTIMATED_TOKENS ?? '2000',
+      10,
+    ),
   },
 
   cronSecret: process.env.CRON_SECRET,

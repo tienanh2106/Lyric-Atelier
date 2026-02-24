@@ -1,6 +1,6 @@
-import { suggestScenario, generateContent } from './endpoints/gen-a-i';
-import { axiosInstance } from './custom-instance';
+import { suggestScenario, generateContent, transcribeAudio } from './endpoints/gen-a-i';
 import type { GenerationDataDto } from './models';
+import { AI_MODELS, AI_MAX_TOKENS, TRANSCRIBE_DEFAULT_LANGUAGE } from '../constants';
 
 /**
  * Generate random scenario based on theme using API
@@ -24,15 +24,9 @@ export const generateRandomScenarioWithAPI = async (theme: string): Promise<stri
  * Transcribe audio/video file directly using Groq Whisper (1 API call)
  */
 export const uploadAndExtractLyrics = async (file: File): Promise<string> => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('language', 'vi');
-
-  const response = await axiosInstance<{ generatedText: string }>({
-    url: '/api/genai/transcribe',
-    method: 'POST',
-    headers: { 'Content-Type': 'multipart/form-data' },
-    data: formData,
+  const response = await transcribeAudio({
+    file,
+    language: TRANSCRIBE_DEFAULT_LANGUAGE,
   });
 
   return (response as unknown as GenerationDataDto).generatedText || '';
@@ -53,8 +47,8 @@ Trả về JSON với format:
   "theme": "string - tên chủ đề/phong cách",
   "storyDescription": "string - mô tả câu chuyện"
 }`,
-      model: 'gemini-2.5-flash',
-      maxTokens: 512,
+      model: AI_MODELS.DEFAULT,
+      maxTokens: AI_MAX_TOKENS.THEME_DETECTION,
     });
 
     // Parse JSON response

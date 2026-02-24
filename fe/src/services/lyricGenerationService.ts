@@ -1,6 +1,7 @@
 import { generateContent } from './endpoints/gen-a-i';
 import type { GenerationDataDto } from './models';
 import type { GenerationConfig, RewriteResponse } from '../types';
+import { AI_MODELS, AI_MAX_TOKENS } from '../constants';
 
 /**
  * Build system prompt for lyric rewriting based on configuration
@@ -100,8 +101,8 @@ export const rewriteLyricsWithAPI = async (
 
   const response = await generateContent({
     prompt,
-    model: config.useThinking ? 'gemini-2.5-pro-preview-06-05' : 'gemini-2.5-flash',
-    maxTokens: 2048,
+    model: config.useThinking ? AI_MODELS.THINKING : AI_MODELS.DEFAULT,
+    maxTokens: AI_MAX_TOKENS.LYRICS_GENERATION,
   });
 
   const data = response as unknown as GenerationDataDto;

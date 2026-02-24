@@ -6,12 +6,16 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
+import { randomInt } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { PayOS } from '@payos/node';
 import type { Webhook, PaymentLink } from '@payos/node/lib/resources';
 import { CreditsService } from '../credits/credits.service';
 import { CreatePaymentLinkDto } from './dto/create-payment-link.dto';
 import { ConfirmPaymentDto } from './dto/confirm-payment.dto';
+
+// PayOS API constraint: description field max 25 characters
+const PAYOS_DESCRIPTION_MAX_LENGTH = 25;
 
 @Injectable()
 export class PaymentService {
@@ -36,9 +40,9 @@ export class PaymentService {
       throw new NotFoundException('Credit package not found');
     }
 
-    const orderCode = Number(
-      `${Date.now()}`.slice(-8) + `${Math.floor(Math.random() * 100)}`,
-    );
+    // PayOS orderCode: positive integer, max Number.MAX_SAFE_INTEGER
+    // Use crypto.randomInt for collision-safe unique code (9 digits)
+    const orderCode = randomInt(100_000_000, 999_999_999);
 
     const frontendUrl =
       this.configService.get<string>('app.frontendUrl') ??
@@ -48,7 +52,7 @@ export class PaymentService {
       const paymentLink = await this.payos.paymentRequests.create({
         orderCode,
         amount: Math.round(Number(pkg.price)),
-        description: pkg.name.slice(0, 25),
+        description: pkg.name.slice(0, PAYOS_DESCRIPTION_MAX_LENGTH),
         returnUrl: `${frontendUrl}/payment/return?packageId=${pkg.id}&orderCode=${orderCode}`,
         cancelUrl: `${frontendUrl}/payment/cancel`,
         items: [

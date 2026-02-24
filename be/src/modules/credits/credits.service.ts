@@ -124,18 +124,17 @@ export class CreditsService {
         where: { user: { id: userId } },
       });
 
-      if (!summary) {
-        summary = manager.create(UserCreditSummary, {
-          user: { id: userId },
-          totalCredits: 0,
-          usedCredits: 0,
-          availableCredits: 0,
-          expiredCredits: 0,
-        });
-      }
+      summary ??= manager.create(UserCreditSummary, {
+        user: { id: userId },
+        totalCredits: 0,
+        usedCredits: 0,
+        availableCredits: 0,
+        expiredCredits: 0,
+      });
 
       const newBalance =
-        parseFloat(summary.availableCredits.toString()) + creditPackage.credits;
+        Number.parseFloat(summary.availableCredits.toString()) +
+        creditPackage.credits;
 
       // 5. Create ledger entry
       const ledger = manager.create(CreditLedger, {
@@ -286,9 +285,11 @@ export class CreditsService {
       };
     }
 
-    // Get credits expiring soon (next 7 days)
+    // Get credits expiring soon (configurable via CREDITS_EXPIRING_SOON_DAYS)
+    const expiringSoonDays =
+      this.configService.get<number>('credits.expiringSoonDays') ?? 7;
     const sevenDaysFromNow = new Date();
-    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + expiringSoonDays);
 
     const expiringSoon = await this.ledgerRepository
       .createQueryBuilder('ledger')
