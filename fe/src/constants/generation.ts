@@ -8,9 +8,10 @@ export const DEFAULT_GENERATION_CONFIG: GenerationConfig = {
   sourceLanguage: 'vi',
   theme: '',
   storyDescription: '',
+  gender: 'female',
+  mode: 'strict',
   useThinking: true,
   intensity: 100,
-  strictPhonetics: true,
 };
 
 /**

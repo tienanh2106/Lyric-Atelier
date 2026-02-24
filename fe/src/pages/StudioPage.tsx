@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import LyricInput from '../components/LyricInput';
 import LyricResult from '../components/LyricResult';
 import { RewriteResponse } from '../types';
@@ -11,6 +11,7 @@ export const StudioPage: React.FC = () => {
   const [originalText, setOriginalText] = useState('');
   const [config, setConfig] = useState(DEFAULT_GENERATION_CONFIG);
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<RewriteResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [creditsInfo, setCreditsInfo] = useState<{
@@ -18,17 +19,39 @@ export const StudioPage: React.FC = () => {
     remainingCredits: number;
   } | null>(null);
 
+  const progressIntervalRef = useRef<number | null>(null);
+
+  const startProgress = useCallback(() => {
+    setProgress(0);
+    if (progressIntervalRef.current) window.clearInterval(progressIntervalRef.current);
+    progressIntervalRef.current = window.setInterval(() => {
+      setProgress((prev) => {
+        if (prev < 40) return prev + 1.5;  // 0–40%: fast ramp (~8s)
+        if (prev < 90) return prev + 0.3;  // 40–90%: slow crawl (~33s)
+        return prev;                        // 90%+: hold until API returns
+      });
+    }, 200);
+  }, []);
+
+  const stopProgress = useCallback(() => {
+    if (progressIntervalRef.current) {
+      window.clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+  }, []);
+
   const handleGenerate = useCallback(async () => {
     if (!originalText.trim()) return;
     setIsLoading(true);
     setError(null);
     setResult(null);
     setCreditsInfo(null);
+    startProgress();
 
     try {
       const response = await rewriteLyricsWithAPI(originalText, config);
 
-      // Extract rewrite data and credits info
+      setProgress(100);
       const { creditsUsed, remainingCredits, ...rewriteData } = response;
 
       setResult(rewriteData);
@@ -43,9 +66,10 @@ export const StudioPage: React.FC = () => {
         'QUÁ TRÌNH SÁNG TÁC BỊ GIÁN ĐOẠN. VUI LÒNG THỬ LẠI.';
       setError(errorMessage);
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
-  }, [originalText, config, refreshAuth]);
+  }, [originalText, config, refreshAuth, startProgress, stopProgress]);
 
   return (
     <div className="flex min-h-screen flex-col items-center selection:bg-amber-500/20">
@@ -57,6 +81,7 @@ export const StudioPage: React.FC = () => {
           onConfigChange={setConfig}
           onGenerate={handleGenerate}
           isLoading={isLoading}
+          progress={progress}
         />
         {error && (
           <div className="animate-in fade-in slide-in-from-top-4 mt-10 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-red-700">

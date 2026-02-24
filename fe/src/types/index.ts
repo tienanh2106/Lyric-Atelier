@@ -19,11 +19,15 @@ export interface RewriteResponse {
   sections: LyricSection[];
 }
 
+export type SingerGender = 'male' | 'female';
+export type WeavingMode = 'strict' | 'creative';
+
 export interface GenerationConfig {
   sourceLanguage: 'auto' | 'vi' | 'zh' | 'ko' | 'en' | 'ja';
   theme: string;
   storyDescription: string;
+  gender: SingerGender;
+  mode: WeavingMode;
   useThinking: boolean;
   intensity: number;
-  strictPhonetics: boolean;
 }

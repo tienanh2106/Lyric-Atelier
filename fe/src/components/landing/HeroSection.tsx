@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
-import { ALL_ROUTER } from '@/routes';
+import { ALL_ROUTER } from '../../routes';
 
 export const HeroSection = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
