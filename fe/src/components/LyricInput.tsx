@@ -280,7 +280,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
             <div className="flex flex-col items-center justify-center gap-1">
               <span className="ml-4 text-lg font-black uppercase tracking-[1em]">DỆT CA KHÚC</span>
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/50">
-                Sử dụng mô hình Gemini 3 Pro Preview
+                Sử dụng mô hình Gemini 2.5 Pro Preview
               </span>
             </div>
           )}

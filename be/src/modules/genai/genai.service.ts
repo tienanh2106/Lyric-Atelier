@@ -310,7 +310,7 @@ Please transcribe the ${mediaType} content accurately.
     }
 
     try {
-      // Use gemini-1.5-flash which supports multimodal input (audio/video)
+      // Use gemini-2.5-flash which supports multimodal input (audio/video)
       const genModel = this.genAI.getGenerativeModel({
         model: 'gemini-2.5-flash',
       });

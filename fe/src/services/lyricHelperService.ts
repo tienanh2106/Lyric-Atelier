@@ -97,7 +97,7 @@ Trả về JSON với format:
   "theme": "string - tên chủ đề/phong cách",
   "storyDescription": "string - mô tả câu chuyện"
 }`,
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.5-flash',
       maxTokens: 512,
     });
 

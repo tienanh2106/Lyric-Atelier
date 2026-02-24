@@ -99,7 +99,7 @@ export const rewriteLyricsWithAPI = async (
 
   const response = await generateContent({
     prompt,
-    model: config.useThinking ? 'gemini-3-pro-preview' : 'gemini-3-flash-preview',
+    model: config.useThinking ? 'gemini-2.5-pro-preview-06-05' : 'gemini-2.5-flash',
     maxTokens: 2048,
   });
 

@@ -24,8 +24,8 @@ export class GenerateContentDto {
 
   @ApiPropertyOptional({
     description: 'AI model to use',
-    example: 'gemini-pro',
-    default: 'gemini-pro',
+    example: 'gemini-2.5-flash',
+    default: 'gemini-2.5-flash',
   })
   @IsOptional()
   @IsString()
