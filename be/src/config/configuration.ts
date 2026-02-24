@@ -23,6 +23,10 @@ export default () => ({
     apiKey: process.env.GOOGLE_GENAI_API_KEY,
   },
 
+  groq: {
+    apiKey: process.env.GROQ_API_KEY,
+  },
+
   credits: {
     defaultValidityDays: parseInt(
       process.env.DEFAULT_CREDIT_VALIDITY_DAYS ?? '90',

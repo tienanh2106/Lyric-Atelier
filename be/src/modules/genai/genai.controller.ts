@@ -1,9 +1,21 @@
-import { Controller, Post, Body, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { GenAIService } from './genai.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
@@ -89,6 +101,43 @@ export class GenAIController {
     @Body() suggestDto: SuggestScenarioDto,
   ) {
     return this.genAIService.suggestScenario(user.id, suggestDto);
+  }
+
+  @Post('transcribe')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({
+    operationId: 'transcribeAudio',
+    summary: 'Transcribe audio/video to text using Groq Whisper',
+    description:
+      'Upload an audio or video file and transcribe it directly using Groq Whisper. Faster and cheaper than Gemini media-to-text.',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        language: { type: 'string', example: 'vi', default: 'vi' },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Audio transcribed successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid file',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  transcribeAudio(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('language') language?: string,
+  ) {
+    return this.genAIService.transcribeAudio(user.id, file, language);
   }
 
   @Post('media-to-text')

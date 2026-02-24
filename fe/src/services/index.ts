@@ -5,8 +5,6 @@ export { queryClient } from './queryClient';
 export { rewriteLyricsWithAPI } from './lyricGenerationService';
 export {
   generateRandomScenarioWithAPI,
-  uploadMediaFile,
-  extractLyricsFromMediaWithAPI,
   uploadAndExtractLyrics,
   detectThemeAndStoryWithAPI,
 } from './lyricHelperService';

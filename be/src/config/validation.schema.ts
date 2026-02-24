@@ -41,6 +41,7 @@ export const validationSchema = Joi.object({
   JWT_REFRESH_EXPIRATION: Joi.string().required(),
 
   GOOGLE_GENAI_API_KEY: Joi.string().required(),
+  GROQ_API_KEY: Joi.string().optional(),
 
   DEFAULT_CREDIT_VALIDITY_DAYS: Joi.number().default(90),
   CREDIT_COST_PER_TOKEN: Joi.number().default(0.01),

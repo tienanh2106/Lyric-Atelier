@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Groq from 'groq-sdk';
 import { CreditsService } from '../credits/credits.service';
 import { GenerateContentDto } from './dto/generate-content.dto';
 import { SuggestScenarioDto, ScenarioType } from './dto/suggest-scenario.dto';
@@ -38,6 +39,7 @@ interface CreditBalance {
 @Injectable()
 export class GenAIService {
   private readonly genAI: GoogleGenerativeAI;
+  private readonly groq: Groq | null = null;
   private readonly creditCostPerToken: number;
 
   constructor(
@@ -49,6 +51,12 @@ export class GenAIService {
       throw new Error('Google GenAI API key is not configured');
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
+
+    const groqApiKey = this.configService.get<string>('groq.apiKey');
+    if (groqApiKey) {
+      this.groq = new Groq({ apiKey: groqApiKey });
+    }
+
     this.creditCostPerToken =
       this.configService.get<number>('credits.costPerToken') ?? 0.01;
   }
@@ -365,6 +373,87 @@ Please transcribe the ${mediaType} content accurately.
       throw new InternalServerErrorException({
         errorCode: ErrorCode.GENERATION_FAILED,
         message: `Failed to transcribe media: ${errorMessage}`,
+      });
+    }
+  }
+
+  async transcribeAudio(
+    userId: string,
+    file: Express.Multer.File,
+    language = 'vi',
+  ): Promise<GenerationResult> {
+    if (!this.groq) {
+      throw new InternalServerErrorException({
+        errorCode: ErrorCode.GENERATION_FAILED,
+        message: 'Groq API key is not configured',
+      });
+    }
+
+    if (!file?.buffer) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INVALID_PROMPT,
+        message: 'No audio/video file provided',
+      });
+    }
+
+    const fixedCost = 10;
+    const balance = (await this.creditsService.getCreditBalance(
+      userId,
+    )) as CreditBalance;
+    if (balance.availableCredits < fixedCost) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INSUFFICIENT_CREDITS,
+        message: `Insufficient credits. Available: ${balance.availableCredits}, Required: ${fixedCost}`,
+      });
+    }
+
+    try {
+      const arrayBuffer = file.buffer.buffer.slice(
+        file.buffer.byteOffset,
+        file.buffer.byteOffset + file.buffer.byteLength,
+      ) as ArrayBuffer;
+      const fileBlob = new File([arrayBuffer], file.originalname, {
+        type: file.mimetype,
+      });
+
+      const transcription = await this.groq.audio.transcriptions.create({
+        file: fileBlob,
+        model: 'whisper-large-v3-turbo',
+        language,
+        response_format: 'text',
+      });
+
+      const generatedText =
+        typeof transcription === 'string' ? transcription : '';
+
+      await this.creditsService.deductCredits(
+        userId,
+        fixedCost,
+        'Audio transcription via Groq Whisper',
+        {
+          fileName: file.originalname,
+          fileSize: file.size,
+          language,
+          creditsCharged: fixedCost,
+        },
+      );
+
+      return {
+        message: 'Audio transcribed successfully',
+        data: {
+          generatedText,
+          creditsUsed: fixedCost,
+          tokensUsed: 0,
+          remainingCredits: balance.availableCredits - fixedCost,
+        },
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException({
+        errorCode: ErrorCode.GENERATION_FAILED,
+        message: `Failed to transcribe audio: ${errorMessage}`,
       });
     }
   }

@@ -1,6 +1,5 @@
-import { suggestScenario, mediaToText, generateContent } from './endpoints/gen-a-i';
-import { uploadMedia } from './endpoints/upload';
-import { MediaToTextDtoMediaType, UploadDataDto } from './models';
+import { suggestScenario, generateContent } from './endpoints/gen-a-i';
+import { axiosInstance } from './custom-instance';
 
 /**
  * Generate random scenario based on theme using API
@@ -18,68 +17,23 @@ export const generateRandomScenarioWithAPI = async (theme: string): Promise<stri
 };
 
 /**
- * Detect media type from MIME type
- */
-const detectMediaType = (mimeType: string): MediaToTextDtoMediaType => {
-  if (mimeType.startsWith('audio/')) {
-    return MediaToTextDtoMediaType.audio;
-  }
-  if (mimeType.startsWith('video/')) {
-    return MediaToTextDtoMediaType.video;
-  }
-  // Default to audio if unsure
-  return MediaToTextDtoMediaType.audio;
-};
-
-/**
- * Upload media file and return the uploaded URI
- */
-export const uploadMediaFile = async (file: File): Promise<string> => {
-  try {
-    const response = await uploadMedia({ file });
-
-    return (response as any).uri;
-  } catch (error) {
-    console.error('Failed to upload media:', error);
-    throw new Error('Không thể tải file lên. Vui lòng thử lại.');
-  }
-};
-
-/**
- * Extract lyrics from media file (audio/video) using API
- * Accepts a file URL (from uploadMedia)
- */
-export const extractLyricsFromMediaWithAPI = async (
-  mediaUrl: string,
-  mediaType: MediaToTextDtoMediaType
-): Promise<string> => {
-  try {
-    const response = await mediaToText({
-      mediaType,
-      mediaUrl,
-      prompt: 'Chép lại lời bài hát từ file này một cách chính xác nhất. Chỉ trả về lời bài hát.',
-    });
-    return (response as any).generatedText || '';
-  } catch (error) {
-    console.error('Failed to extract lyrics:', error);
-    throw new Error('Không thể trích xuất lời bài hát. Vui lòng thử lại.');
-  }
-};
-
-/**
- * Upload media file and extract lyrics (convenience function)
+ * Transcribe audio/video file directly using Groq Whisper (1 API call)
  */
 export const uploadAndExtractLyrics = async (file: File): Promise<string> => {
-  // Step 1: Upload file
-  const mediaUrl = await uploadMediaFile(file);
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('language', 'vi');
 
-  // Step 2: Detect media type
-  const mediaType = detectMediaType(file.type);
+  const response = await axiosInstance<{ generatedText: string }>(
+    {
+      url: '/api/genai/transcribe',
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+    },
+  );
 
-  // Step 3: Extract lyrics
-  const lyrics = await extractLyricsFromMediaWithAPI(mediaUrl, mediaType);
-
-  return lyrics;
+  return (response as any).generatedText || '';
 };
 
 /**
