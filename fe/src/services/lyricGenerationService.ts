@@ -1,4 +1,5 @@
 import { generateContent } from './endpoints/gen-a-i';
+import type { GenerationDataDto } from './models';
 import type { GenerationConfig, RewriteResponse } from '../types';
 
 /**
@@ -103,7 +104,7 @@ export const rewriteLyricsWithAPI = async (
     maxTokens: 2048,
   });
 
-  const data = response as any;
+  const data = response as unknown as GenerationDataDto;
   const rewriteData = parseResponse(data.generatedText);
 
   return {
