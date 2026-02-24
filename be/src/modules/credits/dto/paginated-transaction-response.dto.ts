@@ -1,19 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreditTransaction } from '../entities/credit-transaction.entity';
-
-class PaginationMeta {
-  @ApiProperty({ description: 'Current page number', example: 1 })
-  page: number;
-
-  @ApiProperty({ description: 'Items per page', example: 10 })
-  limit: number;
-
-  @ApiProperty({ description: 'Total number of items', example: 100 })
-  total: number;
-
-  @ApiProperty({ description: 'Total number of pages', example: 10 })
-  totalPages: number;
-}
+import { PaginationMetaDto } from '../../../common/dto/pagination-meta.dto';
 
 export class PaginatedTransactionResponseDto {
   @ApiProperty({
@@ -24,7 +11,7 @@ export class PaginatedTransactionResponseDto {
 
   @ApiProperty({
     description: 'Pagination metadata',
-    type: PaginationMeta,
+    type: PaginationMetaDto,
   })
-  meta: PaginationMeta;
+  meta: PaginationMetaDto;
 }

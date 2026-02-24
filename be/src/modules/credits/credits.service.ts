@@ -14,6 +14,8 @@ import { CreateCreditPackageDto } from './dto/create-credit-package.dto';
 import { PurchaseCreditsDto } from './dto/purchase-credits.dto';
 import { AdjustCreditsDto } from './dto/adjust-credits.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedLedgerResponseDto } from './dto/paginated-ledger-response.dto';
+import { PaginatedTransactionResponseDto } from './dto/paginated-transaction-response.dto';
 import { CreditTransactionType } from '../../common/enums/credit-transaction-type.enum';
 import { ErrorCode } from '../../common/enums/error-code.enum';
 
@@ -317,15 +319,7 @@ export class CreditsService {
   async getLedgerHistory(
     userId: string,
     paginationDto: PaginationDto,
-  ): Promise<{
-    data: CreditLedger[];
-    meta: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  }> {
+  ): Promise<PaginatedLedgerResponseDto> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
@@ -351,15 +345,7 @@ export class CreditsService {
   async getTransactionHistory(
     userId: string,
     paginationDto: PaginationDto,
-  ): Promise<{
-    data: CreditTransaction[];
-    meta: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  }> {
+  ): Promise<PaginatedTransactionResponseDto> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 

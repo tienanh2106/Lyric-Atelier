@@ -11,6 +11,7 @@ import { UserCreditSummary } from './entities/user-credit-summary.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
+import { PaginatedUsersResponseDto } from './dto/paginated-users-response.dto';
 import { ErrorCode } from '../../common/enums/error-code.enum';
 
 @Injectable()
@@ -52,15 +53,7 @@ export class UsersService {
     return savedUser;
   }
 
-  async findAll(paginationDto: PaginationDto): Promise<{
-    data: User[];
-    meta: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
-  }> {
+  async findAll(paginationDto: PaginationDto): Promise<PaginatedUsersResponseDto> {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
