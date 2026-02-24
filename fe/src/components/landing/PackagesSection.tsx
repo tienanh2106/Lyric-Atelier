@@ -1,7 +1,36 @@
+import { useNavigate } from 'react-router-dom';
 import { useGetCreditPackages } from '../../services/endpoints/credits';
+import { useCreatePaymentLink } from '../../services/endpoints/payment';
+import { useAuthStore } from '../../stores/authStore';
 
 export const PackagesSection = () => {
   const { data: packages, isLoading } = useGetCreditPackages();
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+
+  const { mutate: createLink, isPending, variables } = useCreatePaymentLink({
+    mutation: {
+      onSuccess: (result) => {
+        if (result?.checkoutUrl) {
+          globalThis.location.href = result.checkoutUrl;
+        }
+      },
+      onError: () => {
+        alert('Không thể tạo link thanh toán. Vui lòng thử lại.');
+      },
+    },
+  });
+
+  const handleChoosePackage = (pkgId: string) => {
+    if (!isAuthenticated) {
+      navigate('/auth');
+      return;
+    }
+    createLink({ data: { packageId: pkgId } });
+  };
+
+  const isLoadingPkg = (pkgId: string) =>
+    isPending && variables?.data?.packageId === pkgId;
 
   return (
     <section className="animate-in fade-in slide-in-from-bottom-12 flex flex-col gap-12 py-20 delay-150 duration-1000">
@@ -60,8 +89,12 @@ export const PackagesSection = () => {
                 )}
               </div>
 
-              <button className="mt-auto rounded-full border border-amber-500 bg-transparent px-6 py-3 text-[10px] font-black uppercase tracking-widest text-amber-500 transition-all hover:bg-amber-500 hover:text-white hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] group-hover:scale-[1.02]">
-                Chọn Gói
+              <button
+                onClick={() => handleChoosePackage(pkg.id)}
+                disabled={isLoadingPkg(pkg.id)}
+                className="mt-auto rounded-full border border-amber-500 bg-transparent px-6 py-3 text-[10px] font-black uppercase tracking-widest text-amber-500 transition-all hover:bg-amber-500 hover:text-white hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:cursor-not-allowed disabled:opacity-50 group-hover:scale-[1.02]"
+              >
+                {isLoadingPkg(pkg.id) ? 'Đang xử lý...' : 'Chọn Gói'}
               </button>
             </div>
           ))}

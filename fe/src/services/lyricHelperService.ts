@@ -24,14 +24,12 @@ export const uploadAndExtractLyrics = async (file: File): Promise<string> => {
   formData.append('file', file);
   formData.append('language', 'vi');
 
-  const response = await axiosInstance<{ generatedText: string }>(
-    {
-      url: '/api/genai/transcribe',
-      method: 'POST',
-      headers: { 'Content-Type': 'multipart/form-data' },
-      data: formData,
-    },
-  );
+  const response = await axiosInstance<{ generatedText: string }>({
+    url: '/api/genai/transcribe',
+    method: 'POST',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data: formData,
+  });
 
   return (response as any).generatedText || '';
 };

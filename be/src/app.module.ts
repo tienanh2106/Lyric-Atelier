@@ -14,6 +14,7 @@ import { CreditsModule } from './modules/credits/credits.module';
 import { GenAIModule } from './modules/genai/genai.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { CronModule } from './modules/cron/cron.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -41,6 +42,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     GenAIModule,
     UploadModule,
     CronModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [

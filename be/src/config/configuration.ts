@@ -27,6 +27,16 @@ export default () => ({
     apiKey: process.env.GROQ_API_KEY,
   },
 
+  payos: {
+    clientId: process.env.PAYOS_CLIENT_ID,
+    apiKey: process.env.PAYOS_API_KEY,
+    checksumKey: process.env.PAYOS_CHECKSUM_KEY,
+  },
+
+  app: {
+    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+  },
+
   credits: {
     defaultValidityDays: parseInt(
       process.env.DEFAULT_CREDIT_VALIDITY_DAYS ?? '90',

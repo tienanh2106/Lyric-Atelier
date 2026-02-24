@@ -43,6 +43,12 @@ export const validationSchema = Joi.object({
   GOOGLE_GENAI_API_KEY: Joi.string().required(),
   GROQ_API_KEY: Joi.string().optional(),
 
+  PAYOS_CLIENT_ID: Joi.string().optional(),
+  PAYOS_API_KEY: Joi.string().optional(),
+  PAYOS_CHECKSUM_KEY: Joi.string().optional(),
+
+  FRONTEND_URL: Joi.string().optional(),
+
   DEFAULT_CREDIT_VALIDITY_DAYS: Joi.number().default(90),
   CREDIT_COST_PER_TOKEN: Joi.number().default(0.01),
 

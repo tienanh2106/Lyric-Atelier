@@ -28,6 +28,7 @@ import type {
   GenerationResponseDto,
   MediaToTextDto,
   SuggestScenarioDto,
+  TranscribeAudioBody,
 } from '../models';
 
 import { axiosInstance } from '../custom-instance';
@@ -325,6 +326,99 @@ export const useSuggestScenario = <TError = ErrorType<void>, TContext = unknown>
   TContext
 > => {
   const mutationOptions = getSuggestScenarioMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Upload an audio or video file and transcribe it directly using Groq Whisper. Faster and cheaper than Gemini media-to-text.
+ * @summary Transcribe audio/video to text using Groq Whisper
+ */
+export const transcribeAudio = (
+  transcribeAudioBody: BodyType<TranscribeAudioBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  const formData = new FormData();
+  formData.append(`file`, transcribeAudioBody.file);
+  if (transcribeAudioBody.language !== undefined) {
+    formData.append(`language`, transcribeAudioBody.language);
+  }
+
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/transcribe`,
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+      signal,
+    },
+    options
+  );
+};
+
+export const getTranscribeAudioMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof transcribeAudio>>,
+    TError,
+    { data: BodyType<TranscribeAudioBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof transcribeAudio>>,
+  TError,
+  { data: BodyType<TranscribeAudioBody> },
+  TContext
+> => {
+  const mutationKey = ['transcribeAudio'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof transcribeAudio>>,
+    { data: BodyType<TranscribeAudioBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return transcribeAudio(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TranscribeAudioMutationResult = NonNullable<
+  Awaited<ReturnType<typeof transcribeAudio>>
+>;
+export type TranscribeAudioMutationBody = BodyType<TranscribeAudioBody>;
+export type TranscribeAudioMutationError = ErrorType<void>;
+
+/**
+ * @summary Transcribe audio/video to text using Groq Whisper
+ */
+export const useTranscribeAudio = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof transcribeAudio>>,
+      TError,
+      { data: BodyType<TranscribeAudioBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof transcribeAudio>>,
+  TError,
+  { data: BodyType<TranscribeAudioBody> },
+  TContext
+> => {
+  const mutationOptions = getTranscribeAudioMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
