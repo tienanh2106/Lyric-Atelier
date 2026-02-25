@@ -16,13 +16,13 @@ export const FeaturesSection = () => {
       icon: '🎵',
     },
     {
-      title: '12 Phong Cách',
-      description: 'Chọn phong cách của 12 nhạc sĩ Việt Nam nổi tiếng',
+      title: '4 Phong Cách',
+      description: 'Chọn phong cách từ V-Pop Trendy đến Ballad Da diết và Triết lý',
       icon: '🎭',
     },
     {
       title: 'Tùy Chỉnh Linh Hoạt',
-      description: 'Điều chỉnh độ khắt khe về âm vần và cảm xúc bài hát',
+      description: 'Điều chỉnh chế độ Đồng điệu hoặc Sáng tác tự do theo ý muốn',
       icon: '⚙️',
     },
     {
@@ -38,7 +38,7 @@ export const FeaturesSection = () => {
         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
           Tính Năng
         </span>
-        <h2 className="text-3xl font-black uppercase tracking-wider text-slate-900 md:text-4xl">
+        <h2 className="text-3xl font-black uppercase tracking-wider text-white md:text-4xl">
           Công Cụ Chuyên Nghiệp
         </h2>
       </div>
@@ -47,15 +47,15 @@ export const FeaturesSection = () => {
         {features.map((feature, index) => (
           <div
             key={index}
-            className="glass-panel flex flex-col gap-4 rounded-[2.5rem] border border-slate-200 p-8 transition-all hover:border-amber-500/40 hover:shadow-xl"
+            className="glass-panel group flex flex-col gap-4 rounded-[2.5rem] border border-white/[0.07] p-8 transition-all hover:border-amber-500/30 hover:bg-white/[0.06]"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-2xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-2xl ring-1 ring-amber-500/20">
               {feature.icon}
             </div>
-            <h3 className="text-base font-black uppercase tracking-widest text-slate-900">
+            <h3 className="text-base font-black uppercase tracking-widest text-slate-100">
               {feature.title}
             </h3>
-            <p className="text-[11px] leading-relaxed text-slate-600">{feature.description}</p>
+            <p className="text-[11px] leading-relaxed text-slate-500">{feature.description}</p>
           </div>
         ))}
       </div>

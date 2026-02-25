@@ -16,14 +16,14 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         <input
           ref={ref}
           type={type}
-          className={`w-full rounded-xl border bg-slate-50 px-4 py-3 text-sm transition-all focus:bg-white focus:outline-none ${
+          className={`w-full rounded-xl border bg-white/[0.06] px-4 py-3 text-sm text-slate-100 transition-all placeholder:text-slate-500 focus:bg-white/[0.08] focus:outline-none ${
             error
-              ? 'border-red-300 focus:border-red-500'
-              : 'border-slate-200 focus:border-amber-500/50'
+              ? 'border-red-500/40 focus:border-red-500'
+              : 'border-white/[0.08] focus:border-amber-500/50'
           }`}
           {...props}
         />
-        {error && <span className="text-[10px] font-bold text-red-600">{error.message}</span>}
+        {error && <span className="text-[10px] font-bold text-red-400">{error.message}</span>}
       </div>
     );
   }

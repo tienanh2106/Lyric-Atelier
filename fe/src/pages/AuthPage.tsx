@@ -16,27 +16,23 @@ export const AuthPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-6 py-20">
-      <div className="glass-panel animate-in fade-in slide-in-from-bottom-12 w-full max-w-md overflow-hidden rounded-[3rem] border border-slate-200 duration-700">
+      <div className="glass-panel animate-in fade-in slide-in-from-bottom-12 w-full max-w-md overflow-hidden rounded-[3rem] border border-white/[0.1] duration-700">
         {/* Header with tabs */}
-        <div className="border-b border-slate-200 p-8">
+        <div className="border-b border-white/[0.06] p-8">
           <div className="mb-6 flex items-center justify-center gap-2">
-            <span className="text-sm font-black uppercase tracking-widest text-slate-900">
-              LYRIC
-            </span>
-            <div className="h-1 w-1 rounded-full bg-amber-500"></div>
-            <span className="text-sm font-black uppercase tracking-widest text-slate-900">
-              ATELIER
-            </span>
+            <span className="text-sm font-black uppercase tracking-widest text-white">LYRIC</span>
+            <div className="h-1 w-1 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></div>
+            <span className="text-sm font-black uppercase tracking-widest text-white">ATELIER</span>
           </div>
 
           {/* Tab Toggle */}
-          <div className="grid grid-cols-2 gap-2 rounded-full bg-slate-100 p-1">
+          <div className="grid grid-cols-2 gap-2 rounded-full bg-white/[0.06] p-1">
             <button
               onClick={() => setActiveTab('login')}
               className={`rounded-full px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === 'login'
-                  ? 'bg-amber-500 text-white shadow-lg'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                  : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               Đăng Nhập
@@ -45,8 +41,8 @@ export const AuthPage = () => {
               onClick={() => setActiveTab('register')}
               className={`rounded-full px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === 'register'
-                  ? 'bg-amber-500 text-white shadow-lg'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                  : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               Đăng Ký

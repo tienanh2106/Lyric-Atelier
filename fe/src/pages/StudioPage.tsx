@@ -84,12 +84,12 @@ export const StudioPage: React.FC = () => {
           progress={progress}
         />
         {error && (
-          <div className="animate-in fade-in slide-in-from-top-4 mt-10 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-red-700">
+          <div className="animate-in fade-in slide-in-from-top-4 mt-10 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-red-400">
             {error}
           </div>
         )}
         {creditsInfo && (
-          <div className="animate-in fade-in slide-in-from-top-4 mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-700">
+          <div className="animate-in fade-in slide-in-from-top-4 mt-6 rounded-xl border border-emerald-500/15 bg-emerald-500/[0.07] px-6 py-3 text-[10px] font-black uppercase tracking-widest text-emerald-400">
             <div className="flex items-center justify-between gap-4">
               <span>Credits đã sử dụng: {creditsInfo.creditsUsed}</span>
               <span>Credits còn lại: {creditsInfo.remainingCredits}</span>

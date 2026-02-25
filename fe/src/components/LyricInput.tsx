@@ -86,33 +86,33 @@ const LyricInput: React.FC<LyricInputProps> = ({
   return (
     <div className="flex w-full max-w-5xl flex-col gap-6 px-4">
       {/* ── SECTION 01: LINH HỒN & KỸ THUẬT ──────────────────────── */}
-      <section className="glass-panel flex flex-col gap-8 rounded-[2.5rem] border border-slate-200 p-8 md:p-10">
-        {/* Header row: label (left) + mode toggle (right) */}
+      <section className="glass-panel flex flex-col gap-8 rounded-[2.5rem] border border-white/[0.08] p-8 md:p-10">
+        {/* Header row */}
         <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
               Step 01
             </span>
-            <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">
+            <h3 className="text-sm font-black uppercase tracking-widest text-slate-100">
               Linh hồn &amp; Kỹ thuật
             </h3>
           </div>
 
-          {/* Mode toggle — Platinum style */}
-          <div className="flex gap-1.5 rounded-[2rem] border border-slate-200 bg-slate-100 p-1.5">
+          {/* Mode toggle */}
+          <div className="flex gap-1.5 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-1.5">
             <button
               onClick={() => onConfigChange({ ...config, mode: 'strict' })}
               className={`flex flex-col items-center gap-0.5 rounded-3xl px-5 py-3 transition-all ${
                 config.mode === 'strict'
-                  ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+                  : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               <span className="text-[11px] font-black uppercase tracking-widest">
                 Đồng điệu 100%
               </span>
               <span
-                className={`text-[9px] font-medium ${config.mode === 'strict' ? 'text-black/60' : 'text-slate-400'}`}
+                className={`text-[9px] font-medium ${config.mode === 'strict' ? 'text-black/60' : 'text-slate-600'}`}
               >
                 Khớp 100% dấu &amp; số từ
               </span>
@@ -121,15 +121,15 @@ const LyricInput: React.FC<LyricInputProps> = ({
               onClick={() => onConfigChange({ ...config, mode: 'creative' })}
               className={`flex flex-col items-center gap-0.5 rounded-3xl px-5 py-3 transition-all ${
                 config.mode === 'creative'
-                  ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+                  : 'text-slate-500 hover:text-slate-300'
               }`}
             >
               <span className="text-[11px] font-black uppercase tracking-widest">
                 Sáng tác tự do
               </span>
               <span
-                className={`text-[9px] font-medium ${config.mode === 'creative' ? 'text-black/60' : 'text-slate-400'}`}
+                className={`text-[9px] font-medium ${config.mode === 'creative' ? 'text-black/60' : 'text-slate-600'}`}
               >
                 Như viết lời nhạc nước ngoài
               </span>
@@ -145,17 +145,17 @@ const LyricInput: React.FC<LyricInputProps> = ({
               onClick={() => onConfigChange({ ...config, theme: t.value })}
               className={`group flex flex-col items-start gap-1 rounded-2xl border p-4 text-left transition-all ${
                 config.theme === t.value
-                  ? 'border-amber-500 bg-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.2)]'
-                  : 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-slate-100'
+                  ? 'border-amber-500/80 bg-amber-500/15 shadow-[0_0_20px_rgba(245,158,11,0.15)]'
+                  : 'border-white/[0.07] bg-white/[0.03] hover:border-white/[0.12] hover:bg-white/[0.06]'
               }`}
             >
               <span
-                className={`text-[12px] font-black uppercase tracking-tight ${config.theme === t.value ? 'text-black' : 'text-slate-800'}`}
+                className={`text-[12px] font-black uppercase tracking-tight ${config.theme === t.value ? 'text-amber-300' : 'text-slate-300'}`}
               >
                 {t.label}
               </span>
               <span
-                className={`text-[9px] font-medium leading-tight ${config.theme === t.value ? 'text-black/60' : 'text-slate-500 group-hover:text-slate-600'}`}
+                className={`text-[9px] font-medium leading-tight ${config.theme === t.value ? 'text-amber-400/60' : 'text-slate-600 group-hover:text-slate-500'}`}
               >
                 {t.desc}
               </span>
@@ -167,12 +167,12 @@ const LyricInput: React.FC<LyricInputProps> = ({
       {/* ── SECTION 02: CONFIG ROW — 2 COLUMNS ────────────────────── */}
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Gender panel */}
-        <div className="glass-panel flex flex-col gap-4 rounded-[2rem] border border-slate-200 p-6">
+        <div className="glass-panel flex flex-col gap-4 rounded-[2rem] border border-white/[0.08] p-6">
           <div className="flex flex-col gap-1 px-1">
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
               Cấu hình
             </span>
-            <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">
+            <h3 className="text-sm font-black uppercase tracking-widest text-slate-100">
               Chất giọng Cover
             </h3>
           </div>
@@ -181,8 +181,8 @@ const LyricInput: React.FC<LyricInputProps> = ({
               onClick={() => onConfigChange({ ...config, gender: 'female' })}
               className={`flex-1 rounded-xl border py-4 text-[10px] font-black uppercase tracking-widest transition-all ${
                 config.gender === 'female'
-                  ? 'border-amber-500 bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                  : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                  ? 'border-amber-500/80 bg-amber-500/15 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                  : 'border-white/[0.07] bg-white/[0.03] text-slate-500 hover:bg-white/[0.06]'
               }`}
             >
               🎤 Nữ
@@ -191,8 +191,8 @@ const LyricInput: React.FC<LyricInputProps> = ({
               onClick={() => onConfigChange({ ...config, gender: 'male' })}
               className={`flex-1 rounded-xl border py-4 text-[10px] font-black uppercase tracking-widest transition-all ${
                 config.gender === 'male'
-                  ? 'border-amber-500 bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                  : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
+                  ? 'border-amber-500/80 bg-amber-500/15 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                  : 'border-white/[0.07] bg-white/[0.03] text-slate-500 hover:bg-white/[0.06]'
               }`}
             >
               🎙️ Nam
@@ -200,21 +200,21 @@ const LyricInput: React.FC<LyricInputProps> = ({
           </div>
         </div>
 
-        {/* Story panel — click to open modal */}
-        <div className="glass-panel flex flex-col gap-4 rounded-[2rem] border border-slate-200 p-6">
+        {/* Story panel */}
+        <div className="glass-panel flex flex-col gap-4 rounded-[2rem] border border-white/[0.08] p-6">
           <div className="flex items-center justify-between px-1">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
                 Step 02
               </span>
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-100">
                 Kịch bản dệt lời
               </h3>
             </div>
             <button
               onClick={handleRandomizeScenario}
               disabled={isGeneratingScenario}
-              className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase text-amber-600 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-[10px] font-black uppercase text-amber-400 transition-all hover:border-amber-500/30 hover:bg-amber-500/10 disabled:opacity-50"
             >
               <svg
                 className={`h-3 w-3 ${isGeneratingScenario ? 'animate-spin' : ''}`}
@@ -233,12 +233,13 @@ const LyricInput: React.FC<LyricInputProps> = ({
             </button>
           </div>
 
-          <div
+          <button
+            type="button"
             onClick={() => setIsPreviewOpen(true)}
-            className="min-h-[60px] flex-1 cursor-pointer rounded-2xl border border-slate-200 bg-slate-50 p-4 text-[13px] italic leading-relaxed text-slate-500 transition-all hover:border-amber-500/40 hover:bg-white"
+            className="min-h-[60px] flex-1 cursor-pointer rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4 text-left text-[13px] italic leading-relaxed text-slate-500 transition-all hover:border-amber-500/30 hover:bg-white/[0.05]"
           >
             {config.storyDescription || 'Click để viết kịch bản bài hát...'}
-          </div>
+          </button>
         </div>
       </section>
 
@@ -250,17 +251,17 @@ const LyricInput: React.FC<LyricInputProps> = ({
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
                 Step 03
               </span>
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-100">
                 Ca từ gốc
               </h3>
             </div>
-            <span className="text-[10px] font-bold text-slate-400">{value.length} ký tự</span>
+            <span className="text-[10px] font-bold text-slate-600">{value.length} ký tự</span>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isTranscribing}
-              className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[9px] font-black uppercase text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-[9px] font-black uppercase text-slate-400 transition-all hover:border-white/[0.12] hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-50"
             >
               Nhập từ Audio/Video
             </button>
@@ -275,10 +276,11 @@ const LyricInput: React.FC<LyricInputProps> = ({
         </div>
 
         {uploadError && (
-          <div className="animate-in fade-in slide-in-from-top-4 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-red-700">
+          <div className="animate-in fade-in slide-in-from-top-4 rounded-xl border border-red-500/20 bg-red-500/10 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-red-400">
             ❌ {uploadError}
           </div>
         )}
+
         <div className="relative overflow-hidden rounded-2xl p-1">
           <Textarea
             className="resize-y"
@@ -287,11 +289,11 @@ const LyricInput: React.FC<LyricInputProps> = ({
             onChange={(e) => onChange(e.target.value)}
           />
           {isTranscribing && (
-            <div className="animate-in fade-in absolute inset-0 flex flex-col items-center justify-center gap-6 bg-white/95 backdrop-blur-xl duration-500">
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-amber-500/20">
+            <div className="animate-in fade-in absolute inset-0 flex flex-col items-center justify-center gap-6 bg-[#080910]/90 backdrop-blur-xl duration-500">
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-amber-500/20">
                 <div className="absolute inset-0 animate-spin rounded-full border-2 border-amber-500 border-t-transparent"></div>
                 <svg
-                  className="h-6 w-6 text-amber-500"
+                  className="h-6 w-6 text-amber-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -304,7 +306,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
                   />
                 </svg>
               </div>
-              <span className="animate-pulse text-[11px] font-black uppercase tracking-[0.5em] text-amber-500">
+              <span className="animate-pulse text-[11px] font-black uppercase tracking-[0.5em] text-amber-400">
                 Đang rã sóng âm...
               </span>
             </div>
@@ -312,39 +314,39 @@ const LyricInput: React.FC<LyricInputProps> = ({
         </div>
       </section>
 
-      {/* ── GENERATE BUTTON WITH PROGRESS BAR ─────────────────────── */}
+      {/* ── GENERATE BUTTON ─────────────────────────────────────────── */}
       <div className="pb-12">
         <button
           onClick={onGenerate}
           disabled={isLoading || !value.trim()}
           className={`group relative h-24 w-full overflow-hidden rounded-[3rem] transition-all duration-700 md:h-28 ${
             isLoading
-              ? 'cursor-default bg-slate-200'
+              ? 'cursor-default bg-white/[0.06]'
               : !value.trim()
-                ? 'cursor-not-allowed bg-slate-200'
-                : 'bg-amber-500 hover:scale-[1.01] active:scale-[0.99]'
+                ? 'cursor-not-allowed bg-white/[0.04]'
+                : 'bg-amber-500 hover:scale-[1.01] hover:shadow-[0_0_50px_rgba(245,158,11,0.35)] active:scale-[0.99]'
           }`}
         >
           {/* Progress fill */}
           {isLoading && (
             <div
-              className="absolute inset-y-0 left-0 bg-amber-400/70 transition-all duration-300 ease-out"
+              className="absolute inset-y-0 left-0 bg-amber-500/40 transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             />
           )}
 
           {/* Shimmer on idle */}
           {!isLoading && value.trim() && (
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
           )}
 
           <span className="relative z-10 flex flex-col items-center justify-center gap-1">
             {isLoading ? (
               <>
-                <span className="animate-pulse text-[15px] font-black uppercase tracking-[0.8em] text-amber-800">
+                <span className="animate-pulse text-[15px] font-black uppercase tracking-[0.8em] text-amber-300">
                   PROCESSING {Math.round(progress)}%
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-widest text-amber-700/60">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-amber-400/60">
                   {config.mode === 'strict' ? 'Đồng điệu 100%' : 'Sáng tác tự do'} ·{' '}
                   {config.gender === 'female' ? 'Nữ' : 'Nam'}
                 </span>
@@ -352,12 +354,12 @@ const LyricInput: React.FC<LyricInputProps> = ({
             ) : (
               <>
                 <span
-                  className={`ml-4 text-xl font-black uppercase tracking-[1em] ${!value.trim() ? 'text-slate-400' : 'text-black'}`}
+                  className={`ml-4 text-xl font-black uppercase tracking-[1em] ${!value.trim() ? 'text-slate-600' : 'text-black'}`}
                 >
                   DỆT CA KHÚC
                 </span>
                 <span
-                  className={`text-[10px] font-bold uppercase tracking-[0.2em] ${!value.trim() ? 'text-slate-400' : 'text-black/50'}`}
+                  className={`text-[10px] font-bold uppercase tracking-[0.2em] ${!value.trim() ? 'text-slate-700' : 'text-black/50'}`}
                 >
                   Sử dụng mô hình{' '}
                   {config.useThinking ? 'Gemini 2.5 Pro Preview' : 'Gemini 2.5 Flash'}
@@ -372,21 +374,21 @@ const LyricInput: React.FC<LyricInputProps> = ({
       {isPreviewOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setIsPreviewOpen(false)}
           />
-          <div className="relative flex w-full max-w-3xl flex-col gap-6 rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-2xl md:p-10">
+          <div className="relative flex w-full max-w-3xl flex-col gap-6 rounded-[2.5rem] border border-white/[0.1] bg-[#0d0f1c] p-8 shadow-2xl md:p-10">
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-1">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500">
                   Step 02
                 </span>
-                <h2 className="font-classic text-3xl italic text-slate-900">Kịch bản dệt lời</h2>
+                <h2 className="font-classic text-3xl italic text-slate-100">Kịch bản dệt lời</h2>
               </div>
               <button
                 onClick={handleRandomizeScenario}
                 disabled={isGeneratingScenario}
-                className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-[10px] font-black uppercase text-amber-600 transition-all hover:border-slate-300 hover:bg-slate-100 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-[10px] font-black uppercase text-amber-400 transition-all hover:border-amber-500/30 hover:bg-amber-500/10 disabled:opacity-50"
               >
                 <svg
                   className={`h-3 w-3 ${isGeneratingScenario ? 'animate-spin' : ''}`}
@@ -415,7 +417,7 @@ const LyricInput: React.FC<LyricInputProps> = ({
 
             <button
               onClick={() => setIsPreviewOpen(false)}
-              className="w-full rounded-full bg-amber-500 py-5 text-[12px] font-black uppercase tracking-widest text-black shadow-[0_0_30px_rgba(245,158,11,0.2)] transition-all hover:scale-[1.02] active:scale-[0.99]"
+              className="w-full rounded-full bg-amber-500 py-5 text-[12px] font-black uppercase tracking-widest text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] active:scale-[0.99]"
             >
               Xác nhận kịch bản
             </button>

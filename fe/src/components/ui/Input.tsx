@@ -7,7 +7,7 @@ const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>
         ref={ref}
         type={type}
         {...props}
-        className={`w-full rounded-xl border bg-slate-50 px-4 py-3 text-sm transition-all focus:bg-white focus:outline-none ${props.className}`}
+        className={`w-full rounded-xl border border-white/[0.08] bg-white/[0.06] px-4 py-3 text-sm text-slate-100 transition-all placeholder:text-slate-500 focus:border-amber-500/50 focus:bg-white/[0.08] focus:outline-none ${props.className}`}
       />
     );
   }
@@ -21,7 +21,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, InputHTMLAttributes<HTMLTextAre
       <textarea
         ref={ref}
         {...props}
-        className={`custom-scrollbar focus:bg-white" h-64 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-6 text-[15px] font-medium leading-relaxed text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-amber-500/50 ${props.className}`}
+        className={`custom-scrollbar h-64 w-full resize-none rounded-2xl border border-white/[0.08] bg-white/[0.05] p-6 text-[15px] font-medium leading-relaxed text-slate-100 outline-none transition-all placeholder:text-slate-500 focus:border-amber-500/40 focus:bg-white/[0.07] ${props.className}`}
       />
     );
   }
