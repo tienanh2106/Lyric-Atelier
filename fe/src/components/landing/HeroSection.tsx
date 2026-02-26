@@ -24,8 +24,8 @@ export const HeroSection = () => {
           </span>
         </h1>
         <p className="text-base leading-relaxed text-slate-400 md:text-lg">
-          Công cụ AI chuyên nghiệp giúp bạn tái tạo lời bài hát với phong cách nghệ sĩ Việt Nam.
-          Đảm bảo vần điệu, âm hưởng và cảm xúc trọn vẹn.
+          Công cụ AI chuyên nghiệp giúp bạn tái tạo lời bài hát với phong cách nghệ sĩ Việt Nam. Đảm
+          bảo vần điệu, âm hưởng và cảm xúc trọn vẹn.
         </p>
       </div>
 

@@ -20,12 +20,14 @@ export const generateRandomScenarioWithAPI = async (theme: string): Promise<stri
 };
 
 /**
- * Transcribe audio/video file directly using Groq Whisper (1 API call)
+ * Transcribe audio/video file using Gemini Flash multimodal.
+ * mode=lyrics: returns unique song structure (no repeated sections) for lyric rewriting.
  */
 export const uploadAndExtractLyrics = async (file: File): Promise<string> => {
   const response = await transcribeAudio({
     file,
     language: TRANSCRIBE_DEFAULT_LANGUAGE,
+    mode: 'lyrics',
   });
 
   return (response as unknown as GenerationDataDto).generatedText || '';
@@ -36,7 +38,7 @@ export const uploadAndExtractLyrics = async (file: File): Promise<string> => {
  * BE builds the analysis prompt internally from the lyrics.
  */
 export const detectThemeAndStoryWithAPI = async (
-  lyrics: string,
+  lyrics: string
 ): Promise<{ theme: string; storyDescription: string }> => {
   try {
     const response = await detectTheme({ lyrics });

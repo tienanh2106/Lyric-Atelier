@@ -31,6 +31,7 @@ import type {
   RewriteLyricsDto,
   ScenarioFromThemeDto,
   SuggestScenarioDto,
+  SyncKaraokeBody,
   TranscribeAudioBody,
 } from '../models';
 
@@ -590,8 +591,8 @@ export const useSuggestScenario = <TError = ErrorType<void>, TContext = unknown>
   return useMutation(mutationOptions, queryClient);
 };
 /**
- * Upload an audio or video file and transcribe it directly using Groq Whisper. Faster and cheaper than Gemini media-to-text.
- * @summary Transcribe audio/video to text using Groq Whisper
+ * Upload an audio or video file and transcribe lyrics using Gemini Flash. mode=karaoke: returns ALL repeated sections in order (for karaoke sync). mode=lyrics (default): returns unique song structure without repetition (for lyric rewriting).
+ * @summary Transcribe audio/video to text using Gemini Flash multimodal
  */
 export const transcribeAudio = (
   transcribeAudioBody: BodyType<TranscribeAudioBody>,
@@ -602,6 +603,9 @@ export const transcribeAudio = (
   formData.append(`file`, transcribeAudioBody.file);
   if (transcribeAudioBody.language !== undefined) {
     formData.append(`language`, transcribeAudioBody.language);
+  }
+  if (transcribeAudioBody.mode !== undefined) {
+    formData.append(`mode`, transcribeAudioBody.mode);
   }
 
   return axiosInstance<GenerationResponseDto>(
@@ -659,7 +663,7 @@ export type TranscribeAudioMutationBody = BodyType<TranscribeAudioBody>;
 export type TranscribeAudioMutationError = ErrorType<void>;
 
 /**
- * @summary Transcribe audio/video to text using Groq Whisper
+ * @summary Transcribe audio/video to text using Gemini Flash multimodal
  */
 export const useTranscribeAudio = <TError = ErrorType<void>, TContext = unknown>(
   options?: {
@@ -679,6 +683,95 @@ export const useTranscribeAudio = <TError = ErrorType<void>, TContext = unknown>
   TContext
 > => {
   const mutationOptions = getTranscribeAudioMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Upload audio file with raw lyrics text. AI (Gemini thinking) returns word-level timed KaraokeSegment[] JSON. Fixed cost: 15 credits.
+ * @summary Sync lyrics with audio using AI
+ */
+export const syncKaraoke = (
+  syncKaraokeBody: BodyType<SyncKaraokeBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  const formData = new FormData();
+  formData.append(`file`, syncKaraokeBody.file);
+  formData.append(`rawLyrics`, syncKaraokeBody.rawLyrics);
+
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/sync-karaoke`,
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+      signal,
+    },
+    options
+  );
+};
+
+export const getSyncKaraokeMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof syncKaraoke>>,
+    TError,
+    { data: BodyType<SyncKaraokeBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof syncKaraoke>>,
+  TError,
+  { data: BodyType<SyncKaraokeBody> },
+  TContext
+> => {
+  const mutationKey = ['syncKaraoke'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof syncKaraoke>>,
+    { data: BodyType<SyncKaraokeBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return syncKaraoke(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SyncKaraokeMutationResult = NonNullable<Awaited<ReturnType<typeof syncKaraoke>>>;
+export type SyncKaraokeMutationBody = BodyType<SyncKaraokeBody>;
+export type SyncKaraokeMutationError = ErrorType<void>;
+
+/**
+ * @summary Sync lyrics with audio using AI
+ */
+export const useSyncKaraoke = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof syncKaraoke>>,
+      TError,
+      { data: BodyType<SyncKaraokeBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof syncKaraoke>>,
+  TError,
+  { data: BodyType<SyncKaraokeBody> },
+  TContext
+> => {
+  const mutationOptions = getSyncKaraokeMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

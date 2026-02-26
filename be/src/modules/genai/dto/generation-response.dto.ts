@@ -43,20 +43,14 @@ export class GenerationResponseDto {
 
 export class CostEstimationDto {
   @ApiProperty({
-    description: 'Estimated tokens for generation',
-    example: 150,
-  })
-  estimatedTokens: number;
-
-  @ApiProperty({
-    description: 'Estimated credit cost',
-    example: 2,
+    description: 'Fixed credit cost for the operation',
+    example: 5,
   })
   estimatedCost: number;
 
   @ApiProperty({
-    description: 'Cost per token',
-    example: 0.01,
+    description: 'Operation name',
+    example: 'generateContent',
   })
-  costPerToken: number;
+  operation: string;
 }

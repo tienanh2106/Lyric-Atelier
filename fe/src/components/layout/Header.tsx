@@ -44,6 +44,14 @@ export const Header = () => {
                 Studio
               </Link>
             )}
+            {isAuthenticated && (
+              <Link
+                to={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-amber-400"
+              >
+                Karaoke
+              </Link>
+            )}
           </nav>
 
           {isInitialized ? (

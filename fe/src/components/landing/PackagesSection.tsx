@@ -65,9 +65,7 @@ export const PackagesSection = () => {
                 <h3 className="text-xl font-black uppercase tracking-widest text-slate-100">
                   {pkg.name}
                 </h3>
-                {pkg.description && (
-                  <p className="text-[11px] text-slate-500">{pkg.description}</p>
-                )}
+                {pkg.description && <p className="text-[11px] text-slate-500">{pkg.description}</p>}
               </div>
 
               <div className="flex items-baseline gap-2">

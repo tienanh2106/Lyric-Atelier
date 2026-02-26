@@ -183,9 +183,11 @@ export class GenAIController {
   @ApiConsumes('multipart/form-data')
   @ApiOperation({
     operationId: 'transcribeAudio',
-    summary: 'Transcribe audio/video to text using Groq Whisper',
+    summary: 'Transcribe audio/video to text using Gemini Flash multimodal',
     description:
-      'Upload an audio or video file and transcribe it directly using Groq Whisper. Faster and cheaper than Gemini media-to-text.',
+      'Upload an audio or video file and transcribe lyrics using Gemini Flash. ' +
+      'mode=karaoke: returns ALL repeated sections in order (for karaoke sync). ' +
+      'mode=lyrics (default): returns unique song structure without repetition (for lyric rewriting).',
   })
   @ApiBody({
     schema: {
@@ -193,6 +195,13 @@ export class GenAIController {
       properties: {
         file: { type: 'string', format: 'binary' },
         language: { type: 'string', example: 'vi', default: 'vi' },
+        mode: {
+          type: 'string',
+          enum: ['lyrics', 'karaoke'],
+          default: 'lyrics',
+          description:
+            'lyrics = unique structure for rewriting; karaoke = full with all repetitions',
+        },
       },
       required: ['file'],
     },
@@ -211,8 +220,46 @@ export class GenAIController {
     @CurrentUser() user: User,
     @UploadedFile() file: Express.Multer.File,
     @Body('language') language?: string,
+    @Body('mode') mode?: string,
   ) {
-    return this.genAIService.transcribeAudio(user.id, file, language);
+    return this.genAIService.transcribeAudio(user.id, file, language, mode);
+  }
+
+  @Post('sync-karaoke')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({
+    operationId: 'syncKaraoke',
+    summary: 'Sync lyrics with audio using AI',
+    description:
+      'Upload audio file with raw lyrics text. AI (Gemini + Whisper hybrid) returns word-level timed KaraokeSegment[] JSON. Fixed cost: 20 credits.',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        rawLyrics: { type: 'string', example: 'Dòng 1\nDòng 2' },
+      },
+      required: ['file', 'rawLyrics'],
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Karaoke synced successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid input',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  syncKaraoke(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('rawLyrics') rawLyrics: string,
+  ) {
+    return this.genAIService.syncKaraoke(user.id, file, rawLyrics);
   }
 
   @Post('media-to-text')

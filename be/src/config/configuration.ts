@@ -47,25 +47,8 @@ export default () => ({
       process.env.DEFAULT_CREDIT_VALIDITY_DAYS ?? '90',
       10,
     ),
-    costPerToken: parseFloat(process.env.CREDIT_COST_PER_TOKEN ?? '0.01'),
-    transcribeCostFixed: parseInt(
-      process.env.TRANSCRIBE_CREDIT_COST ?? '10',
-      10,
-    ),
     expiringSoonDays: parseInt(
       process.env.CREDITS_EXPIRING_SOON_DAYS ?? '7',
-      10,
-    ),
-    // Token estimation: ~4 characters = 1 token (rough estimation)
-    charsPerToken: parseInt(process.env.CREDIT_CHARS_PER_TOKEN ?? '4', 10),
-    // Extra token buffer reserved for scenario suggestion responses (longer output)
-    scenarioBufferTokens: parseInt(
-      process.env.CREDIT_SCENARIO_BUFFER_TOKENS ?? '1000',
-      10,
-    ),
-    // Fixed token estimate for media-to-text (audio/video processing)
-    mediaEstimatedTokens: parseInt(
-      process.env.CREDIT_MEDIA_ESTIMATED_TOKENS ?? '2000',
       10,
     ),
   },

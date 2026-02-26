@@ -52,12 +52,7 @@ export const validationSchema = Joi.object({
   FRONTEND_URL: Joi.string().optional(),
 
   DEFAULT_CREDIT_VALIDITY_DAYS: Joi.number().default(90),
-  CREDIT_COST_PER_TOKEN: Joi.number().default(0.01),
-  TRANSCRIBE_CREDIT_COST: Joi.number().default(10),
   CREDITS_EXPIRING_SOON_DAYS: Joi.number().default(7),
-  CREDIT_CHARS_PER_TOKEN: Joi.number().integer().min(1).default(4),
-  CREDIT_SCENARIO_BUFFER_TOKENS: Joi.number().integer().min(0).default(1000),
-  CREDIT_MEDIA_ESTIMATED_TOKENS: Joi.number().integer().min(1).default(2000),
 
   CRON_SECRET: Joi.string().optional(),
 

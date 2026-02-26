@@ -5,8 +5,11 @@
  * API for Lyric Atelier - AI-powered lyric generation
  * OpenAPI spec version: 1.0
  */
+import type { TranscribeAudioBodyMode } from './transcribeAudioBodyMode';
 
 export type TranscribeAudioBody = {
   file: Blob;
   language?: string;
+  /** lyrics = unique structure for rewriting; karaoke = full with all repetitions */
+  mode?: TranscribeAudioBodyMode;
 };

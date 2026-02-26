@@ -72,8 +72,7 @@
     background:
       radial-gradient(ellipse at 15% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
       radial-gradient(ellipse at 85% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.04) 0%, transparent 70%),
-      #080910;
+      radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.04) 0%, transparent 70%), #080910;
   }
 
   /* Dark glass panel */
@@ -109,6 +108,112 @@
     transform: translateY(-1px);
     box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.5);
   }
+}
+
+/* Karaoke animations */
+@keyframes k-eq-bar {
+  from {
+    height: 15%;
+  }
+  to {
+    height: 90%;
+  }
+}
+
+@keyframes k-vinyl-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes k-heart-beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.rainbow-animate {
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff, #ff0000);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbow-move 2s linear infinite;
+  color: transparent !important;
+}
+
+@keyframes rainbow-move {
+  from {
+    background-position: 0% center;
+  }
+  to {
+    background-position: 200% center;
+  }
+}
+
+.rec-dot {
+  animation: rec-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes rec-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes animate-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: animate-fadeIn 0.4s ease forwards;
+}
+
+/* Karaoke lyric line slide-in */
+@keyframes k-lyric-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes k-lyric-in-dim {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 0.42;
+    transform: translateY(0);
+  }
+}
+
+.k-lyric-line {
+  animation: k-lyric-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.k-lyric-line-next {
+  animation: k-lyric-in-dim 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
 /* Animations */
