@@ -687,7 +687,7 @@ export const useTranscribeAudio = <TError = ErrorType<void>, TContext = unknown>
   return useMutation(mutationOptions, queryClient);
 };
 /**
- * Upload audio file with raw lyrics text. AI (Gemini thinking) returns word-level timed KaraokeSegment[] JSON. Fixed cost: 15 credits.
+ * Upload audio file with raw lyrics text. Whisper CTC alignment maps each lyric line to actual sung timestamps, then assigns per-word timings via text-similarity anchoring. Dynamic cost based on lyric word count.
  * @summary Sync lyrics with audio using AI
  */
 export const syncKaraoke = (

@@ -7,10 +7,8 @@
  */
 
 export type CostEstimationDto = {
-  /** Estimated tokens for generation */
-  estimatedTokens: number;
-  /** Estimated credit cost */
+  /** Fixed credit cost for the operation */
   estimatedCost: number;
-  /** Cost per token */
-  costPerToken: number;
+  /** Operation name */
+  operation: string;
 };

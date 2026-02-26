@@ -232,7 +232,7 @@ export class GenAIController {
     operationId: 'syncKaraoke',
     summary: 'Sync lyrics with audio using AI',
     description:
-      'Upload audio file with raw lyrics text. AI (Gemini + Whisper hybrid) returns word-level timed KaraokeSegment[] JSON. Fixed cost: 20 credits.',
+      'Upload audio file with raw lyrics text. Gemini maps provided lyrics → segment timestamps (fast, accurate for given text); Whisper CTC provides word-onset timing. Both run in parallel. Dynamic cost based on lyric word count.',
   })
   @ApiBody({
     schema: {

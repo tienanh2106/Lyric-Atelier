@@ -10,7 +10,7 @@ export const AuthPage = () => {
   const navigate = useNavigate();
 
   const handleSuccess = () => {
-    const from = (location.state as any)?.from || ALL_ROUTER.PRIVATE.STUDIO;
+    const from = (location.state as any)?.from || ALL_ROUTER.PUBLIC.HOME;
     navigate(from, { replace: true });
   };
 

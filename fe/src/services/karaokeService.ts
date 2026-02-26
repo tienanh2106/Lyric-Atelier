@@ -11,7 +11,8 @@ export const syncKaraokeWithAPI = async (
   file: File,
   rawLyrics: string
 ): Promise<KaraokeSegment[]> => {
-  const result = await syncKaraoke({ file, rawLyrics });
+  // Gemini audio processing can take up to 2 minutes for long songs
+  const result = await syncKaraoke({ file, rawLyrics }, { timeout: 180000 });
   const raw = (result as unknown as GenerationDataDto)?.generatedText ?? '[]';
 
   try {

@@ -287,7 +287,9 @@ export const KaraokeRenderer: React.FC<Props> = ({
       const wordProgress =
         wordDuration > 0
           ? Math.min(1, Math.max(0, (currentTime - word.startTime) / wordDuration))
-          : isPast ? 1 : 0;
+          : isPast
+            ? 1
+            : 0;
 
       const textColor = isActive || isPast ? style.activeColor : style.initialColor;
       const baseFilter = (textBaseStyle.filter as string) ?? '';
@@ -296,97 +298,173 @@ export const KaraokeRenderer: React.FC<Props> = ({
         case 'neon-pulse': {
           const glow = isActive ? 14 * (1 - wordProgress * 0.6) : isPast ? 5 : 0;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle,
-              color: textColor,
-              filter: glow > 0 ? `${baseFilter} drop-shadow(0 0 ${glow}px ${style.activeColor})` : baseFilter,
-              transition: 'all 0.15s ease-out',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                filter:
+                  glow > 0
+                    ? `${baseFilter} drop-shadow(0 0 ${glow}px ${style.activeColor})`
+                    : baseFilter,
+                transition: 'all 0.15s ease-out',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'float-up': {
           const lift = isActive ? -6 * (1 - wordProgress) : 0;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor, display: 'inline-block',
-              transform: `translateY(${lift}px)`,
-              transition: 'transform 0.2s ease-out, color 0.15s ease-out',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                display: 'inline-block',
+                transform: `translateY(${lift}px)`,
+                transition: 'transform 0.2s ease-out, color 0.15s ease-out',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'glitch': {
-          const g = isActive && wordProgress < 0.3 ? (1 - wordProgress / 0.3) : 0;
+          const g = isActive && wordProgress < 0.3 ? 1 - wordProgress / 0.3 : 0;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor,
-              textShadow: g > 0 ? `${Math.round(3 * g)}px 0 #ff0044, ${-Math.round(3 * g)}px 0 #00ddff` : 'none',
-              transition: 'color 0.1s',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                textShadow:
+                  g > 0
+                    ? `${Math.round(3 * g)}px 0 #ff0044, ${-Math.round(3 * g)}px 0 #00ddff`
+                    : 'none',
+                transition: 'color 0.1s',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'wave-distort': {
-          const skew = isActive && wordProgress < 0.4 ? Math.sin((wordProgress / 0.4) * Math.PI * 2) * 8 : 0;
+          const skew =
+            isActive && wordProgress < 0.4 ? Math.sin((wordProgress / 0.4) * Math.PI * 2) * 8 : 0;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor, display: 'inline-block',
-              transform: `skewX(${skew}deg)`, transition: 'color 0.15s',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                display: 'inline-block',
+                transform: `skewX(${skew}deg)`,
+                transition: 'color 0.15s',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'fire-glow': {
           const ff = isActive
             ? `${baseFilter} drop-shadow(0 -3px ${8 + wordProgress * 6}px #ff6600) drop-shadow(0 0 ${16 - wordProgress * 8}px ${style.activeColor})`
-            : isPast ? `${baseFilter} drop-shadow(0 0 4px ${style.activeColor})` : baseFilter;
+            : isPast
+              ? `${baseFilter} drop-shadow(0 0 4px ${style.activeColor})`
+              : baseFilter;
           return (
-            <span key={idx} style={{ ...textBaseStyle, color: textColor, filter: ff, transition: 'color 0.2s ease-out' }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                filter: ff,
+                transition: 'color 0.2s ease-out',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'smoke-rise': {
           const drift = isActive ? -4 * wordProgress : isPast ? -4 : 0;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor, display: 'inline-block',
-              transform: `translateY(${drift}px)`, opacity: isPast ? 0.65 : 1,
-              transition: 'all 0.35s ease-out',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                display: 'inline-block',
+                transform: `translateY(${drift}px)`,
+                opacity: isPast ? 0.65 : 1,
+                transition: 'all 0.35s ease-out',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'rainbow-sweep':
           return (
-            <span key={idx}
+            <span
+              key={idx}
               className={isActive || isPast ? 'rainbow-animate' : ''}
               style={{
                 ...textBaseStyle,
                 color: isActive || isPast ? 'transparent' : style.initialColor,
-                WebkitTextStroke: isActive || isPast ? '0px transparent' : textBaseStyle.WebkitTextStroke,
+                WebkitTextStroke:
+                  isActive || isPast ? '0px transparent' : textBaseStyle.WebkitTextStroke,
                 filter: isActive || isPast ? 'none' : baseFilter,
               }}
-            >{wordTextWithSpace}</span>
+            >
+              {wordTextWithSpace}
+            </span>
           );
         case 'blur-reveal': {
           const blurPx = isActive ? Math.max(0, 5 * (1 - wordProgress * 1.5)) : isPast ? 0 : 5;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor, display: 'inline-block',
-              filter: blurPx > 0.2 ? `blur(${blurPx.toFixed(1)}px)` : baseFilter,
-              transition: 'color 0.1s',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                display: 'inline-block',
+                filter: blurPx > 0.2 ? `blur(${blurPx.toFixed(1)}px)` : baseFilter,
+                transition: 'color 0.1s',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         case 'zoom-bounce': {
-          const scale = isActive && wordProgress < 0.3
-            ? 1 + 0.18 * Math.sin((wordProgress / 0.3) * Math.PI) : 1;
+          const scale =
+            isActive && wordProgress < 0.3
+              ? 1 + 0.18 * Math.sin((wordProgress / 0.3) * Math.PI)
+              : 1;
           return (
-            <span key={idx} style={{
-              ...textBaseStyle, color: textColor, display: 'inline-block',
-              transform: `scale(${scale.toFixed(3)})`,
-              transition: 'color 0.15s ease-out, transform 0.08s ease-out',
-            }}>{wordTextWithSpace}</span>
+            <span
+              key={idx}
+              style={{
+                ...textBaseStyle,
+                color: textColor,
+                display: 'inline-block',
+                transform: `scale(${scale.toFixed(3)})`,
+                transition: 'color 0.15s ease-out, transform 0.08s ease-out',
+              }}
+            >
+              {wordTextWithSpace}
+            </span>
           );
         }
         default: // 'classic'
           return (
-            <span key={idx} style={{ ...textBaseStyle, color: textColor, transition: 'color 0.15s ease-out' }}>
+            <span
+              key={idx}
+              style={{ ...textBaseStyle, color: textColor, transition: 'color 0.15s ease-out' }}
+            >
               {wordTextWithSpace}
             </span>
           );
