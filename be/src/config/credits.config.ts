@@ -72,6 +72,9 @@ export const CREDIT_CONFIG = {
 
   /** mediaToText — URL-based, no file to measure */
   mediaToText: { fixed: 15 },
+
+  /** extractInstrumental — ffmpeg karaoke filter, CPU-bound */
+  extractInstrumental: { fixed: 3 },
 } as const;
 
 /** Compute dynamic cost: max(MIN_COST, baseCost + ceil(wordCount × ratePerWord)) */

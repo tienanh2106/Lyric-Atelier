@@ -1,3 +1,6 @@
+import * as os from 'os';
+import * as path from 'path';
+import * as fs from 'fs';
 import {
   Injectable,
   BadRequestException,
@@ -830,6 +833,107 @@ Trả về JSON array (không markdown, không giải thích):
 
       return { text: word, startTime, endTime };
     });
+  }
+
+  async extractInstrumental(
+    userId: string,
+    file: Express.Multer.File,
+  ): Promise<Buffer> {
+    if (!file?.buffer) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INVALID_PROMPT,
+        message: 'No audio file provided',
+      });
+    }
+
+    if (!file.mimetype.startsWith('audio/')) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INVALID_PROMPT,
+        message: 'File must be an audio file',
+      });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const cost: number = (CREDIT_CONFIG.extractInstrumental as any).fixed;
+
+    const balance = (await this.creditsService.getCreditBalance(
+      userId,
+    )) as CreditBalance;
+    if (balance.availableCredits < cost) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INSUFFICIENT_CREDITS,
+        message: `Insufficient credits. Available: ${balance.availableCredits}, Required: ${cost}`,
+      });
+    }
+
+    const tmpDir = os.tmpdir();
+    const ext = file.originalname.split('.').pop() ?? 'mp3';
+    const rand = Math.random().toString(36).slice(2);
+    const inputPath = path.join(
+      tmpDir,
+      `karaoke_in_${Date.now()}_${rand}.${ext}`,
+    );
+    const outputPath = path.join(
+      tmpDir,
+      `karaoke_out_${Date.now()}_${rand}.mp3`,
+    );
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const ffmpegStatic = require('ffmpeg-static') as string | null;
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const ffmpeg = require('fluent-ffmpeg') as typeof import('fluent-ffmpeg');
+      if (ffmpegStatic) ffmpeg.setFfmpegPath(ffmpegStatic);
+
+      fs.writeFileSync(inputPath, file.buffer);
+
+      await new Promise<void>((resolve, reject) => {
+        ffmpeg(inputPath)
+          .audioFilter('pan=stereo|c0=c0-c1|c1=c1-c0')
+          .audioCodec('libmp3lame')
+          .audioBitrate('192k')
+          .format('mp3')
+          .on('error', (err: Error) => reject(err))
+          .on('end', () => resolve())
+          .save(outputPath);
+      });
+
+      const outputBuffer = fs.readFileSync(outputPath);
+
+      await this.creditsService.deductCredits(
+        userId,
+        cost,
+        'Instrumental extraction via ffmpeg karaoke filter',
+        {
+          fileName: file.originalname,
+          fileSize: file.size,
+          creditsCharged: cost,
+        },
+      );
+
+      return outputBuffer;
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException({
+        errorCode: ErrorCode.GENERATION_FAILED,
+        message: `Failed to extract instrumental: ${errorMessage}`,
+      });
+    } finally {
+      try {
+        if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (ignored) {
+        // ignore cleanup errors
+      }
+      try {
+        if (fs.existsSync(outputPath)) fs.unlinkSync(outputPath);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (ignored) {
+        // ignore cleanup errors
+      }
+    }
   }
 
   async transcribeAudio(

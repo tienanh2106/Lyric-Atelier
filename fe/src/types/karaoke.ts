@@ -67,6 +67,7 @@ export interface ProjectData {
   backgroundType: 'image' | 'video' | null;
   audioFile: File | null;
   audioUrl: string | null;
+  instrumentalUrl: string | null;
   logoFile: File | null;
   rawLyrics: string;
   segments: KaraokeSegment[];

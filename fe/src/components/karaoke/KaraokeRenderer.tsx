@@ -6,6 +6,8 @@ interface Props {
   project: ProjectData;
   containerRef?: React.RefObject<HTMLDivElement>;
   isMaximized?: boolean;
+  exportMode?: boolean;
+  exportCanvasRef?: React.RefObject<HTMLCanvasElement>;
 }
 
 export const KaraokeRenderer: React.FC<Props> = ({
@@ -13,11 +15,134 @@ export const KaraokeRenderer: React.FC<Props> = ({
   project,
   containerRef,
   isMaximized,
+  exportMode,
+  exportCanvasRef,
 }) => {
   const { style, segments } = project;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const vfxCanvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundRef = useRef<HTMLDivElement>(null);
+  const bgImgRef = useRef<HTMLImageElement | null>(null);
+  const bgVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Preload background media refs for export compositing
+  useEffect(() => {
+    if (!exportMode) return;
+    if (project.backgroundUrl && project.backgroundType === 'image') {
+      const img = new Image();
+      img.src = project.backgroundUrl;
+      bgImgRef.current = img;
+    } else if (project.backgroundUrl && project.backgroundType === 'video') {
+      const vid = document.createElement('video');
+      vid.src = project.backgroundUrl;
+      vid.muted = true;
+      vid.loop = true;
+      bgVideoRef.current = vid;
+    }
+  }, [exportMode, project.backgroundUrl, project.backgroundType]);
+
+  // Composite all layers into exportCanvasRef each frame (for MediaRecorder)
+  useEffect(() => {
+    if (!exportMode || !exportCanvasRef?.current) return;
+    const exportCtx = exportCanvasRef.current.getContext('2d');
+    if (!exportCtx) return;
+
+    const W = 1920;
+    const H = 1080;
+    exportCtx.clearRect(0, 0, W, H);
+
+    // 1. Black background
+    exportCtx.fillStyle = '#000000';
+    exportCtx.fillRect(0, 0, W, H);
+
+    // 2. Draw BG image/video if available
+    if (bgImgRef.current?.complete) {
+      exportCtx.globalAlpha = 0.6;
+      exportCtx.drawImage(bgImgRef.current, 0, 0, W, H);
+      exportCtx.globalAlpha = 1;
+    } else if (bgVideoRef.current && !bgVideoRef.current.paused) {
+      exportCtx.globalAlpha = 0.6;
+      exportCtx.drawImage(bgVideoRef.current, 0, 0, W, H);
+      exportCtx.globalAlpha = 1;
+    }
+
+    // 3. Draw visualizer canvas
+    if (canvasRef.current) {
+      exportCtx.drawImage(canvasRef.current, 0, 0, W, H);
+    }
+
+    // 4. Draw VFX canvas
+    if (vfxCanvasRef.current) {
+      exportCtx.drawImage(vfxCanvasRef.current, 0, 0, W, H);
+    }
+
+    // 5. Draw lyrics text
+    const currentSeg = (() => {
+      if (!segments.length) return null;
+      const exact = segments.findIndex(
+        (s) => currentTime >= s.startTime && currentTime <= s.endTime
+      );
+      if (exact !== -1) return segments[exact];
+      for (let i = segments.length - 1; i >= 0; i--) {
+        if (segments[i].startTime <= currentTime) return segments[i];
+      }
+      return null;
+    })();
+
+    if (currentSeg) {
+      const scaledFontSize = style.fontSize * 3;
+      const fontStr = `900 ${scaledFontSize}px '${style.fontFamily}'`;
+      exportCtx.font = fontStr;
+      exportCtx.textAlign = 'center';
+      exportCtx.textBaseline = 'middle';
+
+      const posY = (style.positionY / 100) * H;
+      const words = currentSeg.words?.length
+        ? currentSeg.words
+        : [{ text: currentSeg.text, startTime: currentSeg.startTime, endTime: currentSeg.endTime }];
+
+      // Measure total line width to center it
+      const displayText = style.allCaps
+        ? words.map((w) => w.text.toUpperCase()).join(' ')
+        : words.map((w) => w.text).join(' ');
+      const totalWidth = exportCtx.measureText(displayText).width;
+      let xCursor = W / 2 - totalWidth / 2;
+
+      for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const wordText =
+          (style.allCaps ? word.text.toUpperCase() : word.text) + (i < words.length - 1 ? ' ' : '');
+        const isActive = currentTime >= word.startTime && currentTime < word.endTime;
+        const isPast = currentTime >= word.endTime;
+        const wordW = exportCtx.measureText(wordText).width;
+
+        exportCtx.shadowBlur = style.shadowBlur * 3;
+        exportCtx.shadowColor = style.shadowColor;
+        exportCtx.shadowOffsetX = style.shadowOffsetX * 3;
+        exportCtx.shadowOffsetY = style.shadowOffsetY * 3;
+
+        if (style.strokeWidth > 0) {
+          exportCtx.strokeStyle = style.strokeColor;
+          exportCtx.lineWidth = style.strokeWidth * 3;
+          exportCtx.strokeText(wordText, xCursor + wordW / 2, posY);
+        }
+        exportCtx.fillStyle = isActive || isPast ? style.activeColor : style.initialColor;
+        exportCtx.fillText(wordText, xCursor + wordW / 2, posY);
+        xCursor += wordW;
+      }
+      exportCtx.shadowBlur = 0;
+      exportCtx.shadowOffsetX = 0;
+      exportCtx.shadowOffsetY = 0;
+    }
+  }, [
+    currentTime,
+    exportMode,
+    exportCanvasRef,
+    segments,
+    style,
+    project.backgroundUrl,
+    project.backgroundType,
+  ]);
 
   // Visualizer + Background Pulse
   useEffect(() => {
