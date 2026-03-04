@@ -20,7 +20,7 @@ export const AppRoutes = () => (
       <Route element={<ProtectedRoute />}>
         <Route path={ALL_ROUTER.PRIVATE.STUDIO} element={<StudioPage />} />
         <Route path={ALL_ROUTER.PRIVATE.PAYMENT_RETURN} element={<PaymentReturnPage />} />
-        <Route
+        {/* <Route
           path={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
           element={
             <Suspense
@@ -33,7 +33,7 @@ export const AppRoutes = () => (
               <KaraokeStudioPage />
             </Suspense>
           }
-        />
+        /> */}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>

@@ -1,0 +1,245 @@
+import { Link } from 'react-router-dom';
+import { useAuthStore } from '../../stores/authStore';
+import { ALL_ROUTER } from '../../routes';
+import { ArrowRight, Wand2, Video, Mic, Scissors, Sparkles, Film } from 'lucide-react';
+
+export const ProductsSection = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  return (
+    <section id="products" className="relative overflow-hidden bg-[#080910] px-6 py-32">
+      {/* Subtle divider glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/15 to-transparent" />
+
+      <div className="mx-auto max-w-7xl">
+        {/* Section header */}
+        <div className="mb-20 flex flex-col items-center gap-4 text-center">
+          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500">
+            Công Xưởng
+          </span>
+          <h2 className="max-w-3xl text-[clamp(2rem,5vw,3.5rem)] font-black uppercase leading-[1.4] tracking-tight text-white">
+            Mỗi Giai Điệu
+            <br />
+            <span className="text-slate-500">Một Hành Trình Riêng</span>
+          </h2>
+          <p className="max-w-xl text-sm text-slate-500">
+            Từ ca từ thấm đẫm cảm xúc đến màn hình karaoke cuốn hút — tất cả trong một không gian
+            sáng tác duy nhất.
+          </p>
+        </div>
+
+        {/* Product 1 — AI Lyric Studio */}
+        <div className="mb-8 grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-amber-500/15 lg:grid-cols-2 lg:p-16">
+          {/* Left: info */}
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/20">
+                <Wand2 className="h-6 w-6 text-amber-400" />
+              </div>
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-amber-500/70">
+                  Công Cụ 01
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight text-white">
+                  AI Lyric Studio
+                </h3>
+              </div>
+            </div>
+
+            <p className="mb-8 text-[15px] leading-relaxed text-slate-400">
+              Không chỉ dịch thuật — là tái sinh. Mỗi câu chữ được dệt lại theo đúng âm vần và thanh
+              điệu, giữ nguyên linh hồn giai điệu nhưng mang hơi thở hoàn toàn mới.
+            </p>
+
+            <ul className="mb-10 space-y-4">
+              {[
+                { icon: Mic, text: 'Bốn sắc thái: V-Pop, Ballad, R&B và Indie Triết Lý' },
+                { icon: Wand2, text: 'Đồng Điệu hay Tự Do — bạn là nhạc sĩ' },
+                { icon: Sparkles, text: 'Gemini 2.5 Pro — mỗi vần thơ đều có linh hồn' },
+                { icon: ArrowRight, text: 'Bản thảo đầu tiên trong vòng 30 giây' },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-center gap-3 text-[12px] text-slate-400">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-amber-500/10">
+                    <Icon className="h-3.5 w-3.5 text-amber-400" />
+                  </div>
+                  {text}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to={isAuthenticated ? ALL_ROUTER.PRIVATE.STUDIO : ALL_ROUTER.PUBLIC.AUTH}
+              className="group inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-7 py-3 text-[10px] font-black uppercase tracking-widest text-amber-400 transition-all hover:bg-amber-500 hover:text-black"
+            >
+              Vào Studio{' '}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+
+          {/* Right: Visual mock */}
+          <div className="relative flex items-center justify-center">
+            <div className="relative w-full max-w-sm">
+              {/* Studio card mock */}
+              <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0d0f1c] p-6 shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+                      AI Output
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[8px] font-black uppercase text-emerald-400">
+                    Done
+                  </span>
+                </div>
+                {/* Mock lyric lines */}
+                <div className="space-y-3">
+                  {[
+                    { width: 'w-full', highlight: false },
+                    { width: 'w-5/6', highlight: true },
+                    { width: 'w-full', highlight: false },
+                    { width: 'w-4/5', highlight: true },
+                    { width: 'w-full', highlight: false },
+                    { width: 'w-3/4', highlight: false },
+                  ].map((line, i) => (
+                    <div
+                      key={i}
+                      className={`h-2.5 rounded-full ${line.width} ${
+                        line.highlight ? 'bg-amber-400/40' : 'bg-white/[0.07]'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="mt-6 flex items-center gap-2">
+                  {['V-Pop', 'Ballad', 'R&B'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/[0.08] px-2.5 py-1 text-[8px] font-black uppercase tracking-widest text-slate-500"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {/* Glow behind card */}
+              <div className="absolute -bottom-6 -right-6 h-40 w-40 rounded-full bg-amber-500/10 blur-[50px]" />
+            </div>
+          </div>
+        </div>
+
+        {/* Product 2 — Karaoke Studio */}
+        <div className="grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-violet-500/15 lg:grid-cols-2 lg:p-16">
+          {/* Left: Visual mock */}
+          <div className="relative flex items-center justify-center lg:order-first">
+            <div className="relative w-full max-w-sm">
+              {/* Karaoke card mock */}
+              <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0d0f1c] shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+                {/* Fake canvas */}
+                <div className="relative h-48 overflow-hidden bg-[#050709]">
+                  {/* Fake background gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-900/30 via-transparent to-amber-900/20" />
+                  {/* Fake visualizer bars */}
+                  <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-end gap-1">
+                    {[14, 24, 18, 34, 28, 40, 22, 32, 18, 26, 16, 30].map((h, i) => (
+                      <div
+                        key={i}
+                        className="w-2 rounded-sm bg-amber-400/60"
+                        style={{ height: `${h}px` }}
+                      />
+                    ))}
+                  </div>
+                  {/* Fake lyric text */}
+                  <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-1">
+                    {['Em', 'ơi', 'đừng', 'khóc'].map((word, i) => (
+                      <span
+                        key={i}
+                        className={`text-sm font-black uppercase ${
+                          i < 2 ? 'text-amber-400' : 'text-white/40'
+                        }`}
+                      >
+                        {word}
+                      </span>
+                    ))}
+                  </div>
+                  {/* Fake VFX dots */}
+                  {[
+                    { top: '20%', left: '15%' },
+                    { top: '60%', left: '80%' },
+                    { top: '30%', left: '70%' },
+                    { top: '70%', left: '25%' },
+                  ].map((pos, i) => (
+                    <div
+                      key={i}
+                      className="absolute h-1.5 w-1.5 rounded-full bg-violet-400/60 shadow-[0_0_6px_rgba(139,92,246,0.6)]"
+                      style={pos}
+                    />
+                  ))}
+                </div>
+                {/* Player controls mock */}
+                <div className="flex items-center gap-3 p-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500">
+                    <div className="ml-0.5 h-0 w-0 border-b-[5px] border-l-[8px] border-t-[5px] border-b-transparent border-l-black border-t-transparent" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-1.5 w-full rounded-full bg-white/[0.07]">
+                      <div className="h-full w-2/5 rounded-full bg-gradient-to-r from-amber-600 to-amber-400" />
+                    </div>
+                  </div>
+                  <span className="font-mono text-[10px] text-slate-500">02:14</span>
+                </div>
+              </div>
+              {/* Glow behind card */}
+              <div className="absolute -bottom-6 -left-6 h-40 w-40 rounded-full bg-violet-500/10 blur-[50px]" />
+            </div>
+          </div>
+
+          {/* Right: info */}
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10 ring-1 ring-violet-500/20">
+                <Video className="h-6 w-6 text-violet-400" />
+              </div>
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-violet-400/70">
+                  Công Cụ 02
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight text-white">
+                  Karaoke Studio
+                </h3>
+              </div>
+            </div>
+
+            <p className="mb-8 text-[15px] leading-relaxed text-slate-400">
+              Âm nhạc đáng được nhìn thấy. Từng từ sáng đúng khoảnh khắc, từng khung hình kể một câu
+              chuyện — rồi export ra thế giới chỉ bằng một cú click.
+            </p>
+
+            <ul className="mb-10 space-y-4">
+              {[
+                { icon: Mic, text: 'Giọng ca biến mất, giai điệu ở lại' },
+                { icon: Scissors, text: 'Từng chữ khắc đúng khoảnh khắc của nó' },
+                { icon: Sparkles, text: 'Mười cách để âm nhạc trở nên visual' },
+                { icon: Film, text: 'MP4 sẵn sàng trong tích tắc — không cần cloud' },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-center gap-3 text-[12px] text-slate-400">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-violet-500/10">
+                    <Icon className="h-3.5 w-3.5 text-violet-400" />
+                  </div>
+                  {text}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to={isAuthenticated ? ALL_ROUTER.PRIVATE.KARAOKE_STUDIO : ALL_ROUTER.PUBLIC.AUTH}
+              className="group inline-flex items-center gap-2 rounded-full border border-violet-500/40 bg-violet-500/10 px-7 py-3 text-[10px] font-black uppercase tracking-widest text-violet-400 transition-all hover:bg-violet-500 hover:text-white"
+            >
+              Mở Karaoke Studio{' '}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};

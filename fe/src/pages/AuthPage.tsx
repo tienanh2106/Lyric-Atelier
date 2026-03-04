@@ -20,9 +20,8 @@ export const AuthPage = () => {
         {/* Header with tabs */}
         <div className="border-b border-white/[0.06] p-8">
           <div className="mb-6 flex items-center justify-center gap-2">
-            <span className="text-sm font-black uppercase tracking-widest text-white">LYRIC</span>
-            <div className="h-1 w-1 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></div>
-            <span className="text-sm font-black uppercase tracking-widest text-white">ATELIER</span>
+            <span className="text-sm font-black uppercase tracking-widest text-white">MELOD</span>
+            <span className="text-sm font-black uppercase tracking-widest text-amber-400">AI</span>
           </div>
 
           {/* Tab Toggle */}

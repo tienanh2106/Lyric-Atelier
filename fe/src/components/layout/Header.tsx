@@ -22,9 +22,8 @@ export const Header = () => {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link to={ALL_ROUTER.PUBLIC.HOME} className="flex items-center gap-2">
-          <span className="text-sm font-black uppercase tracking-widest text-white">LYRIC</span>
-          <div className="h-1 w-1 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></div>
-          <span className="text-sm font-black uppercase tracking-widest text-white">ATELIER</span>
+          <span className="text-sm font-black uppercase tracking-widest text-white">MELOD</span>
+          <span className="text-sm font-black uppercase tracking-widest text-amber-400">AI</span>
         </Link>
 
         {/* Navigation & Auth */}
@@ -44,14 +43,14 @@ export const Header = () => {
                 Studio
               </Link>
             )}
-            {/* {isAuthenticated && (
+            {isAuthenticated && (
               <Link
                 to={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
                 className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-amber-400"
               >
                 Karaoke
               </Link>
-            )} */}
+            )}
           </nav>
 
           {isInitialized ? (
@@ -93,6 +92,13 @@ export const Header = () => {
                         className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-400"
                       >
                         Studio
+                      </Link>
+                      <Link
+                        to={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-400"
+                      >
+                        Karaoke Studio
                       </Link>
                       <button
                         onClick={handleLogout}

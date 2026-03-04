@@ -9,7 +9,7 @@ export const Footer = () => {
           </span>
         </div>
         <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">
-          © ATELIER PLATINUM 2025
+          © MELODAI 2026
         </span>
       </div>
     </footer>

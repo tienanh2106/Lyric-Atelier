@@ -6,11 +6,11 @@ export const NotFoundPage = () => {
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="glass-panel animate-in fade-in slide-in-from-bottom-12 flex flex-col items-center gap-8 rounded-[3rem] border border-slate-200 p-12 text-center duration-700">
         <div className="flex items-center gap-3">
-          <span className="text-6xl font-black text-slate-900">404</span>
+          <span className="text-6xl font-black text-white">404</span>
           <div className="h-2 w-2 rounded-full bg-amber-500"></div>
         </div>
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-black uppercase tracking-widest text-slate-900">
+          <h1 className="text-xl font-black uppercase tracking-widest text-white">
             Không Tìm Thấy Trang
           </h1>
           <p className="text-[11px] uppercase tracking-widest text-slate-600">
