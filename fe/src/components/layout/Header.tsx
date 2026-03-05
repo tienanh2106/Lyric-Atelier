@@ -43,7 +43,7 @@ export const Header = () => {
                 Studio
               </Link>
             )}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Link
                 to={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
                 className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-amber-400"
@@ -51,6 +51,14 @@ export const Header = () => {
                 Karaoke
               </Link>
             )}
+            {isAuthenticated && (
+              <Link
+                to={ALL_ROUTER.PRIVATE.KARAOKE_PRO}
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-violet-400"
+              >
+                Karaoke Pro
+              </Link>
+            )} */}
           </nav>
 
           {isInitialized ? (
@@ -99,6 +107,13 @@ export const Header = () => {
                         className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-400"
                       >
                         Karaoke Studio
+                      </Link>
+                      <Link
+                        to={ALL_ROUTER.PRIVATE.KARAOKE_PRO}
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-violet-500/10 hover:text-violet-400"
+                      >
+                        Karaoke Pro
                       </Link>
                       <button
                         onClick={handleLogout}

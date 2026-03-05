@@ -10,6 +10,13 @@ import { PaymentCancelPage } from '../pages/PaymentCancelPage';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const KaraokeStudioPage = lazy(() => import('../pages/KaraokeStudioPage'));
+const KaraokeProPage = lazy(() => import('../pages/KaraokeProPage'));
+
+const LazyFallback = (
+  <div className="flex min-h-screen items-center justify-center text-sm text-slate-400">
+    Đang tải...
+  </div>
+);
 
 export const AppRoutes = () => (
   <Routes>
@@ -23,14 +30,16 @@ export const AppRoutes = () => (
         {/* <Route
           path={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
           element={
-            <Suspense
-              fallback={
-                <div className="flex min-h-screen items-center justify-center text-sm text-slate-400">
-                  Đang tải...
-                </div>
-              }
-            >
+            <Suspense fallback={LazyFallback}>
               <KaraokeStudioPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ALL_ROUTER.PRIVATE.KARAOKE_PRO}
+          element={
+            <Suspense fallback={LazyFallback}>
+              <KaraokeProPage />
             </Suspense>
           }
         /> */}
@@ -50,5 +59,6 @@ export const ALL_ROUTER = {
     STUDIO: '/studio',
     PAYMENT_RETURN: '/payment/return',
     KARAOKE_STUDIO: '/karaoke-studio',
+    KARAOKE_PRO: '/karaoke-pro',
   },
 };

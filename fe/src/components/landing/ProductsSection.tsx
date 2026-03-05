@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { ALL_ROUTER } from '../../routes';
-import { ArrowRight, Wand2, Video, Mic, Scissors, Sparkles, Film } from 'lucide-react';
+import { ArrowRight, Wand2, Video, Mic, Scissors, Sparkles, Film, Zap, Timer, Layers } from 'lucide-react';
 
 export const ProductsSection = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -128,7 +128,7 @@ export const ProductsSection = () => {
         </div>
 
         {/* Product 2 — Karaoke Studio */}
-        <div className="grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-violet-500/15 lg:grid-cols-2 lg:p-16">
+        <div className="mb-8 grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-violet-500/15 lg:grid-cols-2 lg:p-16">
           {/* Left: Visual mock */}
           <div className="relative flex items-center justify-center lg:order-first">
             <div className="relative w-full max-w-sm">
@@ -237,6 +237,107 @@ export const ProductsSection = () => {
               Mở Karaoke Studio{' '}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
+          </div>
+        </div>
+
+        {/* Product 3 — Karaoke Pro */}
+        <div className="mt-8 grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-fuchsia-500/15 lg:grid-cols-2 lg:p-16">
+          {/* Left: info */}
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500/10 ring-1 ring-fuchsia-500/20">
+                <Layers className="h-6 w-6 text-fuchsia-400" />
+              </div>
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-fuchsia-400/70">
+                  Công Cụ 03
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight text-white">
+                  Karaoke Pro
+                </h3>
+              </div>
+            </div>
+
+            <p className="mb-8 text-[15px] leading-relaxed text-slate-400">
+              Chỉnh từng từ, từng mili-giây — sự hoàn hảo nằm trong chi tiết. 12 VFX độc quyền,
+              background filters, tách vocal ngay trên trình duyệt, không cần server.
+            </p>
+
+            <ul className="mb-10 space-y-4">
+              {[
+                { icon: Zap, text: '12 VFX: Matrix, Aurora, Nebula, Glitch và nhiều hơn' },
+                { icon: Timer, text: 'Chỉnh từng từ ±50ms — timing chuẩn đến tuyệt đối' },
+                { icon: Scissors, text: 'Tách vocal miễn phí — Web Audio API phase cancellation' },
+                { icon: Sparkles, text: 'Background filters: brightness, contrast, blur real-time' },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-center gap-3 text-[12px] text-slate-400">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-fuchsia-500/10">
+                    <Icon className="h-3.5 w-3.5 text-fuchsia-400" />
+                  </div>
+                  {text}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to={isAuthenticated ? ALL_ROUTER.PRIVATE.KARAOKE_PRO : ALL_ROUTER.PUBLIC.AUTH}
+              className="group inline-flex items-center gap-2 rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-7 py-3 text-[10px] font-black uppercase tracking-widest text-fuchsia-400 transition-all hover:bg-fuchsia-500 hover:text-white"
+            >
+              Mở Karaoke Pro{' '}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+
+          {/* Right: Visual mock */}
+          <div className="relative flex items-center justify-center">
+            <div className="relative w-full max-w-sm">
+              <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0d0f1c] shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+                {/* Fake canvas */}
+                <div className="relative h-48 overflow-hidden bg-[#050709]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-900/30 via-transparent to-violet-900/20" />
+                  {/* Fake matrix chars */}
+                  {[10, 30, 55, 80, 105, 130, 155, 180, 205].map((x, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-0 font-mono text-[11px] font-bold text-green-400/50"
+                      style={{ left: x, animationDelay: `${i * 0.15}s` }}
+                    >
+                      {['0', '1', 'ア', 'カ', '二'][i % 5]}
+                    </div>
+                  ))}
+                  {/* Fake aurora bands */}
+                  <div className="absolute left-0 right-0 top-8 h-6 rounded-full bg-gradient-to-r from-transparent via-fuchsia-500/20 to-transparent blur-sm" />
+                  <div className="absolute left-0 right-0 top-16 h-4 rounded-full bg-gradient-to-r from-transparent via-violet-500/15 to-transparent blur-sm" />
+                  {/* Fake lyric */}
+                  <div className="absolute bottom-16 left-0 right-0 flex justify-center gap-1">
+                    {['Từng', 'từ', 'sáng', 'đúng', 'nhịp'].map((word, i) => (
+                      <span
+                        key={i}
+                        className={`text-sm font-black ${i < 3 ? 'text-fuchsia-400' : 'text-white/30'}`}
+                      >
+                        {word}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {/* Word timing mock */}
+                <div className="space-y-1.5 p-4">
+                  {['Từng', 'từ', 'sáng'].map((word, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="w-12 text-[10px] font-bold text-fuchsia-400">{word}</span>
+                      <div className="flex-1 rounded-full bg-white/[0.05] h-1.5">
+                        <div
+                          className="h-full rounded-full bg-fuchsia-500/60"
+                          style={{ width: `${60 + i * 15}%` }}
+                        />
+                      </div>
+                      <span className="font-mono text-[9px] text-slate-600">{(1.2 + i * 0.4).toFixed(1)}s</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 h-40 w-40 rounded-full bg-fuchsia-500/10 blur-[50px]" />
+            </div>
           </div>
         </div>
       </div>
