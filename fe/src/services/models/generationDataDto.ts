@@ -11,8 +11,6 @@ export type GenerationDataDto = {
   generatedText: string;
   /** Credits used for generation */
   creditsUsed: number;
-  /** Tokens used in generation */
-  tokensUsed: number;
   /** Remaining credits after generation */
   remainingCredits: number;
 };

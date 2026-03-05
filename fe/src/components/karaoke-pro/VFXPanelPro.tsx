@@ -8,9 +8,18 @@ interface Props {
 }
 
 const VFX_TYPES: ProVFXType[] = [
-  'none', 'stars', 'snow', 'fireflies', 'bubbles',
-  'matrix', 'nebula', 'aurora', 'glitch-lines',
-  'parallax-stars', 'geometric-drift', 'fluid-smoke',
+  'none',
+  'stars',
+  'snow',
+  'fireflies',
+  'bubbles',
+  'matrix',
+  'nebula',
+  'aurora',
+  'glitch-lines',
+  'parallax-stars',
+  'geometric-drift',
+  'fluid-smoke',
 ];
 
 export const VFXPanelPro: React.FC<Props> = ({ style, onUpdate }) => (
@@ -42,11 +51,16 @@ export const VFXPanelPro: React.FC<Props> = ({ style, onUpdate }) => (
       <>
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Mật Độ</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+              Mật Độ
+            </span>
             <span className="font-mono text-[11px] text-slate-400">{style.vfxDensity}</span>
           </div>
           <input
-            type="range" min={10} max={200} value={style.vfxDensity}
+            type="range"
+            min={10}
+            max={200}
+            value={style.vfxDensity}
             onChange={(e) => onUpdate('vfxDensity', parseInt(e.target.value))}
             className="w-full accent-violet-500"
           />
@@ -54,11 +68,19 @@ export const VFXPanelPro: React.FC<Props> = ({ style, onUpdate }) => (
 
         <div>
           <div className="mb-1.5 flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Tốc Độ</span>
-            <span className="font-mono text-[11px] text-slate-400">{style.vfxSpeed.toFixed(1)}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+              Tốc Độ
+            </span>
+            <span className="font-mono text-[11px] text-slate-400">
+              {style.vfxSpeed.toFixed(1)}
+            </span>
           </div>
           <input
-            type="range" min={0.3} max={4.0} step={0.1} value={style.vfxSpeed}
+            type="range"
+            min={0.3}
+            max={4.0}
+            step={0.1}
+            value={style.vfxSpeed}
             onChange={(e) => onUpdate('vfxSpeed', parseFloat(e.target.value))}
             className="w-full accent-violet-500"
           />

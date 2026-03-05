@@ -8,8 +8,14 @@ interface Props {
 }
 
 const ANIMATIONS: ProAnimationType[] = [
-  'classic', 'smooth', 'neon-glow', 'fill-step',
-  'rhythmic-pulse', 'zoom', 'bounce', 'rainbow',
+  'classic',
+  'smooth',
+  'neon-glow',
+  'fill-step',
+  'rhythmic-pulse',
+  'zoom',
+  'bounce',
+  'rainbow',
 ];
 
 const VISUALIZER_OPTIONS = [

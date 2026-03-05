@@ -8,14 +8,19 @@ interface Props {
   onExportMp4: () => void;
 }
 
-export const ExportStepPro: React.FC<Props> = ({ isExporting, exportProgress, onExportWebm, onExportMp4 }) => (
+export const ExportStepPro: React.FC<Props> = ({
+  isExporting,
+  exportProgress,
+  onExportWebm,
+  onExportMp4,
+}) => (
   <div className="space-y-5 p-4">
     <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
       Xuất Video
     </div>
 
     {isExporting ? (
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 space-y-4">
+      <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
         <div className="flex items-center gap-3">
           <div className="h-2 w-2 animate-pulse rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
           <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">
@@ -75,7 +80,9 @@ export const ExportStepPro: React.FC<Props> = ({ isExporting, exportProgress, on
     )}
 
     <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3">
-      <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-600">Lưu ý</div>
+      <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-600">
+        Lưu ý
+      </div>
       <ul className="space-y-1 text-[11px] text-slate-600">
         <li>• WebM: Ghi real-time, cần đợi bằng thời lượng nhạc</li>
         <li>• MP4: Encode nhanh không real-time, cần Chrome 94+ (VideoEncoder API)</li>

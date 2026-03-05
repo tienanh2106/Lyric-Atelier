@@ -30,11 +30,15 @@ export const WordTimingEditorPro: React.FC<Props> = ({
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
             Global Offset
           </span>
-          <span className="font-mono text-[11px] text-violet-400">{style.globalOffset.toFixed(2)}s</span>
+          <span className="font-mono text-[11px] text-violet-400">
+            {style.globalOffset.toFixed(2)}s
+          </span>
         </div>
         <input
           type="range"
-          min={-5} max={5} step={0.05}
+          min={-5}
+          max={5}
+          step={0.05}
           value={style.globalOffset}
           onChange={(e) => onGlobalOffset(parseFloat(e.target.value))}
           className="w-full accent-violet-500"
@@ -46,11 +50,11 @@ export const WordTimingEditorPro: React.FC<Props> = ({
       </div>
 
       {/* Lines list */}
-      <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 px-1">
+      <div className="px-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
         {lines.length} dòng — click để mở chỉnh từng từ
       </div>
 
-      <div className="space-y-2 max-h-[calc(100vh-28rem)] overflow-y-auto pr-1">
+      <div className="max-h-[calc(100vh-28rem)] space-y-2 overflow-y-auto pr-1">
         {lines.map((line) => {
           const isExpanded = expandedLineId === line.id;
           const lineText = line.words.map((w) => w.text).join(' ');
@@ -75,7 +79,9 @@ export const WordTimingEditorPro: React.FC<Props> = ({
                 {isActive && (
                   <div className="h-2 w-2 shrink-0 rounded-full bg-violet-400 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
                 )}
-                <span className="flex-1 truncate text-[11px] font-bold text-slate-300">{lineText}</span>
+                <span className="flex-1 truncate text-[11px] font-bold text-slate-300">
+                  {lineText}
+                </span>
                 <span className="shrink-0 font-mono text-[9px] text-slate-600">
                   {fmt(line.words[0]?.startTime ?? 0)}s
                 </span>
@@ -88,16 +94,19 @@ export const WordTimingEditorPro: React.FC<Props> = ({
 
               {/* Word editor */}
               {isExpanded && (
-                <div className="border-t border-white/[0.06] px-4 py-3 space-y-3">
+                <div className="space-y-3 border-t border-white/[0.06] px-4 py-3">
                   {line.words.map((word, wi) => {
-                    const isWordActive = word.startTime <= currentTime && word.endTime > currentTime;
+                    const isWordActive =
+                      word.startTime <= currentTime && word.endTime > currentTime;
                     return (
                       <div
                         key={wi}
                         className={`rounded-lg p-2 ${isWordActive ? 'bg-violet-500/10' : ''}`}
                       >
                         <div className="mb-2 flex items-center gap-2">
-                          <span className={`text-[11px] font-bold ${isWordActive ? 'text-violet-300' : 'text-slate-400'}`}>
+                          <span
+                            className={`text-[11px] font-bold ${isWordActive ? 'text-violet-300' : 'text-slate-400'}`}
+                          >
                             {word.text}
                           </span>
                         </div>
@@ -105,7 +114,11 @@ export const WordTimingEditorPro: React.FC<Props> = ({
                           {/* Start time */}
                           <div className="flex items-center gap-1">
                             <button
-                              onClick={() => onWordEdit(line.id, wi, { startTime: Math.max(0, word.startTime - DELTA) })}
+                              onClick={() =>
+                                onWordEdit(line.id, wi, {
+                                  startTime: Math.max(0, word.startTime - DELTA),
+                                })
+                              }
                               className="flex h-5 w-5 items-center justify-center rounded-md bg-white/5 hover:bg-white/10"
                             >
                               <Minus className="h-2.5 w-2.5 text-slate-400" />
@@ -114,17 +127,23 @@ export const WordTimingEditorPro: React.FC<Props> = ({
                               {fmt(word.startTime)}
                             </span>
                             <button
-                              onClick={() => onWordEdit(line.id, wi, { startTime: word.startTime + DELTA })}
+                              onClick={() =>
+                                onWordEdit(line.id, wi, { startTime: word.startTime + DELTA })
+                              }
                               className="flex h-5 w-5 items-center justify-center rounded-md bg-white/5 hover:bg-white/10"
                             >
                               <Plus className="h-2.5 w-2.5 text-slate-400" />
                             </button>
-                            <span className="text-[9px] text-slate-700 ml-0.5">start</span>
+                            <span className="ml-0.5 text-[9px] text-slate-700">start</span>
                           </div>
                           {/* End time */}
                           <div className="flex items-center gap-1">
                             <button
-                              onClick={() => onWordEdit(line.id, wi, { endTime: Math.max(word.startTime + 0.05, word.endTime - DELTA) })}
+                              onClick={() =>
+                                onWordEdit(line.id, wi, {
+                                  endTime: Math.max(word.startTime + 0.05, word.endTime - DELTA),
+                                })
+                              }
                               className="flex h-5 w-5 items-center justify-center rounded-md bg-white/5 hover:bg-white/10"
                             >
                               <Minus className="h-2.5 w-2.5 text-slate-400" />
@@ -133,12 +152,14 @@ export const WordTimingEditorPro: React.FC<Props> = ({
                               {fmt(word.endTime)}
                             </span>
                             <button
-                              onClick={() => onWordEdit(line.id, wi, { endTime: word.endTime + DELTA })}
+                              onClick={() =>
+                                onWordEdit(line.id, wi, { endTime: word.endTime + DELTA })
+                              }
                               className="flex h-5 w-5 items-center justify-center rounded-md bg-white/5 hover:bg-white/10"
                             >
                               <Plus className="h-2.5 w-2.5 text-slate-400" />
                             </button>
-                            <span className="text-[9px] text-slate-700 ml-0.5">end</span>
+                            <span className="ml-0.5 text-[9px] text-slate-700">end</span>
                           </div>
                         </div>
                       </div>

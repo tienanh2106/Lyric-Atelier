@@ -26,6 +26,7 @@ import { MediaToTextDto } from './dto/media-to-text.dto';
 import { RewriteLyricsDto } from './dto/rewrite-lyrics.dto';
 import { DetectThemeDto } from './dto/detect-theme.dto';
 import { ScenarioFromThemeDto } from './dto/scenario-from-theme.dto';
+import { GenerateNeonThemeDto } from './dto/generate-neon-theme.dto';
 import {
   GenerationResponseDto,
   CostEstimationDto,
@@ -298,6 +299,30 @@ export class GenAIController {
     res.set('Content-Type', 'audio/mpeg');
     res.set('Content-Disposition', 'attachment; filename="instrumental.mp3"');
     res.send(buffer);
+  }
+
+  @Post('generate-neon-theme')
+  @ApiOperation({
+    operationId: 'generateNeonTheme',
+    summary: 'Generate a NeonPulse visualizer theme from mood',
+    description:
+      'Given a mood/style string, generate a creative song title, background visual prompt, and color theme for the NeonPulse visualizer. Cost: 5 credits fixed.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Neon theme generated successfully',
+    type: GenerationResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Insufficient credits or invalid input',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  generateNeonTheme(
+    @CurrentUser() user: User,
+    @Body() dto: GenerateNeonThemeDto,
+  ) {
+    return this.genAIService.generateNeonTheme(user.id, dto);
   }
 
   @Post('media-to-text')

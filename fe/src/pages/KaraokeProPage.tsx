@@ -49,12 +49,13 @@ const KaraokeProPage: React.FC = () => {
     error: vocalError,
   } = useVocalRemoval(project.audioFile);
 
-  const audioSrc = useInstrumental && instrumentalUrl
-    ? instrumentalUrl
-    : project.audioUrl ?? '';
+  const audioSrc = useInstrumental && instrumentalUrl ? instrumentalUrl : (project.audioUrl ?? '');
 
-  const { isExporting, exportProgress, handleExport, handleExportMP4 } =
-    useKaraokeProExport(project, instrumentalUrl, setError);
+  const { isExporting, exportProgress, handleExport, handleExportMP4 } = useKaraokeProExport(
+    project,
+    instrumentalUrl,
+    setError
+  );
 
   // Load extra Google Fonts for Pro
   useEffect(() => {
@@ -106,7 +107,8 @@ const KaraokeProPage: React.FC = () => {
           <div className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.05] px-3 py-1.5">
             <div className="h-2 w-2 animate-pulse rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
             <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">
-              {project.lines.length} dòng &middot; {project.lines.reduce((a, l) => a + l.words.length, 0)} từ
+              {project.lines.length} dòng &middot;{' '}
+              {project.lines.reduce((a, l) => a + l.words.length, 0)} từ
             </span>
           </div>
           <RefreshCw
@@ -121,10 +123,7 @@ const KaraokeProPage: React.FC = () => {
         {/* Canvas preview */}
         <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-[#050a14] p-6">
           <div className="group relative aspect-video w-full max-w-[1080px] overflow-hidden rounded-[2rem] border border-white/[0.06] bg-black shadow-2xl">
-            <KaraokeProRenderer
-              currentTime={currentTime}
-              project={project}
-            />
+            <KaraokeProRenderer currentTime={currentTime} project={project} />
             {/* Time overlay */}
             <div className="absolute left-6 top-6 z-40 flex scale-95 items-center gap-4 rounded-xl border border-white/10 bg-black/60 px-4 py-2 opacity-0 backdrop-blur-2xl transition-all group-hover:scale-100 group-hover:opacity-100">
               <div className="rec-dot h-3 w-3 rounded-full bg-red-600 shadow-[0_0_15px_red]" />

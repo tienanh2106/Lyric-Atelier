@@ -75,6 +75,9 @@ export const CREDIT_CONFIG = {
 
   /** extractInstrumental — ffmpeg karaoke filter, CPU-bound */
   extractInstrumental: { fixed: 3 },
+
+  /** generateNeonTheme — Gemini Flash, short JSON output for NeonPulse visualizer */
+  generateNeonTheme: { fixed: 5 },
 } as const;
 
 /** Compute dynamic cost: max(MIN_COST, baseCost + ceil(wordCount × ratePerWord)) */

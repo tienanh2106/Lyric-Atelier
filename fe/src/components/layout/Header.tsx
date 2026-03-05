@@ -59,6 +59,14 @@ export const Header = () => {
                 Karaoke Pro
               </Link>
             )} */}
+            {isAuthenticated && (
+              <Link
+                to={ALL_ROUTER.PRIVATE.NEON_PULSE}
+                className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-violet-400"
+              >
+                Neon Pulse
+              </Link>
+            )}
           </nav>
 
           {isInitialized ? (
@@ -114,6 +122,13 @@ export const Header = () => {
                         className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-violet-500/10 hover:text-violet-400"
                       >
                         Karaoke Pro
+                      </Link>
+                      <Link
+                        to={ALL_ROUTER.PRIVATE.NEON_PULSE}
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-400"
+                      >
+                        Neon Pulse
                       </Link>
                       <button
                         onClick={handleLogout}

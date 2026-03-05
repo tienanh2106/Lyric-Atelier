@@ -1,7 +1,21 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
 import { ALL_ROUTER } from '../../routes';
-import { ArrowRight, Wand2, Video, Mic, Scissors, Sparkles, Film, Zap, Timer, Layers } from 'lucide-react';
+import {
+  ArrowRight,
+  Wand2,
+  Video,
+  Mic,
+  Scissors,
+  Sparkles,
+  Film,
+  Zap,
+  Timer,
+  Layers,
+  Music,
+  Heart,
+  Activity,
+} from 'lucide-react';
 
 export const ProductsSection = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -268,7 +282,10 @@ export const ProductsSection = () => {
                 { icon: Zap, text: '12 VFX: Matrix, Aurora, Nebula, Glitch và nhiều hơn' },
                 { icon: Timer, text: 'Chỉnh từng từ ±50ms — timing chuẩn đến tuyệt đối' },
                 { icon: Scissors, text: 'Tách vocal miễn phí — Web Audio API phase cancellation' },
-                { icon: Sparkles, text: 'Background filters: brightness, contrast, blur real-time' },
+                {
+                  icon: Sparkles,
+                  text: 'Background filters: brightness, contrast, blur real-time',
+                },
               ].map(({ icon: Icon, text }) => (
                 <li key={text} className="flex items-center gap-3 text-[12px] text-slate-400">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-fuchsia-500/10">
@@ -325,19 +342,138 @@ export const ProductsSection = () => {
                   {['Từng', 'từ', 'sáng'].map((word, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span className="w-12 text-[10px] font-bold text-fuchsia-400">{word}</span>
-                      <div className="flex-1 rounded-full bg-white/[0.05] h-1.5">
+                      <div className="h-1.5 flex-1 rounded-full bg-white/[0.05]">
                         <div
                           className="h-full rounded-full bg-fuchsia-500/60"
                           style={{ width: `${60 + i * 15}%` }}
                         />
                       </div>
-                      <span className="font-mono text-[9px] text-slate-600">{(1.2 + i * 0.4).toFixed(1)}s</span>
+                      <span className="font-mono text-[9px] text-slate-600">
+                        {(1.2 + i * 0.4).toFixed(1)}s
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="absolute -bottom-6 -right-6 h-40 w-40 rounded-full bg-fuchsia-500/10 blur-[50px]" />
             </div>
+          </div>
+        </div>
+
+        {/* Product 4 — Neon Pulse */}
+        <div className="mt-8 grid grid-cols-1 items-center gap-12 overflow-hidden rounded-[3rem] border border-white/[0.07] bg-white/[0.02] p-12 transition-all hover:border-cyan-500/15 lg:grid-cols-2 lg:p-16">
+          {/* Left: Visual mock */}
+          <div className="relative flex items-center justify-center lg:order-first">
+            <div className="relative w-full max-w-sm">
+              <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-black shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+                {/* Fake canvas */}
+                <div className="relative h-56 overflow-hidden bg-black">
+                  {/* Fake BG gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/40 via-transparent to-purple-900/30" />
+                  {/* Fake star field */}
+                  {[...Array(12)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute h-0.5 w-0.5 rounded-full bg-white/60"
+                      style={{ top: `${(i * 37) % 90}%`, left: `${(i * 53) % 95}%` }}
+                    />
+                  ))}
+                  {/* Fake heartbeat visualizer */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-cyan-400/50 shadow-[0_0_30px_rgba(6,182,212,0.4)]">
+                      <Heart className="h-10 w-10 text-cyan-400 opacity-80" />
+                    </div>
+                  </div>
+                  {/* Fake laser lines */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                    {[0, 45, 90, 135].map((deg, i) => (
+                      <div
+                        key={i}
+                        className="absolute h-32 w-px bg-gradient-to-b from-transparent via-cyan-400 to-transparent"
+                        style={{ transform: `rotate(${deg}deg)` }}
+                      />
+                    ))}
+                  </div>
+                  {/* Fake title */}
+                  <div className="absolute bottom-6 left-0 right-0 text-center">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white shadow-[0_0_10px_rgba(6,182,212,0.8)]">
+                      NEON HORIZON
+                    </p>
+                    <p className="mt-0.5 text-[8px] tracking-widest text-cyan-400/70">
+                      OFFICIAL AUDIO
+                    </p>
+                  </div>
+                </div>
+                {/* Player mock */}
+                <div className="flex items-center gap-3 bg-black/40 p-4">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500">
+                    <div className="ml-0.5 h-0 w-0 border-b-[5px] border-l-[8px] border-t-[5px] border-b-transparent border-l-black border-t-transparent" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-1 w-full rounded-full bg-white/10">
+                      <div className="h-full w-1/3 rounded-full bg-cyan-400" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 rounded border border-red-500/50 bg-red-500/10 px-2 py-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                    <span className="text-[9px] font-bold text-red-400">REC</span>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-6 -left-6 h-40 w-40 rounded-full bg-cyan-500/10 blur-[50px]" />
+            </div>
+          </div>
+
+          {/* Right: info */}
+          <div>
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 ring-1 ring-cyan-500/20">
+                <Activity className="h-6 w-6 text-cyan-400" />
+              </div>
+              <div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-cyan-400/70">
+                  Công Cụ 04
+                </div>
+                <h3 className="text-2xl font-black uppercase tracking-tight text-white">
+                  Neon Pulse
+                </h3>
+              </div>
+            </div>
+
+            <p className="mb-8 text-[15px] leading-relaxed text-slate-400">
+              Âm nhạc sống động như thị giác. 7 bộ visualizer phản ứng theo từng nhịp bass — từ trái
+              tim đập đến đường hầm neon — ghi lại trực tiếp thành WebM.
+            </p>
+
+            <ul className="mb-10 space-y-4">
+              {[
+                {
+                  icon: Heart,
+                  text: '7 Visualizer: Heartbeat, Laser, Tunnel, Equalizer và nhiều hơn',
+                },
+                { icon: Music, text: 'Phân tích bass real-time — hiệu ứng phản ứng từng nhịp đập' },
+                {
+                  icon: Sparkles,
+                  text: 'Fireflies, Shooting Stars, Radial Burst — hiệu ứng phụ đa dạng',
+                },
+                { icon: Zap, text: 'AI Theme Generator — 1 click ra màu sắc + tiêu đề' },
+              ].map(({ icon: Icon, text }) => (
+                <li key={text} className="flex items-center gap-3 text-[12px] text-slate-400">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-cyan-500/10">
+                    <Icon className="h-3.5 w-3.5 text-cyan-400" />
+                  </div>
+                  {text}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to={isAuthenticated ? ALL_ROUTER.PRIVATE.NEON_PULSE : ALL_ROUTER.PUBLIC.AUTH}
+              className="group inline-flex items-center gap-2 rounded-full border border-cyan-500/40 bg-cyan-500/10 px-7 py-3 text-[10px] font-black uppercase tracking-widest text-cyan-400 transition-all hover:bg-cyan-500 hover:text-black"
+            >
+              Mở Neon Pulse{' '}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
         </div>
       </div>

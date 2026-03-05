@@ -27,6 +27,7 @@ import type {
   EstimateCostParams,
   ExtractInstrumentalBody,
   GenerateContentDto,
+  GenerateNeonThemeDto,
   GenerationResponseDto,
   MediaToTextDto,
   RewriteLyricsDto,
@@ -863,6 +864,93 @@ export const useExtractInstrumental = <TError = ErrorType<void>, TContext = unkn
   TContext
 > => {
   const mutationOptions = getExtractInstrumentalMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Given a mood/style string, generate a creative song title, background visual prompt, and color theme for the NeonPulse visualizer. Cost: 5 credits fixed.
+ * @summary Generate a NeonPulse visualizer theme from mood
+ */
+export const generateNeonTheme = (
+  generateNeonThemeDto: BodyType<GenerateNeonThemeDto>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<GenerationResponseDto>(
+    {
+      url: `/api/genai/generate-neon-theme`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: generateNeonThemeDto,
+      signal,
+    },
+    options
+  );
+};
+
+export const getGenerateNeonThemeMutationOptions = <
+  TError = ErrorType<void>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof generateNeonTheme>>,
+    TError,
+    { data: BodyType<GenerateNeonThemeDto> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof generateNeonTheme>>,
+  TError,
+  { data: BodyType<GenerateNeonThemeDto> },
+  TContext
+> => {
+  const mutationKey = ['generateNeonTheme'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof generateNeonTheme>>,
+    { data: BodyType<GenerateNeonThemeDto> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return generateNeonTheme(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateNeonThemeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof generateNeonTheme>>
+>;
+export type GenerateNeonThemeMutationBody = BodyType<GenerateNeonThemeDto>;
+export type GenerateNeonThemeMutationError = ErrorType<void>;
+
+/**
+ * @summary Generate a NeonPulse visualizer theme from mood
+ */
+export const useGenerateNeonTheme = <TError = ErrorType<void>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof generateNeonTheme>>,
+      TError,
+      { data: BodyType<GenerateNeonThemeDto> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof generateNeonTheme>>,
+  TError,
+  { data: BodyType<GenerateNeonThemeDto> },
+  TContext
+> => {
+  const mutationOptions = getGenerateNeonThemeMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

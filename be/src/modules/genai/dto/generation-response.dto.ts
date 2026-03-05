@@ -15,12 +15,6 @@ export class GenerationDataDto {
   creditsUsed: number;
 
   @ApiProperty({
-    description: 'Tokens used in generation',
-    example: 50,
-  })
-  tokensUsed: number;
-
-  @ApiProperty({
     description: 'Remaining credits after generation',
     example: 95,
   })

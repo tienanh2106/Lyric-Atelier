@@ -27,6 +27,7 @@ export * from './detectThemeDto';
 export * from './estimateCostParams';
 export * from './extractInstrumentalBody';
 export * from './generateContentDto';
+export * from './generateNeonThemeDto';
 export * from './generationDataDto';
 export * from './generationResponseDto';
 export * from './getCreditLedgerParams';

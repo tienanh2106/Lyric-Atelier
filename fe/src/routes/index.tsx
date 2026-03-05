@@ -11,6 +11,9 @@ import { ProtectedRoute } from './ProtectedRoute';
 
 const KaraokeStudioPage = lazy(() => import('../pages/KaraokeStudioPage'));
 const KaraokeProPage = lazy(() => import('../pages/KaraokeProPage'));
+const NeonPulsePage = lazy(() =>
+  import('../pages/NeonPulsePage').then((m) => ({ default: m.NeonPulsePage }))
+);
 
 const LazyFallback = (
   <div className="flex min-h-screen items-center justify-center text-sm text-slate-400">
@@ -43,6 +46,14 @@ export const AppRoutes = () => (
             </Suspense>
           }
         /> */}
+        <Route
+          path={ALL_ROUTER.PRIVATE.NEON_PULSE}
+          element={
+            <Suspense fallback={LazyFallback}>
+              <NeonPulsePage />
+            </Suspense>
+          }
+        />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>
@@ -60,5 +71,6 @@ export const ALL_ROUTER = {
     PAYMENT_RETURN: '/payment/return',
     KARAOKE_STUDIO: '/karaoke-studio',
     KARAOKE_PRO: '/karaoke-pro',
+    NEON_PULSE: '/neon-pulse',
   },
 };

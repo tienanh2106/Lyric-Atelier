@@ -57,11 +57,7 @@ export function useVocalRemoval(audioFile: File | null) {
       const decoded = await tempCtx.decodeAudioData(arrayBuffer.slice(0));
       await tempCtx.close();
 
-      const offlineCtx = new OfflineAudioContext(
-        2,
-        decoded.length,
-        decoded.sampleRate
-      );
+      const offlineCtx = new OfflineAudioContext(2, decoded.length, decoded.sampleRate);
 
       const source = offlineCtx.createBufferSource();
       source.buffer = decoded;

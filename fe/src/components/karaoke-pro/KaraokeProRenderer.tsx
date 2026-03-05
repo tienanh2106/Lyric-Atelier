@@ -10,11 +10,18 @@ interface KaraokeProRendererProps {
 
 // ─── VFX Particle ──────────────────────────────────────────────────────────
 interface Particle {
-  x: number; y: number;
-  vx: number; vy: number;
-  size: number; opacity: number;
-  color: string; life: number; maxLife: number;
-  angle?: number; shape?: string; layer?: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  opacity: number;
+  color: string;
+  life: number;
+  maxLife: number;
+  angle?: number;
+  shape?: string;
+  layer?: number;
   phase?: number;
 }
 
@@ -25,44 +32,122 @@ function initParticles(type: string, density: number, w: number, h: number): Par
 
   for (let i = 0; i < count; i++) {
     const base: Particle = {
-      x: Math.random() * w, y: Math.random() * h,
-      vx: 0, vy: 0, size: 2, opacity: 0.8,
-      color: '#ffffff', life: Math.random() * 100, maxLife: 100,
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: 0,
+      vy: 0,
+      size: 2,
+      opacity: 0.8,
+      color: '#ffffff',
+      life: Math.random() * 100,
+      maxLife: 100,
     };
 
     switch (type) {
       case 'stars':
-        particles.push({ ...base, size: Math.random() * 2.5 + 0.5, opacity: Math.random() * 0.8 + 0.2, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3 });
+        particles.push({
+          ...base,
+          size: Math.random() * 2.5 + 0.5,
+          opacity: Math.random() * 0.8 + 0.2,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+        });
         break;
       case 'snow':
-        particles.push({ ...base, size: Math.random() * 4 + 2, vy: Math.random() * 1.5 + 0.5, vx: (Math.random() - 0.5) * 0.5, opacity: Math.random() * 0.7 + 0.3, y: Math.random() * h });
+        particles.push({
+          ...base,
+          size: Math.random() * 4 + 2,
+          vy: Math.random() * 1.5 + 0.5,
+          vx: (Math.random() - 0.5) * 0.5,
+          opacity: Math.random() * 0.7 + 0.3,
+          y: Math.random() * h,
+        });
         break;
       case 'fireflies':
-        particles.push({ ...base, color: `hsl(${50 + Math.random() * 40}, 100%, 70%)`, size: Math.random() * 3 + 1, phase: Math.random() * Math.PI * 2, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.3 });
+        particles.push({
+          ...base,
+          color: `hsl(${50 + Math.random() * 40}, 100%, 70%)`,
+          size: Math.random() * 3 + 1,
+          phase: Math.random() * Math.PI * 2,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.3,
+        });
         break;
       case 'bubbles':
-        particles.push({ ...base, size: Math.random() * 12 + 4, vy: -(Math.random() * 1.5 + 0.5), vx: (Math.random() - 0.5) * 0.4, opacity: Math.random() * 0.3 + 0.1, color: `hsla(${200 + Math.random() * 60}, 80%, 80%, 0.3)` });
+        particles.push({
+          ...base,
+          size: Math.random() * 12 + 4,
+          vy: -(Math.random() * 1.5 + 0.5),
+          vx: (Math.random() - 0.5) * 0.4,
+          opacity: Math.random() * 0.3 + 0.1,
+          color: `hsla(${200 + Math.random() * 60}, 80%, 80%, 0.3)`,
+        });
         break;
       case 'nebula':
-        particles.push({ ...base, color: neonColors[Math.floor(Math.random() * neonColors.length)], size: Math.random() * 5 + 1, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, opacity: Math.random() * 0.6 + 0.1, life: Math.random() * 200, maxLife: 200 });
+        particles.push({
+          ...base,
+          color: neonColors[Math.floor(Math.random() * neonColors.length)],
+          size: Math.random() * 5 + 1,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          opacity: Math.random() * 0.6 + 0.1,
+          life: Math.random() * 200,
+          maxLife: 200,
+        });
         break;
       case 'parallax-stars':
-        { const layer = Math.floor(i % 3);
-          particles.push({ ...base, size: (layer + 1) * 0.8, vx: -(layer + 1) * 0.2, vy: 0, opacity: (layer + 1) * 0.25, layer }); }
+        {
+          const layer = Math.floor(i % 3);
+          particles.push({
+            ...base,
+            size: (layer + 1) * 0.8,
+            vx: -(layer + 1) * 0.2,
+            vy: 0,
+            opacity: (layer + 1) * 0.25,
+            layer,
+          });
+        }
         break;
       case 'geometric-drift':
-        { const shapes = ['triangle', 'square', 'circle'];
-          particles.push({ ...base, shape: shapes[Math.floor(Math.random() * 3)], size: Math.random() * 16 + 6, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.3, angle: Math.random() * Math.PI * 2, opacity: Math.random() * 0.25 + 0.05, color: neonColors[Math.floor(Math.random() * neonColors.length)] }); }
+        {
+          const shapes = ['triangle', 'square', 'circle'];
+          particles.push({
+            ...base,
+            shape: shapes[Math.floor(Math.random() * 3)],
+            size: Math.random() * 16 + 6,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.3,
+            angle: Math.random() * Math.PI * 2,
+            opacity: Math.random() * 0.25 + 0.05,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)],
+          });
+        }
         break;
       case 'fluid-smoke':
-        particles.push({ ...base, size: Math.random() * 20 + 8, vy: -(Math.random() * 0.8 + 0.3), vx: (Math.random() - 0.5) * 0.6, opacity: 0, life: 0, maxLife: 180 + Math.random() * 60, color: `hsla(0, 0%, ${80 + Math.random() * 20}%, 0.3)` });
+        particles.push({
+          ...base,
+          size: Math.random() * 20 + 8,
+          vy: -(Math.random() * 0.8 + 0.3),
+          vx: (Math.random() - 0.5) * 0.6,
+          opacity: 0,
+          life: 0,
+          maxLife: 180 + Math.random() * 60,
+          color: `hsla(0, 0%, ${80 + Math.random() * 20}%, 0.3)`,
+        });
         break;
     }
   }
   return particles;
 }
 
-function updateParticles(particles: Particle[], type: string, speed: number, w: number, h: number, dt: number): Particle[] {
+function updateParticles(
+  particles: Particle[],
+  type: string,
+  speed: number,
+  w: number,
+  h: number,
+  dt: number
+): Particle[] {
   return particles.map((p) => {
     let nx = p.x + p.vx * speed * dt;
     let ny = p.y + p.vy * speed * dt;
@@ -76,17 +161,32 @@ function updateParticles(particles: Particle[], type: string, speed: number, w: 
 
     switch (type) {
       case 'snow':
-        if (ny > h + 20) { ny = -20; nx = Math.random() * w; }
+        if (ny > h + 20) {
+          ny = -20;
+          nx = Math.random() * w;
+        }
         break;
       case 'bubbles':
-        if (ny < -20) { ny = h + 20; nx = Math.random() * w; }
+        if (ny < -20) {
+          ny = h + 20;
+          nx = Math.random() * w;
+        }
         break;
       case 'fluid-smoke':
-        if (nlife < p.maxLife * 0.1) nopacity = nlife / (p.maxLife * 0.1) * 0.25;
-        else if (nlife > p.maxLife * 0.7) nopacity = (1 - (nlife - p.maxLife * 0.7) / (p.maxLife * 0.3)) * 0.25;
+        if (nlife < p.maxLife * 0.1) nopacity = (nlife / (p.maxLife * 0.1)) * 0.25;
+        else if (nlife > p.maxLife * 0.7)
+          nopacity = (1 - (nlife - p.maxLife * 0.7) / (p.maxLife * 0.3)) * 0.25;
         else nopacity = 0.25;
-        if (nlife >= p.maxLife) { nlife = 0; nx = Math.random() * w; ny = h + 20; }
-        if (ny < -p.size) { nlife = 0; nx = Math.random() * w; ny = h + 20; }
+        if (nlife >= p.maxLife) {
+          nlife = 0;
+          nx = Math.random() * w;
+          ny = h + 20;
+        }
+        if (ny < -p.size) {
+          nlife = 0;
+          nx = Math.random() * w;
+          ny = h + 20;
+        }
         break;
       case 'nebula':
         nlife++;
@@ -102,7 +202,16 @@ function updateParticles(particles: Particle[], type: string, speed: number, w: 
   });
 }
 
-function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: string, w: number, h: number, time: number, speed: number, density: number) {
+function drawVFX(
+  ctx: CanvasRenderingContext2D,
+  particles: Particle[],
+  type: string,
+  w: number,
+  h: number,
+  time: number,
+  speed: number,
+  density: number
+) {
   ctx.clearRect(0, 0, w, h);
 
   if (type === 'aurora') {
@@ -119,10 +228,15 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
       const yBase = h * 0.2 + b * h * 0.12;
       ctx.moveTo(0, yBase);
       for (let x = 0; x <= w; x += 10) {
-        const y = yBase + Math.sin(x / 120 + time * speed * 0.8 + b * 1.2) * 50 + Math.sin(x / 60 + time * speed * 0.4) * 25;
+        const y =
+          yBase +
+          Math.sin(x / 120 + time * speed * 0.8 + b * 1.2) * 50 +
+          Math.sin(x / 60 + time * speed * 0.4) * 25;
         ctx.lineTo(x, y);
       }
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
       ctx.fill();
     }
     return;
@@ -132,7 +246,7 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
     const numLines = Math.floor(Math.sin(time * speed * 3.7) * 4 + 5);
     for (let i = 0; i < numLines; i++) {
       const seed = Math.sin(time * speed * 10 + i * 127.4) * 10000;
-      const y = ((Math.abs(seed % h)));
+      const y = Math.abs(seed % h);
       const lineH = Math.abs(Math.sin(seed * 0.01) * 3 + 1);
       const glitchW = Math.abs(Math.sin(seed * 0.03) * w * 0.5) + w * 0.1;
       const glitchX = Math.abs(Math.sin(seed * 0.07) * w * 0.6);
@@ -162,7 +276,9 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
         const alpha = Math.max(0, (20 - j) / 20);
         if (j === 0) ctx.fillStyle = `rgba(180, 255, 180, ${alpha})`;
         else ctx.fillStyle = `rgba(0, 200, 70, ${alpha * 0.7})`;
-        const charIdx = Math.floor(Math.abs(Math.sin(i * 100 + j * 7.3 + time * colSpeedMod)) * chars.length) % chars.length;
+        const charIdx =
+          Math.floor(Math.abs(Math.sin(i * 100 + j * 7.3 + time * colSpeedMod)) * chars.length) %
+          chars.length;
         ctx.fillText(chars[charIdx], x, charY);
       }
     }
@@ -183,7 +299,8 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
         if (p.size > 1.5) {
-          ctx.shadowColor = '#fffacd'; ctx.shadowBlur = 4;
+          ctx.shadowColor = '#fffacd';
+          ctx.shadowBlur = 4;
           ctx.fill();
         }
         break;
@@ -198,10 +315,17 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
       case 'fireflies': {
         const glow = Math.abs(Math.sin((p.life + (p.phase ?? 0)) * 0.05));
         ctx.globalAlpha = p.opacity * glow;
-        ctx.shadowColor = p.color; ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 10;
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x + Math.sin(p.life * 0.03 + (p.phase ?? 0)) * 20, p.y + Math.cos(p.life * 0.02 + (p.phase ?? 0)) * 15, p.size, 0, Math.PI * 2);
+        ctx.arc(
+          p.x + Math.sin(p.life * 0.03 + (p.phase ?? 0)) * 20,
+          p.y + Math.cos(p.life * 0.02 + (p.phase ?? 0)) * 15,
+          p.size,
+          0,
+          Math.PI * 2
+        );
         ctx.fill();
         break;
       }
@@ -240,12 +364,17 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
         ctx.rotate(p.angle ?? 0);
         if (p.shape === 'triangle') {
           ctx.beginPath();
-          ctx.moveTo(0, -p.size); ctx.lineTo(p.size * 0.866, p.size * 0.5); ctx.lineTo(-p.size * 0.866, p.size * 0.5);
-          ctx.closePath(); ctx.fill();
+          ctx.moveTo(0, -p.size);
+          ctx.lineTo(p.size * 0.866, p.size * 0.5);
+          ctx.lineTo(-p.size * 0.866, p.size * 0.5);
+          ctx.closePath();
+          ctx.fill();
         } else if (p.shape === 'square') {
           ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
         } else {
-          ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
         }
         break;
       }
@@ -264,7 +393,13 @@ function drawVFX(ctx: CanvasRenderingContext2D, particles: Particle[], type: str
   }
 }
 
-function drawVisualizer(ctx: CanvasRenderingContext2D, type: string, w: number, h: number, time: number) {
+function drawVisualizer(
+  ctx: CanvasRenderingContext2D,
+  type: string,
+  w: number,
+  h: number,
+  time: number
+) {
   ctx.clearRect(0, 0, w, h);
   if (type === 'none') return;
 
@@ -277,8 +412,11 @@ function drawVisualizer(ctx: CanvasRenderingContext2D, type: string, w: number, 
       ctx.lineWidth = 2 - l * 0.5;
       const yBase = h * 0.5;
       for (let x = 0; x <= w; x += 4) {
-        const amp = (h * 0.08) * (1 - l * 0.2);
-        const y = yBase + Math.sin(x / 60 + time * 2 + l * 1.2) * amp + Math.sin(x / 30 + time * 3.7 + l * 0.8) * amp * 0.4;
+        const amp = h * 0.08 * (1 - l * 0.2);
+        const y =
+          yBase +
+          Math.sin(x / 60 + time * 2 + l * 1.2) * amp +
+          Math.sin(x / 30 + time * 3.7 + l * 0.8) * amp * 0.4;
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
@@ -293,7 +431,10 @@ function drawVisualizer(ctx: CanvasRenderingContext2D, type: string, w: number, 
     const gap = (w / bars) * 0.2;
     for (let i = 0; i < bars; i++) {
       const x = i * (barW + gap) + gap / 2;
-      const amp = Math.abs(Math.sin(i * 0.3 + time * 2.5)) * 0.5 + Math.abs(Math.sin(i * 0.7 + time * 1.8)) * 0.3 + Math.abs(Math.sin(i * 0.15 + time * 3.2)) * 0.2;
+      const amp =
+        Math.abs(Math.sin(i * 0.3 + time * 2.5)) * 0.5 +
+        Math.abs(Math.sin(i * 0.7 + time * 1.8)) * 0.3 +
+        Math.abs(Math.sin(i * 0.15 + time * 3.2)) * 0.2;
       const barH = amp * h * 0.35;
       const hue = (i / bars) * 360;
       const gradient = ctx.createLinearGradient(0, h * 0.5, 0, h * 0.5 - barH);
@@ -314,7 +455,7 @@ function getWordStyle(
   isFuture: boolean,
   animation: ProAnimationType,
   style: ProProjectData['style'],
-  adjustedTime: number,
+  adjustedTime: number
 ): React.CSSProperties {
   const base: React.CSSProperties = {
     fontFamily: style.fontFamily,
@@ -324,7 +465,8 @@ function getWordStyle(
     display: 'inline-block',
     transition: 'color 0.15s, transform 0.15s, text-shadow 0.15s',
     textShadow: style.shadowBlur > 0 ? `0 0 ${style.shadowBlur}px ${style.shadowColor}` : undefined,
-    WebkitTextStroke: style.strokeWidth > 0 ? `${style.strokeWidth}px ${style.strokeColor}` : undefined,
+    WebkitTextStroke:
+      style.strokeWidth > 0 ? `${style.strokeWidth}px ${style.strokeColor}` : undefined,
     position: 'relative',
   };
 
@@ -365,7 +507,10 @@ function getWordStyle(
   return base;
 }
 
-function getFillProgress(word: { startTime: number; endTime: number }, adjustedTime: number): number {
+function getFillProgress(
+  word: { startTime: number; endTime: number },
+  adjustedTime: number
+): number {
   if (adjustedTime < word.startTime) return 0;
   if (adjustedTime >= word.endTime) return 1;
   return (adjustedTime - word.startTime) / (word.endTime - word.startTime);
@@ -398,7 +543,12 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
     if (style.vfxType !== lastVfxTypeRef.current) {
       lastVfxTypeRef.current = style.vfxType;
       if (!['none', 'aurora', 'glitch-lines', 'matrix'].includes(style.vfxType)) {
-        particlesRef.current = initParticles(style.vfxType, style.vfxDensity, canvas.width, canvas.height);
+        particlesRef.current = initParticles(
+          style.vfxType,
+          style.vfxDensity,
+          canvas.width,
+          canvas.height
+        );
       } else {
         particlesRef.current = [];
       }
@@ -424,9 +574,25 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
 
       // Update + draw particles
       if (!['none', 'aurora', 'glitch-lines', 'matrix'].includes(style.vfxType)) {
-        particlesRef.current = updateParticles(particlesRef.current, style.vfxType, style.vfxSpeed, w, h, dt);
+        particlesRef.current = updateParticles(
+          particlesRef.current,
+          style.vfxType,
+          style.vfxSpeed,
+          w,
+          h,
+          dt
+        );
       }
-      drawVFX(vfxCtx, particlesRef.current, style.vfxType, w, h, animTimeRef.current, style.vfxSpeed, style.vfxDensity);
+      drawVFX(
+        vfxCtx,
+        particlesRef.current,
+        style.vfxType,
+        w,
+        h,
+        animTimeRef.current,
+        style.vfxSpeed,
+        style.vfxDensity
+      );
 
       // Visualizer
       drawVisualizer(vizCtx, style.visualizerType, w, h, animTimeRef.current);
@@ -434,7 +600,9 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [style.vfxType, style.vfxSpeed, style.vfxDensity, style.visualizerType]);
 
   // Export composite
@@ -447,8 +615,10 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
     expCtx.clearRect(0, 0, ew, eh);
     expCtx.fillStyle = '#000';
     expCtx.fillRect(0, 0, ew, eh);
-    if (backgroundType === 'image' && bgImgRef.current) expCtx.drawImage(bgImgRef.current, 0, 0, ew, eh);
-    if (backgroundType === 'video' && bgVidRef.current) expCtx.drawImage(bgVidRef.current, 0, 0, ew, eh);
+    if (backgroundType === 'image' && bgImgRef.current)
+      expCtx.drawImage(bgImgRef.current, 0, 0, ew, eh);
+    if (backgroundType === 'video' && bgVidRef.current)
+      expCtx.drawImage(bgVidRef.current, 0, 0, ew, eh);
     if (vizCanvasRef.current) expCtx.drawImage(vizCanvasRef.current, 0, 0, ew, eh);
     if (vfxCanvasRef.current) expCtx.drawImage(vfxCanvasRef.current, 0, 0, ew, eh);
   }, [currentTime, exportMode, exportCanvasRef, backgroundType]);
@@ -461,11 +631,20 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
       if (line.words.length === 0) continue;
       const first = line.words[0].startTime;
       const last = line.words[line.words.length - 1].endTime;
-      if (first <= adjustedTime && last >= adjustedTime) { cIdx = i; break; }
+      if (first <= adjustedTime && last >= adjustedTime) {
+        cIdx = i;
+        break;
+      }
       // Show upcoming line 1s before it starts
-      if (first > adjustedTime && first - adjustedTime <= 1.0) { cIdx = i; break; }
+      if (first > adjustedTime && first - adjustedTime <= 1.0) {
+        cIdx = i;
+        break;
+      }
     }
-    return { currentLineIdx: cIdx, nextLineIdx: cIdx >= 0 && cIdx + 1 < lines.length ? cIdx + 1 : -1 };
+    return {
+      currentLineIdx: cIdx,
+      nextLineIdx: cIdx >= 0 && cIdx + 1 < lines.length ? cIdx + 1 : -1,
+    };
   }, [lines, adjustedTime]);
 
   const currentLine: ProLine | null = currentLineIdx >= 0 ? lines[currentLineIdx] : null;
@@ -482,14 +661,14 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
         .pro-word-fill { position: relative; display: inline-block; }
         .pro-word-fill::after { content: attr(data-text); position: absolute; left: 0; top: 0; overflow: hidden; width: var(--fill, 0%); color: var(--active-color); white-space: nowrap; }
       `}</style>
-      <div className="relative w-full h-full overflow-hidden bg-black select-none">
+      <div className="relative h-full w-full select-none overflow-hidden bg-black">
         {/* Background */}
         {backgroundUrl && backgroundType === 'image' && (
           <img
             ref={bgImgRef}
             src={backgroundUrl}
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
             style={{ filter: bgFilter }}
           />
         )}
@@ -497,8 +676,11 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
           <video
             ref={bgVidRef}
             src={backgroundUrl}
-            autoPlay loop muted playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
             style={{ filter: bgFilter }}
           />
         )}
@@ -507,21 +689,26 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
         )}
 
         {/* BG Overlay */}
-        <div className="absolute inset-0" style={{ backgroundColor: `rgba(0,0,0,${style.bgOverlayOpacity / 100})` }} />
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: `rgba(0,0,0,${style.bgOverlayOpacity / 100})` }}
+        />
 
         {/* Visualizer canvas */}
         <canvas
           ref={vizCanvasRef}
-          className="absolute inset-0 w-full h-full"
-          width={1920} height={1080}
+          className="absolute inset-0 h-full w-full"
+          width={1920}
+          height={1080}
           style={{ opacity: 0.7 }}
         />
 
         {/* VFX canvas */}
         <canvas
           ref={vfxCanvasRef}
-          className="absolute inset-0 w-full h-full"
-          width={1920} height={1080}
+          className="absolute inset-0 h-full w-full"
+          width={1920}
+          height={1080}
           style={{ opacity: 0.85 }}
         />
 
@@ -542,7 +729,15 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
                 const isActive = word.startTime <= adjustedTime && word.endTime > adjustedTime;
                 const isFuture = word.startTime > adjustedTime;
                 const displayText = style.allCaps ? word.text.toUpperCase() : word.text;
-                const ws = getWordStyle(word, isActive, isPast, isFuture, style.wordAnimation, style, adjustedTime);
+                const ws = getWordStyle(
+                  word,
+                  isActive,
+                  isPast,
+                  isFuture,
+                  style.wordAnimation,
+                  style,
+                  adjustedTime
+                );
 
                 if (style.wordAnimation === 'fill-step') {
                   const fillPct = getFillProgress(word, adjustedTime) * 100;
@@ -551,12 +746,14 @@ const KaraokeProRenderer: React.FC<KaraokeProRendererProps> = ({
                       key={i}
                       className="pro-word-fill"
                       data-text={displayText}
-                      style={{
-                        ...ws,
-                        color: style.initialColor,
-                        '--fill': `${fillPct}%`,
-                        '--active-color': style.activeColor,
-                      } as React.CSSProperties}
+                      style={
+                        {
+                          ...ws,
+                          color: style.initialColor,
+                          '--fill': `${fillPct}%`,
+                          '--active-color': style.activeColor,
+                        } as React.CSSProperties
+                      }
                     >
                       {displayText}
                     </span>

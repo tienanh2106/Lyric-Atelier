@@ -43,10 +43,23 @@ const TABS: { id: EditorTab; icon: React.FC<{ className?: string }>; label: stri
 ];
 
 export const EditorSidebarPro: React.FC<Props> = ({
-  project, step, currentTime,
-  onStyleUpdate, onWordEdit, onGlobalOffset, onSetStep,
-  isVocalProcessing, instrumentalUrl, useInstrumental, vocalError, onProcessVocal, onToggleVocal,
-  isExporting, exportProgress, onExportWebm, onExportMp4,
+  project,
+  step,
+  currentTime,
+  onStyleUpdate,
+  onWordEdit,
+  onGlobalOffset,
+  onSetStep,
+  isVocalProcessing,
+  instrumentalUrl,
+  useInstrumental,
+  vocalError,
+  onProcessVocal,
+  onToggleVocal,
+  isExporting,
+  exportProgress,
+  onExportWebm,
+  onExportMp4,
 }) => {
   const [activeTab, setActiveTab] = useState<EditorTab>('typography');
 
@@ -64,7 +77,9 @@ export const EditorSidebarPro: React.FC<Props> = ({
                 : 'text-slate-600 hover:text-slate-400'
             }`}
           >
-            {s === 2 ? 'Editor' : s === 3 ? (
+            {s === 2 ? (
+              'Editor'
+            ) : s === 3 ? (
               <span className="flex items-center justify-center gap-1">
                 <Scissors className="h-3 w-3" /> Vocal
               </span>
@@ -130,9 +145,7 @@ export const EditorSidebarPro: React.FC<Props> = ({
             {activeTab === 'animation' && (
               <AnimationPanelPro style={project.style} onUpdate={onStyleUpdate} />
             )}
-            {activeTab === 'vfx' && (
-              <VFXPanelPro style={project.style} onUpdate={onStyleUpdate} />
-            )}
+            {activeTab === 'vfx' && <VFXPanelPro style={project.style} onUpdate={onStyleUpdate} />}
             {activeTab === 'background' && (
               <BackgroundFiltersPanelPro
                 style={project.style}

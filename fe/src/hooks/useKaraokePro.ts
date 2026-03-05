@@ -2,10 +2,7 @@ import { useState, useCallback } from 'react';
 import { ProProjectData, ProLine, ProWord, ProTextStyle } from '../types/karaokeProTypes';
 import { DEFAULT_PRO_STYLE } from '../constants/karaokeProConstants';
 import { KaraokeSegment } from '../types/karaoke';
-import {
-  transcribeAudioForKaraoke,
-  syncKaraokeWithAPI,
-} from '../services/karaokeService';
+import { transcribeAudioForKaraoke, syncKaraokeWithAPI } from '../services/karaokeService';
 
 function segmentToProLine(seg: KaraokeSegment): ProLine {
   if (seg.words && seg.words.length > 0) {
@@ -21,17 +18,22 @@ function segmentToProLine(seg: KaraokeSegment): ProLine {
   // Distribute timing evenly across words
   const wordTexts = seg.text.split(/\s+/).filter(Boolean);
   if (wordTexts.length === 0) {
-    return { id: seg.id, words: [{ text: seg.text, startTime: seg.startTime, endTime: seg.endTime }] };
+    return {
+      id: seg.id,
+      words: [{ text: seg.text, startTime: seg.startTime, endTime: seg.endTime }],
+    };
   }
   const duration = seg.endTime - seg.startTime;
   const wordDuration = duration / wordTexts.length;
   return {
     id: seg.id,
-    words: wordTexts.map((text, i): ProWord => ({
-      text,
-      startTime: seg.startTime + i * wordDuration,
-      endTime: seg.startTime + (i + 1) * wordDuration,
-    })),
+    words: wordTexts.map(
+      (text, i): ProWord => ({
+        text,
+        startTime: seg.startTime + i * wordDuration,
+        endTime: seg.startTime + (i + 1) * wordDuration,
+      })
+    ),
   };
 }
 
@@ -105,9 +107,12 @@ export function useKaraokePro({ onSyncSuccess }: UseKaraokeProOptions = {}) {
     }
   }, [project.audioFile, project.rawLyrics, onSyncSuccess]);
 
-  const handleStyleUpdate = useCallback(<K extends keyof ProTextStyle>(key: K, value: ProTextStyle[K]) => {
-    setProject((p) => ({ ...p, style: { ...p.style, [key]: value } }));
-  }, []);
+  const handleStyleUpdate = useCallback(
+    <K extends keyof ProTextStyle>(key: K, value: ProTextStyle[K]) => {
+      setProject((p) => ({ ...p, style: { ...p.style, [key]: value } }));
+    },
+    []
+  );
 
   const handleWordEdit = useCallback(
     (lineId: string, wordIdx: number, updates: Partial<ProWord>) => {
@@ -126,21 +131,24 @@ export function useKaraokePro({ onSyncSuccess }: UseKaraokeProOptions = {}) {
     []
   );
 
-  const handleGlobalOffset = useCallback((newOffset: number) => {
-    const delta = newOffset - project.style.globalOffset;
-    setProject((p) => ({
-      ...p,
-      style: { ...p.style, globalOffset: newOffset },
-      lines: p.lines.map((line) => ({
-        ...line,
-        words: line.words.map((w) => ({
-          ...w,
-          startTime: Math.max(0, w.startTime + delta),
-          endTime: Math.max(0, w.endTime + delta),
+  const handleGlobalOffset = useCallback(
+    (newOffset: number) => {
+      const delta = newOffset - project.style.globalOffset;
+      setProject((p) => ({
+        ...p,
+        style: { ...p.style, globalOffset: newOffset },
+        lines: p.lines.map((line) => ({
+          ...line,
+          words: line.words.map((w) => ({
+            ...w,
+            startTime: Math.max(0, w.startTime + delta),
+            endTime: Math.max(0, w.endTime + delta),
+          })),
         })),
-      })),
-    }));
-  }, [project.style.globalOffset]);
+      }));
+    },
+    [project.style.globalOffset]
+  );
 
   const handleLyricsChange = useCallback((text: string) => {
     setProject((p) => ({ ...p, rawLyrics: text }));

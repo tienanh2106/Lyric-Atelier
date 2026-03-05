@@ -16,6 +16,7 @@ import { MediaToTextDto, MediaType } from './dto/media-to-text.dto';
 import { RewriteLyricsDto } from './dto/rewrite-lyrics.dto';
 import { DetectThemeDto } from './dto/detect-theme.dto';
 import { ScenarioFromThemeDto } from './dto/scenario-from-theme.dto';
+import { GenerateNeonThemeDto } from './dto/generate-neon-theme.dto';
 import { ErrorCode } from '../../common/enums/error-code.enum';
 import {
   CREDIT_CONFIG,
@@ -29,7 +30,6 @@ export interface GenerationResult {
   data: {
     generatedText: string;
     creditsUsed: number;
-    tokensUsed: number;
     remainingCredits: number;
   };
 }
@@ -119,7 +119,6 @@ export class GenAIService {
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -238,7 +237,6 @@ Each suggestion should be specific, easy to implement, and highly creative.`;
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -324,7 +322,6 @@ Please transcribe the ${mediaType} content accurately.
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -488,7 +485,6 @@ Trả về JSON theo đúng format đã mô tả ở trên.
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -547,7 +543,6 @@ Trả về JSON với format:
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -599,7 +594,6 @@ Trả về JSON với format:
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -759,7 +753,6 @@ Trả về JSON array (không markdown, không giải thích):
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -1061,7 +1054,6 @@ FORMAT: lyrics only — no section labels, no notes, no markdown, no numbering`;
         data: {
           generatedText,
           creditsUsed: cost,
-          tokensUsed: 0,
           remainingCredits: balance.availableCredits - cost,
         },
       };
@@ -1072,6 +1064,63 @@ FORMAT: lyrics only — no section labels, no notes, no markdown, no numbering`;
       throw new InternalServerErrorException({
         errorCode: ErrorCode.GENERATION_FAILED,
         message: `Failed to transcribe audio: ${errorMessage}`,
+      });
+    }
+  }
+
+  async generateNeonTheme(
+    userId: string,
+    dto: GenerateNeonThemeDto,
+  ): Promise<GenerationResult> {
+    const prompt = `Given the music mood/style "${dto.mood}", generate a creative JSON response with these fields:
+{
+  "songTitle": "string - A creative song/artist title in ALL CAPS (2-4 words)",
+  "visualPrompt": "string - A short descriptive phrase for background search (e.g. 'neon city night rain')",
+  "colorTheme": "string - One of: cyan, purple, pink, green, yellow, sunset"
+}
+Return ONLY valid JSON, no markdown, no explanation.`;
+
+    const cost = CREDIT_CONFIG.generateNeonTheme.fixed;
+
+    const balance = (await this.creditsService.getCreditBalance(
+      userId,
+    )) as CreditBalance;
+    if (balance.availableCredits < cost) {
+      throw new BadRequestException({
+        errorCode: ErrorCode.INSUFFICIENT_CREDITS,
+        message: `Insufficient credits. Available: ${balance.availableCredits}, Required: ${cost}`,
+      });
+    }
+
+    try {
+      const genModel = this.genAI.getGenerativeModel({
+        model: this.defaultModel,
+      });
+      const result = await genModel.generateContent(prompt);
+      const generatedText = result.response.text();
+
+      await this.creditsService.deductCredits(
+        userId,
+        cost,
+        'AI neon theme generation',
+        { mood: dto.mood, creditsCharged: cost },
+      );
+
+      return {
+        message: 'Neon theme generated successfully',
+        data: {
+          generatedText,
+          creditsUsed: cost,
+          remainingCredits: balance.availableCredits - cost,
+        },
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException({
+        errorCode: ErrorCode.GENERATION_FAILED,
+        message: `Failed to generate neon theme: ${errorMessage}`,
       });
     }
   }

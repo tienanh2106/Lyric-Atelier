@@ -180,7 +180,9 @@ export function renderProExportFrame(
               const yi = yBase + Math.sin(xi / 100 + timeS * style.vfxSpeed * 0.8 + i) * 40;
               ctx.lineTo(xi, yi);
             }
-            ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+            ctx.lineTo(W, H);
+            ctx.lineTo(0, H);
+            ctx.closePath();
             ctx.fill();
           }
           break;
@@ -213,12 +215,17 @@ export function renderProExportFrame(
           const shape = Math.floor(s(153.3, i) * 3);
           if (shape === 0) {
             ctx.beginPath();
-            ctx.moveTo(0, -size); ctx.lineTo(size * 0.87, size * 0.5); ctx.lineTo(-size * 0.87, size * 0.5);
-            ctx.closePath(); ctx.fill();
+            ctx.moveTo(0, -size);
+            ctx.lineTo(size * 0.87, size * 0.5);
+            ctx.lineTo(-size * 0.87, size * 0.5);
+            ctx.closePath();
+            ctx.fill();
           } else if (shape === 1) {
             ctx.fillRect(-size / 2, -size / 2, size, size);
           } else {
-            ctx.beginPath(); ctx.arc(0, 0, size / 2, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+            ctx.fill();
           }
           ctx.restore();
           break;
@@ -265,8 +272,14 @@ function _drawProLyrics(
     if (line.words.length === 0) continue;
     const first = line.words[0].startTime;
     const last = line.words[line.words.length - 1].endTime;
-    if (first <= timeS && last >= timeS) { currentIdx = i; break; }
-    if (first > timeS && first - timeS <= 1.0) { currentIdx = i; break; }
+    if (first <= timeS && last >= timeS) {
+      currentIdx = i;
+      break;
+    }
+    if (first > timeS && first - timeS <= 1.0) {
+      currentIdx = i;
+      break;
+    }
   }
   if (currentIdx < 0) return;
 
@@ -284,18 +297,22 @@ function _drawProLyrics(
     ctx.font = `900 ${fs}px '${style.fontFamily}', sans-serif`;
 
     const words = line.words;
-    const allText = words.map((w, i) => {
-      const t = style.allCaps ? w.text.toUpperCase() : w.text;
-      return i < words.length - 1 ? `${t} ` : t;
-    }).join('');
+    const allText = words
+      .map((w, i) => {
+        const t = style.allCaps ? w.text.toUpperCase() : w.text;
+        return i < words.length - 1 ? `${t} ` : t;
+      })
+      .join('');
 
-    const totalW = ctx.measureText(allText).width + style.letterSpacing * (words.length - 1) * (fs / 16);
+    const totalW =
+      ctx.measureText(allText).width + style.letterSpacing * (words.length - 1) * (fs / 16);
     const lineGapPx = style.lineGap * (fsCurrent / 60);
     const lineY = posY + (isNext ? lineGapPx : 0);
     let x = Math.max(style.sideMargin * 3, W / 2 - totalW / 2);
 
     words.forEach((word, idx) => {
-      const t = (style.allCaps ? word.text.toUpperCase() : word.text) + (idx < words.length - 1 ? ' ' : '');
+      const t =
+        (style.allCaps ? word.text.toUpperCase() : word.text) + (idx < words.length - 1 ? ' ' : '');
       const ww = ctx.measureText(t).width;
 
       const isPast = !isNext && timeS >= word.endTime;

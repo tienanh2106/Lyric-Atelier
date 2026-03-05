@@ -27,7 +27,7 @@ export const UploadStepPro: React.FC<UploadStepProProps> = ({
   const canSync = !!project.audioFile && !!project.rawLyrics.trim();
 
   return (
-    <div className="min-h-screen bg-[#080910] text-slate-100 flex flex-col items-center justify-center p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#080910] p-8 text-slate-100">
       {/* Header */}
       <div className="mb-12 text-center">
         <div className="mb-3 text-[10px] font-black uppercase tracking-[0.5em] text-violet-400">
@@ -151,7 +151,7 @@ export const UploadStepPro: React.FC<UploadStepProProps> = ({
         <button
           onClick={onStartSync}
           disabled={!canSync || isProcessing}
-          className="group flex w-full items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-violet-600 to-violet-500 px-8 py-5 text-[13px] font-black uppercase tracking-widest text-white shadow-[0_0_40px_rgba(139,92,246,0.3)] transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.5)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none"
+          className="group flex w-full items-center justify-center gap-3 rounded-3xl bg-gradient-to-r from-violet-600 to-violet-500 px-8 py-5 text-[13px] font-black uppercase tracking-widest text-white shadow-[0_0_40px_rgba(139,92,246,0.3)] transition-all hover:shadow-[0_0_60px_rgba(139,92,246,0.5)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:shadow-none"
         >
           <Sparkles className="h-5 w-5" />
           {isProcessing ? 'AI đang xử lý...' : 'Đồng Bộ Nhịp Phách (AI)'}
