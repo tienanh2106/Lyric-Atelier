@@ -59,14 +59,14 @@ export const Header = () => {
                 Karaoke Pro
               </Link>
             )} */}
-            {isAuthenticated && (
+            {/* {isAuthenticated && (
               <Link
                 to={ALL_ROUTER.PRIVATE.NEON_PULSE}
                 className="text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-violet-400"
               >
                 Neon Pulse
               </Link>
-            )}
+            )} */}
           </nav>
 
           {isInitialized ? (

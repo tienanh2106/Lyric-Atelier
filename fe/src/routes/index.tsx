@@ -46,14 +46,14 @@ export const AppRoutes = () => (
             </Suspense>
           }
         /> */}
-        <Route
+        {/* <Route
           path={ALL_ROUTER.PRIVATE.NEON_PULSE}
           element={
             <Suspense fallback={LazyFallback}>
               <NeonPulsePage />
             </Suspense>
           }
-        />
+        /> */}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>
