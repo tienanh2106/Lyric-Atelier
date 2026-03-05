@@ -368,6 +368,13 @@ const LyricInput: React.FC<LyricInputProps> = ({
             )}
           </span>
         </button>
+
+        <p className="mt-2 text-center text-[10px] text-slate-700">
+          {config.useThinking
+            ? '~30–90 credits · Gemini 2.5 Pro (Thinking)'
+            : '~15–45 credits · Gemini 2.5 Flash'}{' '}
+          · tính theo số từ lời bài hát
+        </p>
       </div>
 
       {/* ── STORY MODAL ────────────────────────────────────────────── */}

@@ -197,18 +197,21 @@ export const NeonPulsePage = () => {
         const webmBlob = new Blob(mp4ChunksRef.current, { type: 'video/webm' });
         await ff.writeFile('input.webm', await fetchFile(webmBlob));
         await ff.exec([
-          '-i', 'input.webm',
-          '-c:v', 'libx264',
-          '-preset', 'fast',
-          '-crf', '23',
-          '-c:a', 'aac',
+          '-i',
+          'input.webm',
+          '-c:v',
+          'libx264',
+          '-preset',
+          'fast',
+          '-crf',
+          '23',
+          '-c:a',
+          'aac',
           'output.mp4',
         ]);
         const mp4Data = await ff.readFile('output.mp4');
 
-        const url = URL.createObjectURL(
-          new Blob([mp4Data as Uint8Array], { type: 'video/mp4' })
-        );
+        const url = URL.createObjectURL(new Blob([mp4Data as Uint8Array], { type: 'video/mp4' }));
         const a = document.createElement('a');
         a.href = url;
         a.download = `neon_pulse_${Date.now()}.mp4`;

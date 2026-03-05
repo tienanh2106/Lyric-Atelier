@@ -2,7 +2,38 @@ import { useNavigate } from 'react-router-dom';
 import { useGetCreditPackages } from '../../services/endpoints/credits';
 import { useCreatePaymentLink } from '../../services/endpoints/payment';
 import { useAuthStore } from '../../stores/authStore';
-import { Check, Zap } from 'lucide-react';
+import { Check, Zap, Gift } from 'lucide-react';
+
+const CREDIT_GUIDE = [
+  {
+    feature: 'Dệt Ca Khúc (Flash)',
+    cost: '15–45',
+    unit: 'credits',
+    note: 'Gemini 2.5 Flash · tùy số từ',
+  },
+  {
+    feature: 'Dệt Ca Khúc (Pro)',
+    cost: '30–90',
+    unit: 'credits',
+    note: 'Gemini 2.5 Pro Thinking · chất lượng cao',
+  },
+  { feature: 'Phát Hiện Chủ Đề', cost: '5–12', unit: 'credits', note: 'Tùy độ dài lyrics' },
+  { feature: 'Gợi Ý Kịch Bản', cost: '10', unit: 'credits', note: 'Cố định' },
+  {
+    feature: 'Transcribe Âm Thanh',
+    cost: '5–25',
+    unit: 'credits',
+    note: 'Tùy kích thước file nhạc',
+  },
+  { feature: 'Karaoke AI Sync', cost: '16–40', unit: 'credits', note: 'Tùy số từ lyrics' },
+  {
+    feature: 'Tách Nhạc Không Lời',
+    cost: '3',
+    unit: 'credits',
+    note: 'Cố định · ffmpeg karaoke filter',
+  },
+  { feature: 'Neon Pulse Theme', cost: '5', unit: 'credits', note: 'Cố định · AI theme generator' },
+];
 
 export const PackagesSection = () => {
   const { data: packages, isLoading } = useGetCreditPackages();
@@ -103,17 +134,24 @@ export const PackagesSection = () => {
                   </div>
 
                   {/* Price */}
-                  <div className="flex items-baseline gap-2">
-                    <span
-                      className={`text-4xl font-black tabular-nums ${
-                        isFeatured
-                          ? 'text-amber-400 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]'
-                          : 'text-slate-100'
-                      }`}
-                    >
-                      {pkg.price.toLocaleString()}
-                    </span>
-                    <span className="text-sm font-bold text-slate-600">VNĐ</span>
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className={`text-4xl font-black tabular-nums ${
+                          isFeatured
+                            ? 'text-amber-400 drop-shadow-[0_0_15px_rgba(245,158,11,0.5)]'
+                            : 'text-slate-100'
+                        }`}
+                      >
+                        {Number(pkg.price).toLocaleString('vi-VN')}
+                      </span>
+                      <span className="text-sm font-bold text-slate-600">VNĐ</span>
+                    </div>
+                    {pkg.priceUsd != null && Number(pkg.priceUsd) > 0 && (
+                      <p className="text-[11px] text-slate-600">
+                        ≈ ${Number(pkg.priceUsd).toFixed(0)} USD
+                      </p>
+                    )}
                   </div>
 
                   {/* Details */}
@@ -122,6 +160,21 @@ export const PackagesSection = () => {
                       <Check className="h-4 w-4 shrink-0 text-emerald-400" />
                       <span className="text-[12px] font-semibold text-slate-300">
                         {pkg.credits.toLocaleString()} Credits
+                        {pkg.name === 'Boost' && (
+                          <span className="ml-1.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-black text-emerald-400">
+                            +25 BONUS
+                          </span>
+                        )}
+                        {pkg.name === 'Pro' && (
+                          <span className="ml-1.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-black text-emerald-400">
+                            +75 BONUS
+                          </span>
+                        )}
+                        {pkg.name === 'Ultra' && (
+                          <span className="ml-1.5 rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-black text-emerald-400">
+                            +200 BONUS
+                          </span>
+                        )}
                       </span>
                     </div>
                     {pkg.validityDays && (
@@ -161,6 +214,36 @@ export const PackagesSection = () => {
         <p className="mt-8 text-center text-[11px] text-slate-600">
           Thanh toán an toàn qua PayOS. Credits không có hạn sử dụng trừ khi gói có ghi rõ.
         </p>
+
+        {/* Credit Usage Guide */}
+        <div className="mt-16 rounded-[2rem] border border-white/[0.06] bg-white/[0.02] p-8">
+          <div className="mb-6 flex items-center gap-3">
+            <Gift className="h-5 w-5 text-amber-500" />
+            <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+              Bảng Giá Credits Theo Tính Năng
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {CREDIT_GUIDE.map(({ feature, cost, unit, note }) => (
+              <div
+                key={feature}
+                className="flex items-center justify-between rounded-2xl border border-white/[0.04] bg-white/[0.02] px-4 py-3"
+              >
+                <div>
+                  <p className="text-[11px] font-bold text-slate-300">{feature}</p>
+                  <p className="text-[10px] text-slate-600">{note}</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-black text-amber-400">{cost}</span>
+                  <span className="ml-1 text-[10px] text-slate-600">{unit}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-center text-[10px] text-slate-700">
+            Dynamic cost = max(5, baseCost + ceil(wordCount × rate)) · Mỗi word ≈ 1 credits/50 từ
+          </p>
+        </div>
       </div>
     </section>
   );

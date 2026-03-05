@@ -33,11 +33,18 @@ export class CreditPackage {
   credits: number;
 
   @ApiProperty({
-    description: 'Package price in USD',
-    example: 9.99,
+    description: 'Package price in VND',
+    example: 99000,
   })
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
+
+  @ApiProperty({
+    description: 'Package price in USD',
+    example: 4,
+  })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  priceUsd: number;
 
   @ApiProperty({
     description: 'Validity period in days',

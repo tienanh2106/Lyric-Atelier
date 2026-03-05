@@ -14,8 +14,10 @@ export type CreditPackage = {
   name: string;
   /** Number of credits in the package */
   credits: number;
-  /** Package price in USD */
+  /** Package price in VND */
   price: number;
+  /** Package price in USD */
+  priceUsd: number;
   /** Validity period in days */
   validityDays: number;
   /** Package availability status */

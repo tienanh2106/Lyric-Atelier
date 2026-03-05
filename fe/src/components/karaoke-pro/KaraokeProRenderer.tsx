@@ -153,7 +153,7 @@ function updateParticles(
     let ny = p.y + p.vy * speed * dt;
     let nlife = p.life + dt * 0.5;
     let nopacity = p.opacity;
-    let nangle = (p.angle ?? 0) + 0.005 * speed * dt;
+    const nangle = (p.angle ?? 0) + 0.005 * speed * dt;
 
     // Wrap around
     if (nx < -20) nx = w + 20;

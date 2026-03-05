@@ -161,6 +161,11 @@ export const StepOneUpload: React.FC<StepOneUploadProps> = ({
             >
               Kích hoạt AI Sync <ChevronRight className="h-6 w-6" />
             </button>
+            <p className="text-center text-[11px] text-slate-600">
+              Transcribe ~5–25 credits · Sync ~16–40 credits · Tách nhạc 3 credits
+              <br />
+              <span className="text-slate-700">Tổng ~24–68 credits · tính theo độ dài bài hát</span>
+            </p>
             {error && (
               <p className="animate-bounce text-center text-[11px] font-black uppercase tracking-widest text-red-400">
                 {error}
