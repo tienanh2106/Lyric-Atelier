@@ -25,7 +25,6 @@ import type {
   CostEstimationDto,
   DetectThemeDto,
   EstimateCostParams,
-  ExtractInstrumentalBody,
   GenerateContentDto,
   GenerateNeonThemeDto,
   GenerationResponseDto,
@@ -774,96 +773,6 @@ export const useSyncKaraoke = <TError = ErrorType<void>, TContext = unknown>(
   TContext
 > => {
   const mutationOptions = getSyncKaraokeMutationOptions(options);
-
-  return useMutation(mutationOptions, queryClient);
-};
-/**
- * Upload an audio file. Returns the instrumental (vocal-removed) audio as MP3. Uses pan stereo center-channel removal. Cost: 3 credits fixed.
- * @summary Extract instrumental (remove vocals via ffmpeg karaoke filter)
- */
-export const extractInstrumental = (
-  extractInstrumentalBody: BodyType<ExtractInstrumentalBody>,
-  options?: SecondParameter<typeof axiosInstance>,
-  signal?: AbortSignal
-) => {
-  const formData = new FormData();
-  formData.append(`file`, extractInstrumentalBody.file);
-
-  return axiosInstance<void>(
-    {
-      url: `/api/genai/extract-instrumental`,
-      method: 'POST',
-      headers: { 'Content-Type': 'multipart/form-data' },
-      data: formData,
-      signal,
-    },
-    options
-  );
-};
-
-export const getExtractInstrumentalMutationOptions = <
-  TError = ErrorType<void>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof extractInstrumental>>,
-    TError,
-    { data: BodyType<ExtractInstrumentalBody> },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof extractInstrumental>>,
-  TError,
-  { data: BodyType<ExtractInstrumentalBody> },
-  TContext
-> => {
-  const mutationKey = ['extractInstrumental'];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof extractInstrumental>>,
-    { data: BodyType<ExtractInstrumentalBody> }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return extractInstrumental(data, requestOptions);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type ExtractInstrumentalMutationResult = NonNullable<
-  Awaited<ReturnType<typeof extractInstrumental>>
->;
-export type ExtractInstrumentalMutationBody = BodyType<ExtractInstrumentalBody>;
-export type ExtractInstrumentalMutationError = ErrorType<void>;
-
-/**
- * @summary Extract instrumental (remove vocals via ffmpeg karaoke filter)
- */
-export const useExtractInstrumental = <TError = ErrorType<void>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof extractInstrumental>>,
-      TError,
-      { data: BodyType<ExtractInstrumentalBody> },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient
-): UseMutationResult<
-  Awaited<ReturnType<typeof extractInstrumental>>,
-  TError,
-  { data: BodyType<ExtractInstrumentalBody> },
-  TContext
-> => {
-  const mutationOptions = getExtractInstrumentalMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

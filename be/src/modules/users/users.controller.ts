@@ -58,10 +58,7 @@ export class UsersController {
     summary: 'Update current user profile',
   })
   @ApiResponse({ status: 200, description: 'Updated user profile', type: User })
-  updateMyProfile(
-    @CurrentUser() user: User,
-    @Body() body: UpdateProfileDto,
-  ) {
+  updateMyProfile(@CurrentUser() user: User, @Body() body: UpdateProfileDto) {
     return this.usersService.updateProfile(user.id, body);
   }
 

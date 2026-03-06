@@ -35,6 +35,7 @@ export const THEME_COLORS = [
   { value: 'sunset', label: 'Sunset' },
 ];
 
+// eslint-disable-next-line no-undef
 export const BLEND_MODES: GlobalCompositeOperation[] = [
   'screen',
   'lighter',

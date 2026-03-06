@@ -445,6 +445,7 @@ export const NeonConfigPanel = ({
                 onChange={(e) =>
                   update(
                     'visualizerBlendMode',
+                    // eslint-disable-next-line no-undef
                     e.target.value as unknown as GlobalCompositeOperation
                   )
                 }

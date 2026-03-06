@@ -69,7 +69,7 @@ export const UploadStepPro: React.FC<UploadStepProProps> = ({
               <p className="mt-1 text-sm text-slate-500">
                 {project.audioFile
                   ? project.audioFile.name
-                  : 'MP3, WAV, M4A, FLAC — AI sẽ tự trích xuất lời'}
+                  : 'MP3, WAV, M4A — tối đa 4.5 MB (MP3 128kbps ~4 phút/4 MB)'}
               </p>
             </div>
             {project.audioFile && (

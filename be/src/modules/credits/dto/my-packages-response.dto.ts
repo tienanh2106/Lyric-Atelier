@@ -29,8 +29,7 @@ export class PackageBreakdownDto {
   isExpired: boolean;
 
   @ApiProperty({
-    description:
-      'Days until expiry, null if no expiry or already expired',
+    description: 'Days until expiry, null if no expiry or already expired',
     nullable: true,
     example: 45,
   })

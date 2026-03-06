@@ -6,8 +6,11 @@ interface AudioPlayerBarProps {
   currentTime: number;
   duration: number;
   instrumentalUrl: string | null;
+  isVocalRemoving?: boolean;
   onTogglePlayback: () => void;
   onSeek: (time: number) => void;
+  onExtractVocal?: () => void;
+  onToggleInstrumental?: () => void;
 }
 
 export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({
@@ -15,8 +18,11 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({
   currentTime,
   duration,
   instrumentalUrl,
+  isVocalRemoving,
   onTogglePlayback,
   onSeek,
+  onExtractVocal,
+  onToggleInstrumental,
 }) => {
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
 
@@ -42,11 +48,22 @@ export const AudioPlayerBar: React.FC<AudioPlayerBarProps> = ({
             <span className="text-[10px] font-black uppercase tracking-[0.8em] text-slate-600">
               {instrumentalUrl ? 'Nhạc không lời' : 'Master Control Player'}
             </span>
-            {instrumentalUrl && (
-              <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-emerald-400">
-                Vocal Removed
-              </span>
-            )}
+            {instrumentalUrl ? (
+              <button
+                onClick={onToggleInstrumental}
+                className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-emerald-400 transition-colors hover:bg-emerald-500/30"
+              >
+                Vocal Removed ✓
+              </button>
+            ) : onExtractVocal ? (
+              <button
+                onClick={onExtractVocal}
+                disabled={isVocalRemoving}
+                className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:border-amber-500/30 hover:text-amber-400 disabled:opacity-50"
+              >
+                {isVocalRemoving ? 'Đang tách...' : 'Tách Vocal'}
+              </button>
+            ) : null}
           </div>
           <span className="font-mono text-[12px] font-black text-slate-500">
             {formatTime(duration)}

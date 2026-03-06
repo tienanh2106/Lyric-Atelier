@@ -58,6 +58,12 @@ export function useKaraokePro({ onSyncSuccess }: UseKaraokeProOptions = {}) {
   const [error, setError] = useState<string | null>(null);
 
   const handleAudioUpload = useCallback((file: File) => {
+    if (file.size > 4.5 * 1024 * 1024) {
+      setError(
+        'File nhạc vượt quá 4.5 MB. Vui lòng nén sang MP3 128kbps trước khi upload (bài ~4 phút = ~4 MB).'
+      );
+      return;
+    }
     const url = URL.createObjectURL(file);
     setProject((p) => ({ ...p, audioFile: file, audioUrl: url }));
     setIsProcessing(true);

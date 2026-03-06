@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { KaraokeSegment } from '../../types/karaoke';
 import { Clock, Trash2, Plus, ChevronUp, ChevronDown, Wand2, CheckCircle2 } from 'lucide-react';
 

@@ -158,7 +158,8 @@ export class CreditsController {
   @ApiOperation({
     operationId: 'getMyPackages',
     summary: 'Get per-package credit breakdown',
-    description: 'Returns all purchased packages with credits remaining, expiry info',
+    description:
+      'Returns all purchased packages with credits remaining, expiry info',
   })
   @ApiResponse({
     status: 200,

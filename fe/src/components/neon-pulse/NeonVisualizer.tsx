@@ -88,6 +88,7 @@ const NeonVisualizer = forwardRef<HTMLCanvasElement, NeonVisualizerProps>(
       if (config.isBackgroundVideo) {
         bgVideoRef.current.src = config.backgroundImageUrl;
         bgVideoRef.current.load();
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsVideoReady(false);
         if (isPlaying) bgVideoRef.current.play().catch(() => {});
       } else if (config.backgroundImageUrl) {
@@ -195,6 +196,7 @@ const NeonVisualizer = forwardRef<HTMLCanvasElement, NeonVisualizerProps>(
 
         let srcW = 0,
           srcH = 0,
+          // eslint-disable-next-line no-undef
           img: CanvasImageSource | null = null;
         if (config.isBackgroundVideo) {
           if (isVideoReady) {

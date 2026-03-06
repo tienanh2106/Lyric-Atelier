@@ -26,7 +26,6 @@ export * from './creditTransactionType';
 export * from './deleteMedia200';
 export * from './detectThemeDto';
 export * from './estimateCostParams';
-export * from './extractInstrumentalBody';
 export * from './generateContentDto';
 export * from './generateNeonThemeDto';
 export * from './generationDataDto';

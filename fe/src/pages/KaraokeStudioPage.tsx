@@ -3,6 +3,7 @@ import { AppStep, KaraokeSegment } from '../types/karaoke';
 import { useKaraokeProject } from '../hooks/useKaraokeProject';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useKaraokeExport } from '../hooks/useKaraokeExport';
+import { useVocalRemoval } from '../hooks/useVocalRemoval';
 import { KaraokeRenderer } from '../components/karaoke/KaraokeRenderer';
 import { ProcessingOverlay } from '../components/karaoke/ProcessingOverlay';
 import { StepOneUpload } from '../components/karaoke/StepOneUpload';
@@ -25,6 +26,14 @@ const KaraokeStudioPage: React.FC = () => {
     error,
     setError,
   } = useKaraokeProject({ onSyncSuccess: () => setStep(2) });
+
+  const {
+    isProcessing: isVocalRemoving,
+    instrumentalUrl,
+    useInstrumental,
+    process: processVocal,
+    toggle: toggleInstrumental,
+  } = useVocalRemoval(currentProject.audioFile);
 
   const {
     audioRef,
@@ -134,9 +143,12 @@ const KaraokeStudioPage: React.FC = () => {
         isPlaying={isPlaying}
         currentTime={currentTime}
         duration={duration}
-        instrumentalUrl={currentProject.instrumentalUrl}
+        instrumentalUrl={useInstrumental ? instrumentalUrl : null}
+        isVocalRemoving={isVocalRemoving}
         onTogglePlayback={togglePlayback}
         onSeek={seek}
+        onExtractVocal={currentProject.audioFile ? processVocal : undefined}
+        onToggleInstrumental={instrumentalUrl ? toggleInstrumental : undefined}
       />
 
       {/* Canvas ẩn dùng cho composite export */}
@@ -144,7 +156,7 @@ const KaraokeStudioPage: React.FC = () => {
 
       <audio
         ref={audioRef}
-        src={currentProject.instrumentalUrl || currentProject.audioUrl || ''}
+        src={useInstrumental && instrumentalUrl ? instrumentalUrl : (currentProject.audioUrl ?? '')}
         onLoadedMetadata={handleLoadedMetadata}
         className="hidden"
       />

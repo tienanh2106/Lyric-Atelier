@@ -81,7 +81,7 @@ export const StepOneUpload: React.FC<StepOneUploadProps> = ({
                           : 'Tải lên nhạc (MP3, WAV)'}
                       </span>
                       <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                        Audio Master
+                        Audio Master &mdash; tối đa 4.5 MB &bull; MP3 128kbps ~4 phút/4 MB
                       </span>
                     </div>
                   </label>

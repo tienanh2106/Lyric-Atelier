@@ -32,6 +32,7 @@ export const NeonPlayerControls = ({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (duration > 0) setProgress((currentTime / duration) * 100);
   }, [currentTime, duration]);
 

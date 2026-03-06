@@ -4,12 +4,10 @@ import {
   Body,
   Get,
   Query,
-  Res,
   UseGuards,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
@@ -263,42 +261,6 @@ export class GenAIController {
     @Body('rawLyrics') rawLyrics: string,
   ) {
     return this.genAIService.syncKaraoke(user.id, file, rawLyrics);
-  }
-
-  @Post('extract-instrumental')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
-  @ApiOperation({
-    operationId: 'extractInstrumental',
-    summary: 'Extract instrumental (remove vocals via ffmpeg karaoke filter)',
-    description:
-      'Upload an audio file. Returns the instrumental (vocal-removed) audio as MP3. Uses pan stereo center-channel removal. Cost: 3 credits fixed.',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: { file: { type: 'string', format: 'binary' } },
-      required: ['file'],
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Instrumental audio returned as binary MP3',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Insufficient credits or invalid file',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async extractInstrumental(
-    @CurrentUser() user: User,
-    @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
-  ) {
-    const buffer = await this.genAIService.extractInstrumental(user.id, file);
-    res.set('Content-Type', 'audio/mpeg');
-    res.set('Content-Disposition', 'attachment; filename="instrumental.mp3"');
-    res.send(buffer);
   }
 
   @Post('generate-neon-theme')

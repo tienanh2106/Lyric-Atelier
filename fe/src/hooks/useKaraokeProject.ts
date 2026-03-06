@@ -1,11 +1,7 @@
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { ProjectData, TextStyle } from '../types/karaoke';
 import { DEFAULT_STYLE } from '../constants/karaoke';
-import {
-  transcribeAudioForKaraoke,
-  syncKaraokeWithAPI,
-  extractInstrumentalFromAPI,
-} from '../services/karaokeService';
+import { transcribeAudioForKaraoke, syncKaraokeWithAPI } from '../services/karaokeService';
 
 interface UseKaraokeProjectOptions {
   onSyncSuccess?: () => void;
@@ -42,6 +38,12 @@ export function useKaraokeProject({ onSyncSuccess }: UseKaraokeProjectOptions = 
         backgroundType: file.type.startsWith('video') ? 'video' : 'image',
       }));
     } else if (type === 'audio') {
+      if (file.size > 4.5 * 1024 * 1024) {
+        setError(
+          'File nhạc vượt quá 4.5 MB. Vui lòng nén sang MP3 128kbps trước khi upload (bài ~4 phút = ~4 MB).'
+        );
+        return;
+      }
       setCurrentProject((prev) => ({ ...prev, audioFile: file, audioUrl: url }));
       setIsProcessing(true);
       setProcessingMessage('AI đang trích xuất lời nhạc...');
@@ -72,15 +74,9 @@ export function useKaraokeProject({ onSyncSuccess }: UseKaraokeProjectOptions = 
     setError(null);
     try {
       const audioFile = currentProject.audioFile;
-      const [syncedSegments, instrumentalUrl] = await Promise.all([
-        syncKaraokeWithAPI(audioFile, currentProject.rawLyrics),
-        extractInstrumentalFromAPI(audioFile).catch((err: unknown) => {
-          console.warn('Không thể tách nhạc không lời:', err);
-          return null;
-        }),
-      ]);
+      const syncedSegments = await syncKaraokeWithAPI(audioFile, currentProject.rawLyrics);
       if (syncedSegments && syncedSegments.length > 0) {
-        setCurrentProject((prev) => ({ ...prev, segments: syncedSegments, instrumentalUrl }));
+        setCurrentProject((prev) => ({ ...prev, segments: syncedSegments }));
         onSyncSuccess?.();
       } else {
         throw new Error('Không thể đồng bộ lời nhạc.');

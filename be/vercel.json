@@ -6,5 +6,10 @@
       "path": "/api/cron/expire-credits",
       "schedule": "0 0 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 60
+    }
+  }
 }

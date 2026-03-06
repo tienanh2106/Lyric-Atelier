@@ -30,6 +30,7 @@ export interface NeonConfig {
   waveVariant: WaveVariant;
   visualizerSize: number;
   visualizerOpacity: number;
+  // eslint-disable-next-line no-undef
   visualizerBlendMode: GlobalCompositeOperation;
   useCustomGradient: boolean;
   visualizerColor1: string;
@@ -79,5 +80,6 @@ export interface NeonConfig {
 
   bgTintColor: string;
   bgTintIntensity: number;
+  // eslint-disable-next-line no-undef
   bgTintBlendMode: GlobalCompositeOperation;
 }

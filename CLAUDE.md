@@ -28,6 +28,7 @@ cd fe && npm run generate:api
 ```
 
 **Không bao giờ** tự tay tạo hoặc sửa file trong:
+
 - `fe/src/services/endpoints/`
 - `fe/src/services/models/`
 
@@ -75,16 +76,22 @@ Nếu controller trả object trực tiếp → interceptor đặt `data` = toà
 ```ts
 // SAI — unwrap thêm lần nữa:
 const result = useGetSomething();
-result.data.data.field  // ❌
+result.data.data.field; // ❌
 
 // ĐÚNG:
-result.data.field  // ✅
+result.data
+  .field(
+    // ✅
 
-// SAI — cast sai khi truy cập generatedText:
-(result as { data: { generatedText: string } }).data.generatedText  // ❌
+    // SAI — cast sai khi truy cập generatedText:
+    result as { data: { generatedText: string } },
+  )
+  .data.generatedText(
+    // ❌
 
-// ĐÚNG:
-(result as unknown as { generatedText: string }).generatedText  // ✅
+    // ĐÚNG:
+    result as unknown as { generatedText: string },
+  ).generatedText; // ✅
 ```
 
 ---
@@ -93,21 +100,21 @@ result.data.field  // ✅
 
 ### 4.1 Bảng dữ liệu
 
-| Bảng | Vai trò |
-|------|---------|
-| `credit_packages` | Danh mục gói bán (Starter/Boost/Pro/Ultra) |
-| `credit_transactions` | Lịch sử giao dịch mua (1 row/lần mua) |
-| `credit_ledger` | Sổ cái chi tiết — nguồn sự thật về credits |
-| `user_credit_summary` | Bộ đếm tổng hợp (cache của ledger) |
+| Bảng                  | Vai trò                                    |
+| --------------------- | ------------------------------------------ |
+| `credit_packages`     | Danh mục gói bán (Starter/Boost/Pro/Ultra) |
+| `credit_transactions` | Lịch sử giao dịch mua (1 row/lần mua)      |
+| `credit_ledger`       | Sổ cái chi tiết — nguồn sự thật về credits |
+| `user_credit_summary` | Bộ đếm tổng hợp (cache của ledger)         |
 
 ### 4.2 Quy ước `credit_ledger` — KHÔNG ĐƯỢC NHẦM
 
-| Cột | Ý nghĩa | Ví dụ |
-|-----|---------|-------|
-| `debit` | Credits **ĐI VÀO** tài khoản | PURCHASE: 100 |
-| `credit` | Credits **ĐÃ DÙNG** từ entry này | Sau khi dùng 30: 30 |
-| `balance` | Số dư tổng sau giao dịch này | 100 |
-| `debit - credit` | Credits **CÒN LẠI** trong entry | 70 |
+| Cột              | Ý nghĩa                          | Ví dụ               |
+| ---------------- | -------------------------------- | ------------------- |
+| `debit`          | Credits **ĐI VÀO** tài khoản     | PURCHASE: 100       |
+| `credit`         | Credits **ĐÃ DÙNG** từ entry này | Sau khi dùng 30: 30 |
+| `balance`        | Số dư tổng sau giao dịch này     | 100                 |
+| `debit - credit` | Credits **CÒN LẠI** trong entry  | 70                  |
 
 **FIFO deduction**: deduct từ entry có `expiresAt` sớm nhất trước.
 
@@ -128,11 +135,11 @@ result.data.field  // ✅
 ### 4.3 Các `CreditTransactionType`
 
 ```ts
-PURCHASE         // User mua gói — CÓ credit_transaction đi kèm
-ADMIN_ADJUSTMENT // Admin cấp/trừ thủ công, hoặc seed test accounts — KHÔNG có credit_transaction
-USAGE            // User dùng credits (AI operation)
-EXPIRATION       // Credits hết hạn (do cron tạo)
-REFUND           // Hoàn tiền
+PURCHASE; // User mua gói — CÓ credit_transaction đi kèm
+ADMIN_ADJUSTMENT; // Admin cấp/trừ thủ công, hoặc seed test accounts — KHÔNG có credit_transaction
+USAGE; // User dùng credits (AI operation)
+EXPIRATION; // Credits hết hạn (do cron tạo)
+REFUND; // Hoàn tiền
 ```
 
 **Test accounts dùng `ADMIN_ADJUSTMENT`**, không dùng `PURCHASE` (vì không có giao dịch thanh toán thật).
@@ -144,6 +151,7 @@ REFUND           // Hoàn tiền
 ### 4.5 Cron hết hạn: `EVERY_DAY_AT_MIDNIGHT`
 
 Điều kiện tìm entries hết hạn:
+
 ```ts
 { isExpired: false, expiresAt: LessThan(now) }  // ✅ ĐÚNG
 { isExpired: false, expiresAt: MoreThan(now) }   // ❌ SAI (bug đã fix)
@@ -152,9 +160,13 @@ REFUND           // Hoàn tiền
 ### 4.6 Locks bắt buộc để tránh race condition
 
 Mọi hàm đọc `user_credit_summary` rồi cập nhật đều phải có:
+
 ```ts
-lock: { mode: 'pessimistic_write' }
+lock: {
+  mode: "pessimistic_write";
+}
 ```
+
 Đã áp dụng cho: `deductCredits`, `purchaseCredits`, `adjustCredits`, `expireCredits`.
 
 ### 4.7 Sau FIFO loop phải kiểm tra `remainingAmount`
@@ -222,13 +234,6 @@ npx ts-node src/database/seeds/test-accounts.seed.ts
 
 ### Test accounts (10 tài khoản)
 
-| Email | Password |
-|-------|----------|
-| test01@melodai.app | Melodai@Test01 |
-| test02@melodai.app | Melodai@Test02 |
-| ... | ... |
-| test10@melodai.app | Melodai@Test10 |
-
 - 100 credits/account, loại `ADMIN_ADJUSTMENT`, `expiresAt = +365 ngày`
 - Seed có skip logic: chạy lại an toàn (không tạo duplicate)
 
@@ -258,11 +263,11 @@ npx ts-node src/database/seeds/test-accounts.seed.ts
 
 ### Models đang dùng
 
-| Model | Dùng cho |
-|-------|---------|
-| `gemini-2.5-flash` | Mặc định — nhanh, rẻ |
+| Model                          | Dùng cho                  |
+| ------------------------------ | ------------------------- |
+| `gemini-2.5-flash`             | Mặc định — nhanh, rẻ      |
 | `gemini-2.5-pro-preview-06-05` | Thinking — chất lượng cao |
-| Groq `whisper-large-v3-turbo` | Transcribe audio |
+| Groq `whisper-large-v3-turbo`  | Transcribe audio          |
 
 ---
 
@@ -291,11 +296,11 @@ mutate({ data: { ... } });
 
 ```ts
 // fe/src/services/karaokeService.ts
-import axios from 'axios';
-import { getAccessToken } from './custom-instance';
+import axios from "axios";
+import { getAccessToken } from "./custom-instance";
 
 const { data } = await axios.post<ArrayBuffer>(url, formData, {
-  responseType: 'arraybuffer',
+  responseType: "arraybuffer",
   headers: { Authorization: `Bearer ${getAccessToken()}` },
 });
 ```
@@ -305,9 +310,16 @@ const { data } = await axios.post<ArrayBuffer>(url, formData, {
 ```ts
 // fe/src/routes/index.tsx
 ALL_ROUTER = {
-  PUBLIC:  { HOME, AUTH, PAYMENT_CANCEL },
-  PRIVATE: { STUDIO, ACCOUNT, PAYMENT_RETURN, KARAOKE_STUDIO, KARAOKE_PRO, NEON_PULSE },
-}
+  PUBLIC: { HOME, AUTH, PAYMENT_CANCEL },
+  PRIVATE: {
+    STUDIO,
+    ACCOUNT,
+    PAYMENT_RETURN,
+    KARAOKE_STUDIO,
+    KARAOKE_PRO,
+    NEON_PULSE,
+  },
+};
 ```
 
 `ProtectedRoute` bọc tất cả PRIVATE routes — redirect về `/auth` nếu chưa đăng nhập.
@@ -333,37 +345,37 @@ const { user, isAuthenticated, isInitialized, logout } = useAuthStore();
 
 ### Credits service
 
-| Lỗi | Mô tả | Fix |
-|-----|-------|-----|
-| `MoreThan(now)` trong `expireCredits` | Tìm ngược — entries chưa hết hạn | `LessThan(now)` |
-| Không check `expiresAt > now` trong FIFO | Dùng được credits đã hết hạn (cron chưa chạy) | Thêm `expiresAt: IsNull()` OR `expiresAt: MoreThan(now)` |
-| Không check `remainingAmount > 0` sau FIFO | Phantom credits khi summary stale | Throw `INSUFFICIENT_CREDITS` |
-| Không lock summary trong `purchaseCredits` | Race condition mất credits | `lock: pessimistic_write` |
-| `expireCredits` balance âm khi concurrent | Trừ credits đã được dùng rồi | `Math.min(availableInEntry, currentAvailable)` |
-| `creditsExpiringSoon` tính cả entries quá khứ | User thấy số sai | Thêm `expiresAt > now` vào query |
+| Lỗi                                           | Mô tả                                         | Fix                                                      |
+| --------------------------------------------- | --------------------------------------------- | -------------------------------------------------------- |
+| `MoreThan(now)` trong `expireCredits`         | Tìm ngược — entries chưa hết hạn              | `LessThan(now)`                                          |
+| Không check `expiresAt > now` trong FIFO      | Dùng được credits đã hết hạn (cron chưa chạy) | Thêm `expiresAt: IsNull()` OR `expiresAt: MoreThan(now)` |
+| Không check `remainingAmount > 0` sau FIFO    | Phantom credits khi summary stale             | Throw `INSUFFICIENT_CREDITS`                             |
+| Không lock summary trong `purchaseCredits`    | Race condition mất credits                    | `lock: pessimistic_write`                                |
+| `expireCredits` balance âm khi concurrent     | Trừ credits đã được dùng rồi                  | `Math.min(availableInEntry, currentAvailable)`           |
+| `creditsExpiringSoon` tính cả entries quá khứ | User thấy số sai                              | Thêm `expiresAt > now` vào query                         |
 
 ### Seed script
 
-| Lỗi | Mô tả | Fix |
-|-----|-------|-----|
-| `debit=0, credit=100` trong seed | FIFO skip vì `availableInEntry = -100` | `debit=100, credit=0` |
-| Dùng `PURCHASE` cho test accounts | Không có `credit_transaction` đi kèm | `ADMIN_ADJUSTMENT` |
+| Lỗi                               | Mô tả                                  | Fix                   |
+| --------------------------------- | -------------------------------------- | --------------------- |
+| `debit=0, credit=100` trong seed  | FIFO skip vì `availableInEntry = -100` | `debit=100, credit=0` |
+| Dùng `PURCHASE` cho test accounts | Không có `credit_transaction` đi kèm   | `ADMIN_ADJUSTMENT`    |
 
 ### FE
 
-| Lỗi | Mô tả | Fix |
-|-----|-------|-----|
-| `result.data.generatedText` | axiosInstance đã unwrap một lần | `(result as unknown as { generatedText: string }).generatedText` |
-| `axiosInstance` cho binary response | Unwrapper JSON fail với arraybuffer | Dùng raw `axios` với `responseType: 'arraybuffer'` |
-| `'add'` làm GlobalCompositeOperation | Không hợp lệ | Dùng `'lighter'` |
-| `onSuccess` trong try/catch | State update bị catch nuốt | Set state TRƯỚC try/catch |
+| Lỗi                                  | Mô tả                               | Fix                                                              |
+| ------------------------------------ | ----------------------------------- | ---------------------------------------------------------------- |
+| `result.data.generatedText`          | axiosInstance đã unwrap một lần     | `(result as unknown as { generatedText: string }).generatedText` |
+| `axiosInstance` cho binary response  | Unwrapper JSON fail với arraybuffer | Dùng raw `axios` với `responseType: 'arraybuffer'`               |
+| `'add'` làm GlobalCompositeOperation | Không hợp lệ                        | Dùng `'lighter'`                                                 |
+| `onSuccess` trong try/catch          | State update bị catch nuốt          | Set state TRƯỚC try/catch                                        |
 
 ### PayOS SDK
 
-| Lỗi | Mô tả |
-|-----|-------|
-| `payos.createPaymentLink()` | API cũ (v1). Dùng `payos.paymentRequests.create()` |
-| `payos.verifyPaymentWebhookData()` | API cũ (v1). Dùng `payos.webhooks.verify()` |
+| Lỗi                                | Mô tả                                              |
+| ---------------------------------- | -------------------------------------------------- |
+| `payos.createPaymentLink()`        | API cũ (v1). Dùng `payos.paymentRequests.create()` |
+| `payos.verifyPaymentWebhookData()` | API cũ (v1). Dùng `payos.webhooks.verify()`        |
 
 ---
 

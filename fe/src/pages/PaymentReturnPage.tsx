@@ -15,6 +15,7 @@ export const PaymentReturnPage = () => {
     const orderCodeStr = searchParams.get('orderCode');
 
     if (!packageId || !orderCodeStr) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus('error');
       return;
     }

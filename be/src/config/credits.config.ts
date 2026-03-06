@@ -73,9 +73,6 @@ export const CREDIT_CONFIG = {
   /** mediaToText — URL-based, no file to measure */
   mediaToText: { fixed: 15 },
 
-  /** extractInstrumental — ffmpeg karaoke filter, CPU-bound */
-  extractInstrumental: { fixed: 3 },
-
   /** generateNeonTheme — Gemini Flash, short JSON output for NeonPulse visualizer */
   generateNeonTheme: { fixed: 5 },
 } as const;

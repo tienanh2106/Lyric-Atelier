@@ -134,7 +134,9 @@ export class UsersService {
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      throw new BadRequestException({ message: 'Mật khẩu hiện tại không đúng' });
+      throw new BadRequestException({
+        message: 'Mật khẩu hiện tại không đúng',
+      });
     }
 
     user.password = await bcrypt.hash(newPassword, 10);

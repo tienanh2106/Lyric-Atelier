@@ -553,7 +553,8 @@ export class CreditsService {
       let daysUntilExpiry: number | null = null;
       if (entry.expiresAt && !entry.isExpired) {
         const diff = entry.expiresAt.getTime() - now.getTime();
-        daysUntilExpiry = diff > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
+        daysUntilExpiry =
+          diff > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
       }
 
       const meta = entry.metadata as Record<string, unknown> | null;
@@ -568,7 +569,8 @@ export class CreditsService {
         creditsTotal,
         creditsUsed,
         creditsRemaining,
-        isExpired: entry.isExpired || (!!entry.expiresAt && entry.expiresAt <= now),
+        isExpired:
+          entry.isExpired || (!!entry.expiresAt && entry.expiresAt <= now),
         daysUntilExpiry,
       };
     });
