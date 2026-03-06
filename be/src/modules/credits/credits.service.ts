@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, MoreThan } from 'typeorm';
+import { Repository, DataSource, MoreThan, LessThan, IsNull } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { CreditPackage } from './entities/credit-package.entity';
 import { CreditLedger } from './entities/credit-ledger.entity';
@@ -121,9 +121,11 @@ export class CreditsService {
       });
       const savedTransaction = await manager.save(transaction);
 
-      // 4. Get or create user credit summary
+      // 4. Get or create user credit summary (pessimistic lock to prevent race condition
+      // when two purchases happen concurrently for the same user)
       let summary = await manager.findOne(UserCreditSummary, {
         where: { user: { id: userId } },
+        lock: { mode: 'pessimistic_write' },
       });
 
       summary ??= manager.create(UserCreditSummary, {
@@ -208,12 +210,24 @@ export class CreditsService {
       }
 
       // 2. Get non-expired credit ledger entries (FIFO)
+      // Check both isExpired flag AND actual expiresAt to handle cases where
+      // the cron job hasn't run yet
+      const now = new Date();
       const ledgerEntries = await manager.find(CreditLedger, {
-        where: {
-          user: { id: userId },
-          isExpired: false,
-          debit: MoreThan(0),
-        },
+        where: [
+          {
+            user: { id: userId },
+            isExpired: false,
+            debit: MoreThan(0),
+            expiresAt: IsNull(),
+          },
+          {
+            user: { id: userId },
+            isExpired: false,
+            debit: MoreThan(0),
+            expiresAt: MoreThan(now),
+          },
+        ],
         order: { expiresAt: 'ASC', createdAt: 'ASC' },
       });
 
@@ -238,6 +252,16 @@ export class CreditsService {
 
         remainingAmount -= deductFromEntry;
         usedLedgerIds.push(entry.id);
+      }
+
+      // 3b. Verify all credits were actually deducted from valid ledger entries.
+      // This catches the case where summary.availableCredits includes
+      // expired-but-unprocessed credits (cron hasn't run yet).
+      if (remainingAmount > 0) {
+        throw new BadRequestException({
+          errorCode: ErrorCode.INSUFFICIENT_CREDITS,
+          message: `Insufficient valid credits. Some credits may have expired. Available valid: ${amount - remainingAmount}, Required: ${amount}`,
+        });
       }
 
       // 4. Create usage ledger entry
@@ -293,10 +317,12 @@ export class CreditsService {
     const sevenDaysFromNow = new Date();
     sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + expiringSoonDays);
 
+    const now = new Date();
     const expiringSoon = await this.ledgerRepository
       .createQueryBuilder('ledger')
       .where('ledger.userId = :userId', { userId })
       .andWhere('ledger.isExpired = :isExpired', { isExpired: false })
+      .andWhere('ledger.expiresAt > :now', { now })
       .andWhere('ledger.expiresAt <= :expiresAt', {
         expiresAt: sevenDaysFromNow,
       })
@@ -381,9 +407,10 @@ export class CreditsService {
     return await this.dataSource.transaction(async (manager) => {
       const { userId, amount, description, metadata } = adjustDto;
 
-      // Get or create summary
+      // Get or create summary (pessimistic lock to prevent race condition)
       let summary = await manager.findOne(UserCreditSummary, {
         where: { user: { id: userId } },
+        lock: { mode: 'pessimistic_write' },
       });
 
       summary ??= manager.create(UserCreditSummary, {
@@ -434,7 +461,7 @@ export class CreditsService {
     const expiredEntries = await this.ledgerRepository.find({
       where: {
         isExpired: false,
-        expiresAt: MoreThan(now),
+        expiresAt: LessThan(now),
       },
       relations: ['user'],
     });
@@ -451,37 +478,44 @@ export class CreditsService {
           return;
         }
 
-        // Get summary
+        // Get summary with lock to prevent race condition with concurrent deductions
         const summary = await manager.findOne(UserCreditSummary, {
           where: { user: { id: entry.user.id } },
+          lock: { mode: 'pessimistic_write' },
         });
 
         if (summary) {
-          const newBalance =
-            Number.parseFloat(summary.availableCredits.toString()) -
-            availableInEntry;
+          // Use Math.max(0, ...) as safety guard against negative balance
+          // (can happen if concurrent deduction already consumed these credits)
+          const currentAvailable = Number.parseFloat(
+            summary.availableCredits.toString(),
+          );
+          const actualExpired = Math.min(availableInEntry, currentAvailable);
+          const newBalance = currentAvailable - actualExpired;
 
-          // Create expiration ledger entry
-          const ledger = manager.create(CreditLedger, {
-            user: entry.user,
-            type: CreditTransactionType.EXPIRATION,
-            debit: 0,
-            credit: availableInEntry,
-            balance: newBalance,
-            description: 'Credits expired',
-            metadata: {
-              expiredLedgerId: entry.id,
-            },
-            referenceId: entry.id,
-          });
-          await manager.save(ledger);
+          if (actualExpired > 0) {
+            // Create expiration ledger entry
+            const ledger = manager.create(CreditLedger, {
+              user: entry.user,
+              type: CreditTransactionType.EXPIRATION,
+              debit: 0,
+              credit: actualExpired,
+              balance: newBalance,
+              description: 'Credits expired',
+              metadata: {
+                expiredLedgerId: entry.id,
+              },
+              referenceId: entry.id,
+            });
+            await manager.save(ledger);
 
-          // Update summary
-          summary.expiredCredits =
-            Number.parseFloat(summary.expiredCredits.toString()) +
-            availableInEntry;
-          summary.availableCredits = newBalance;
-          await manager.save(summary);
+            // Update summary
+            summary.expiredCredits =
+              Number.parseFloat(summary.expiredCredits.toString()) +
+              actualExpired;
+            summary.availableCredits = newBalance;
+            await manager.save(summary);
+          }
         }
 
         // Mark as expired
