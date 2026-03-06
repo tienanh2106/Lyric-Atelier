@@ -122,10 +122,11 @@ async function seed() {
       [userId, INITIAL_CREDITS],
     );
 
-    // 3. Create credit_ledger entry (PURCHASE)
+    // 3. Create credit_ledger entry (ADMIN_ADJUSTMENT — granted, not purchased)
+    // debit = credits IN, credit = credits used so far (0)
     await dataSource.query(
       `INSERT INTO credit_ledger ("userId", type, debit, credit, balance, description, "referenceId", "expiresAt", "isExpired")
-       VALUES ($1, 'PURCHASE', 0, $2, $2, 'Test account initial credits', $3, $4, false)`,
+       VALUES ($1, 'ADMIN_ADJUSTMENT', $2, 0, $2, 'Test account — credits cấp phát để thử nghiệm', $3, $4, false)`,
       [userId, INITIAL_CREDITS, `test-seed-${account.email}`, expiresAt],
     );
 
