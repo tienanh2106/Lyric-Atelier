@@ -28,6 +28,7 @@ import type {
   CreditPackage,
   GetCreditLedgerParams,
   GetCreditTransactionsParams,
+  MyPackagesResponseDto,
   PaginatedLedgerResponseDto,
   PaginatedTransactionResponseDto,
   PurchaseCreditsDto,
@@ -698,6 +699,117 @@ export function useGetCreditBalance<
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
   const queryOptions = getGetCreditBalanceQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  return query;
+}
+
+/**
+ * Returns all purchased packages with credits remaining, expiry info
+ * @summary Get per-package credit breakdown
+ */
+export const getMyPackages = (
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal
+) => {
+  return axiosInstance<MyPackagesResponseDto>(
+    { url: `/api/credits/my-packages`, method: 'GET', signal },
+    options
+  );
+};
+
+export const getGetMyPackagesQueryKey = () => {
+  return [`/api/credits/my-packages`] as const;
+};
+
+export const getGetMyPackagesQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPackages>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPackages>>, TError, TData>>;
+  request?: SecondParameter<typeof axiosInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyPackagesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPackages>>> = ({ signal }) =>
+    getMyPackages(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyPackages>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetMyPackagesQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPackages>>>;
+export type GetMyPackagesQueryError = ErrorType<unknown>;
+
+export function useGetMyPackages<
+  TData = Awaited<ReturnType<typeof getMyPackages>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPackages>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPackages>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPackages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPackages<
+  TData = Awaited<ReturnType<typeof getMyPackages>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPackages>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMyPackages>>,
+          TError,
+          Awaited<ReturnType<typeof getMyPackages>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetMyPackages<
+  TData = Awaited<ReturnType<typeof getMyPackages>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPackages>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get per-package credit breakdown
+ */
+
+export function useGetMyPackages<
+  TData = Awaited<ReturnType<typeof getMyPackages>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyPackages>>, TError, TData>>;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetMyPackagesQueryOptions(options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

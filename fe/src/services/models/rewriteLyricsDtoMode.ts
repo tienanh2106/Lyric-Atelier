@@ -9,8 +9,7 @@
 /**
  * "strict" = Đồng điệu 100% (match syllable count + tones). "creative" = Sáng tác tự do (free creative flow)
  */
-export type RewriteLyricsDtoMode =
-  (typeof RewriteLyricsDtoModeEnum)[keyof typeof RewriteLyricsDtoModeEnum];
+export type RewriteLyricsDtoMode = (typeof RewriteLyricsDtoModeEnum)[keyof typeof RewriteLyricsDtoModeEnum];
 
 export const RewriteLyricsDtoModeEnum = {
   strict: 'strict',

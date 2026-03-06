@@ -103,6 +103,13 @@ export const Header = () => {
                         )}
                       </div>
                       <Link
+                        to={ALL_ROUTER.PRIVATE.ACCOUNT}
+                        onClick={() => setShowUserMenu(false)}
+                        className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-400"
+                      >
+                        Tài Khoản
+                      </Link>
+                      <Link
                         to={ALL_ROUTER.PRIVATE.STUDIO}
                         onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition-colors hover:bg-amber-500/10 hover:text-amber-400"

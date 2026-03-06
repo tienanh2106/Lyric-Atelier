@@ -16,6 +16,10 @@ import { AdjustCreditsDto } from './dto/adjust-credits.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { PaginatedLedgerResponseDto } from './dto/paginated-ledger-response.dto';
 import { PaginatedTransactionResponseDto } from './dto/paginated-transaction-response.dto';
+import {
+  MyPackagesResponseDto,
+  PackageBreakdownDto,
+} from './dto/my-packages-response.dto';
 import { CreditTransactionType } from '../../common/enums/credit-transaction-type.enum';
 import { ErrorCode } from '../../common/enums/error-code.enum';
 
@@ -523,6 +527,60 @@ export class CreditsService {
         await manager.save(entry);
       });
     }
+  }
+
+  // Get per-package credit breakdown for the current user
+  async getMyPackages(userId: string): Promise<MyPackagesResponseDto> {
+    const now = new Date();
+
+    // 1. Get balance summary
+    const balance = await this.getCreditBalance(userId);
+
+    // 2. Get all PURCHASE ledger entries for this user
+    const purchaseEntries = await this.ledgerRepository.find({
+      where: {
+        user: { id: userId },
+        type: CreditTransactionType.PURCHASE,
+      },
+      order: { createdAt: 'DESC' },
+    });
+
+    const packages: PackageBreakdownDto[] = purchaseEntries.map((entry) => {
+      const creditsTotal = Number.parseFloat(entry.debit.toString());
+      const creditsUsed = Number.parseFloat(entry.credit.toString());
+      const creditsRemaining = Math.max(0, creditsTotal - creditsUsed);
+
+      let daysUntilExpiry: number | null = null;
+      if (entry.expiresAt && !entry.isExpired) {
+        const diff = entry.expiresAt.getTime() - now.getTime();
+        daysUntilExpiry = diff > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
+      }
+
+      const meta = entry.metadata as Record<string, unknown> | null;
+      const packageName =
+        typeof meta?.packageName === 'string' ? meta.packageName : 'Credits';
+
+      return {
+        ledgerId: entry.id,
+        packageName,
+        purchasedAt: entry.createdAt,
+        expiresAt: entry.expiresAt ?? null,
+        creditsTotal,
+        creditsUsed,
+        creditsRemaining,
+        isExpired: entry.isExpired || (!!entry.expiresAt && entry.expiresAt <= now),
+        daysUntilExpiry,
+      };
+    });
+
+    return {
+      availableCredits: balance.availableCredits,
+      totalCredits: balance.totalCredits,
+      usedCredits: balance.usedCredits,
+      expiredCredits: balance.expiredCredits,
+      creditsExpiringSoon: balance.creditsExpiringSoon,
+      packages,
+    };
   }
 
   async isOrderProcessed(orderCode: string): Promise<boolean> {

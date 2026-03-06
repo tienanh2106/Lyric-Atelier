@@ -23,6 +23,7 @@ import { PaginationDto } from '../../common/dto/pagination.dto';
 import { CreditBalanceResponseDto } from './dto/credit-balance-response.dto';
 import { PaginatedLedgerResponseDto } from './dto/paginated-ledger-response.dto';
 import { PaginatedTransactionResponseDto } from './dto/paginated-transaction-response.dto';
+import { MyPackagesResponseDto } from './dto/my-packages-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -150,6 +151,22 @@ export class CreditsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   getCreditBalance(@CurrentUser() user: User) {
     return this.creditsService.getCreditBalance(user.id);
+  }
+
+  @Get('my-packages')
+  @ApiBearerAuth()
+  @ApiOperation({
+    operationId: 'getMyPackages',
+    summary: 'Get per-package credit breakdown',
+    description: 'Returns all purchased packages with credits remaining, expiry info',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Package breakdown retrieved',
+    type: MyPackagesResponseDto,
+  })
+  getMyPackages(@CurrentUser() user: User) {
+    return this.creditsService.getMyPackages(user.id);
   }
 
   @Get('ledger')

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -104,5 +105,39 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     const user = await this.findOne(id);
     await this.usersRepository.remove(user);
+  }
+
+  async getProfile(userId: string): Promise<User> {
+    return this.findOne(userId);
+  }
+
+  async updateProfile(
+    userId: string,
+    updateData: { fullName?: string },
+  ): Promise<User> {
+    const user = await this.findOne(userId);
+    if (updateData.fullName !== undefined) {
+      user.fullName = updateData.fullName;
+    }
+    return this.usersRepository.save(user);
+  }
+
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException({ message: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      throw new BadRequestException({ message: 'Mật khẩu hiện tại không đúng' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.usersRepository.save(user);
   }
 }

@@ -211,10 +211,6 @@ export const PackagesSection = () => {
           </div>
         )}
 
-        <p className="mt-8 text-center text-[11px] text-slate-600">
-          Thanh toán an toàn qua PayOS. Credits không có hạn sử dụng trừ khi gói có ghi rõ.
-        </p>
-
         {/* Credit Usage Guide */}
         <div className="mt-16 rounded-[2rem] border border-white/[0.06] bg-white/[0.02] p-8">
           <div className="mb-6 flex items-center gap-3">
@@ -240,9 +236,6 @@ export const PackagesSection = () => {
               </div>
             ))}
           </div>
-          <p className="mt-4 text-center text-[10px] text-slate-700">
-            Dynamic cost = max(5, baseCost + ceil(wordCount × rate)) · Mỗi word ≈ 1 credits/50 từ
-          </p>
         </div>
       </div>
     </section>

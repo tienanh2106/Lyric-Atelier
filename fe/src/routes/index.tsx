@@ -7,6 +7,7 @@ import { AuthPage } from '../pages/AuthPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { PaymentReturnPage } from '../pages/PaymentReturnPage';
 import { PaymentCancelPage } from '../pages/PaymentCancelPage';
+import { AccountPage } from '../pages/AccountPage';
 import { ProtectedRoute } from './ProtectedRoute';
 
 const KaraokeStudioPage = lazy(() => import('../pages/KaraokeStudioPage'));
@@ -29,6 +30,7 @@ export const AppRoutes = () => (
       <Route path={ALL_ROUTER.PUBLIC.PAYMENT_CANCEL} element={<PaymentCancelPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path={ALL_ROUTER.PRIVATE.STUDIO} element={<StudioPage />} />
+        <Route path={ALL_ROUTER.PRIVATE.ACCOUNT} element={<AccountPage />} />
         <Route path={ALL_ROUTER.PRIVATE.PAYMENT_RETURN} element={<PaymentReturnPage />} />
         {/* <Route
           path={ALL_ROUTER.PRIVATE.KARAOKE_STUDIO}
@@ -68,6 +70,7 @@ export const ALL_ROUTER = {
   },
   PRIVATE: {
     STUDIO: '/studio',
+    ACCOUNT: '/account',
     PAYMENT_RETURN: '/payment/return',
     KARAOKE_STUDIO: '/karaoke-studio',
     KARAOKE_PRO: '/karaoke-pro',

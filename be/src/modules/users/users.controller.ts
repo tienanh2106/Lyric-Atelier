@@ -10,6 +10,8 @@ import {
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,12 +22,15 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { PaginatedUsersResponseDto } from './dto/paginated-users-response.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Role } from '../../common/enums/role.enum';
 
 @ApiTags('Users')
@@ -35,6 +40,50 @@ import { Role } from '../../common/enums/role.enum';
 @ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  // Current user endpoints (no admin role required)
+  @Get('me')
+  @ApiOperation({
+    operationId: 'getMyProfile',
+    summary: 'Get current user profile',
+  })
+  @ApiResponse({ status: 200, description: 'User profile', type: User })
+  getMyProfile(@CurrentUser() user: User) {
+    return this.usersService.getProfile(user.id);
+  }
+
+  @Patch('me')
+  @ApiOperation({
+    operationId: 'updateMyProfile',
+    summary: 'Update current user profile',
+  })
+  @ApiResponse({ status: 200, description: 'Updated user profile', type: User })
+  updateMyProfile(
+    @CurrentUser() user: User,
+    @Body() body: UpdateProfileDto,
+  ) {
+    return this.usersService.updateProfile(user.id, body);
+  }
+
+  @Post('me/change-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    operationId: 'changePassword',
+    summary: 'Change current user password',
+  })
+  @ApiResponse({ status: 200, description: 'Password changed successfully' })
+  @ApiResponse({ status: 400, description: 'Current password incorrect' })
+  async changePassword(
+    @CurrentUser() user: User,
+    @Body() dto: ChangePasswordDto,
+  ) {
+    await this.usersService.changePassword(
+      user.id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
+    return { message: 'Đổi mật khẩu thành công' };
+  }
 
   @Post()
   @Roles(Role.ADMIN)
