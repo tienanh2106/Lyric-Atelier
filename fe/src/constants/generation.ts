@@ -1,4 +1,5 @@
 import type { GenerationConfig } from '../types';
+import { LYRIC_THEMES } from './themes';
 
 /**
  * Default values for the lyric generation config form.
@@ -6,7 +7,7 @@ import type { GenerationConfig } from '../types';
  */
 export const DEFAULT_GENERATION_CONFIG: GenerationConfig = {
   sourceLanguage: 'vi',
-  theme: '',
+  theme: LYRIC_THEMES[0].value,
   storyDescription: '',
   gender: 'female',
   mode: 'strict',
